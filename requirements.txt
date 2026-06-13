@@ -1,0 +1,7 @@
+# Daily Driver CAD toolchain
+# Python 3.10-3.12 recommended (CadQuery's OCP wheels track these closely).
+cadquery>=2.4
+
+# Optional, for visual inspection while iterating:
+# cq-editor      # GUI viewer
+# pip install git+https://github.com/CadQuery/cq-editor.git

@@ -1,0 +1,18 @@
+# Generated geometry — built from source, not committed.
+# Ship STL/STEP to builders via tagged GitHub Releases, not in the tree.
+output/
+*.stl
+*.step
+*.3mf
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Editors / OS
+.DS_Store
+.vscode/
+*.swp
