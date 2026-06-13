@@ -1,0 +1,20 @@
+{
+  "stage": 1,
+  "kind": "concept_images",
+  "timestamp_utc": "2026-06-13T214426Z",
+  "model": "fal-ai/flux/dev",
+  "prompt": "industrial design concept render, studio product photography, neutral background, soft even lighting, three-quarter front view, open-back over-ear headphone, honest engineered maker aesthetic, pro-audio sensibility, 3D-print-native form language, circular cup with a legible open rear grille pattern, visible modular yoke and slider, spring-steel headband arc, matte charcoal finish with warm-orange accents, calm and considered, looks serviceable and modular, not glossy consumer plastic",
+  "requested_seed": null,
+  "result_seed": 471032700,
+  "image_count": 3,
+  "images": [
+    "concept_00.jpg",
+    "concept_01.jpg",
+    "concept_02.jpg"
+  ],
+  "brief": {
+    "path": "docs/industrial-design-brief.md",
+    "sha256": "b6b40a996050c1b24fc8e68806d4a546bf6c5a119523554482f9563a9dd1bb43"
+  },
+  "note": "Form/mood exploration only \u2014 nothing here has a dimension."
+}

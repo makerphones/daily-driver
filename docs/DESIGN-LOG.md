@@ -6,6 +6,57 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-13 — AI-assisted design pipeline set up (FAL Stages 1 & 2)
+
+Stood up the AI design pipeline that feeds the form pass. It generates **options
+and references** — it never produces engineered CAD.
+
+- **Toolchain.** Official FAL Python client (`fal-client`, import `fal_client`,
+  reads `FAL_KEY`) confirmed from fal.ai docs and pinned in `requirements.txt`.
+  `FAL_KEY` lives in a gitignored `.env`; the key is never committed. Smoke test
+  (`pipeline/smoke_test.py`, one minimal `flux/schnell` call) passed — auth +
+  connectivity good.
+- **Scripts (config-driven, swappable models).** All under `pipeline/`:
+  `config.py` is the single place model slugs, output dirs, counts, and seed
+  handling live — swapping a model is a one-line edit. `gen_concepts.py`
+  (Stage 1) and `gen_reference_mesh.py` (Stage 2) read everything from it.
+  Confirmed current slugs: Stage 1 default `fal-ai/flux/dev` (FLUX.1 [dev]);
+  Stage 2 default `fal-ai/trellis` (~$0.02/call). Hunyuan3D and FLUX.2 noted as
+  documented swap-ins.
+- **Stage 1 verified.** Ran one curated generation (3 images, `flux/dev`) →
+  `design/explorations/2026-06-13T214426Z/` with a manifest (prompt, model,
+  resolved seed, brief hash). Output is on-brief (charcoal + orange, modular).
+  Prompts are built from a **curated visual-descriptor template**, not a raw
+  dump of the brief.
+
+### The boundary this pipeline encodes
+
+- **No render → engineered-CAD step.** Meshes (Stage 2) are triangle soup, not
+  B-rep; and engineered features (screw locations, cup depth, vent area) are
+  decisions and measurements, not pixels. Stage 3 — the real parts — is authored
+  by hand in CadQuery, on purpose.
+- **Taste is human, encoded in code.** Some taste is a number (→ `params.py`),
+  some is form (vent shape, grille, cup profile → parametric geometry in
+  `parts/*.py`). AI informs taste by showing options; it never sets a dimension
+  or authors a part.
+- **Convention is reused, not regenerated.** Mechanical primitives (boss, post,
+  fillet, thread, snap) live in `parts/features.py`, authored once from
+  established practice and reused across parts.
+- **Scratch vs. curated.** Raw bulk runs go to gitignored `design/_scratch/`;
+  only curated picks land in `design/explorations/` and
+  `design/reference-meshes/` and get committed (the open-design story).
+
+### Carry-forward
+
+- **Migrate primitives into `parts/features.py`.** `features.py` is a stub
+  (signatures only). `cup.py` step 3 still inlines its baffle-mounting boss +
+  insert-bore logic; that convention should move into `features.py` and be
+  reused once the primitives are implemented. Not done now (no refactor this
+  session) — flagged for a future step. Joins the earlier carry-forwards
+  (floating baffle bosses, first-pass vent grille).
+
+---
+
 ## 2026-06-13 — Entering the form / industrial-design pass
 
 The functional skeleton is proven — parametric CAD, build pipeline, four parts
