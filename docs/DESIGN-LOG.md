@@ -6,6 +6,30 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-13 — Entering the form / industrial-design pass
+
+The functional skeleton is proven — parametric CAD, build pipeline, four parts
+exporting as valid solids — so the next pass is **form**. Added
+`docs/industrial-design-brief.md`, built from the spec's locked-vs-open section:
+it defines what the Daily Driver should look and feel like and frames the form
+exploration (cup profile, rear grille, yoke/slider styling, finish) as 3–5
+directions to choose from before any more geometry work. The chosen direction
+then gets translated back into the parametric model, respecting everything the
+brief locks.
+
+**Carry-forward issues to fix when the chosen form goes back into the model**
+(noting now so they aren't lost — not fixing here, no geometry changes this
+session):
+
+1. **Floating baffle bosses.** The four baffle-mounting bosses are currently
+   posts that aren't anchored to the cup wall — they need to tie into the wall
+   when the form is rebuilt.
+2. **Clunky first-pass vent grille.** The rear vent array is the crude
+   area-driven placeholder; the real grille is a form decision (it's the
+   signature look) and gets designed in this pass.
+
+---
+
 ## 2026-06-13 — First build runs; all four parts export; cup fillet was masking a failure
 
 First time the toolchain ran against the geometry kernel. Set up a venv and
