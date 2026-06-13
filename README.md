@@ -62,22 +62,17 @@ No printer? FDM print services (JLCPCB, Xometry) will print the set cheaply.
 
 ## License
 
-**This is open.** You are free to use, modify, build, and **sell** the Daily
-Driver — commercially or otherwise — as long as you give credit. There is no
-"personal use only" restriction and no fee.
+**This project is open source under the [MIT License](LICENSE).** You are free
+to use, modify, build, and **sell** the Daily Driver — commercially or
+otherwise. No "personal use only" restriction, no fee. One license over the
+whole repo, code and docs alike; full text in [`LICENSE`](LICENSE).
 
-- **Source and design files** (`*.py`, the CadQuery model, exported geometry)
-  are licensed under **[CERN-OHL-P-2.0](LICENSE)** — the CERN Open Hardware
-  Licence v2, Permissive variant. Full text in [`LICENSE`](LICENSE).
-- **Documentation** (the design spec, the design log, and this README's prose)
-  is licensed under **[CC-BY-4.0](LICENSE-docs)** — Creative Commons
-  Attribution 4.0. Full text in [`LICENSE-docs`](LICENSE-docs).
+**Attribution requested:** when you share or build on it, credit *makerphones by
+Warren Labs (makerphones.com)*.
 
-**Attribution requested:** *Jamey Warren / MakerPhones — makerphones.com*
-
-Copyright © 2026 Jamey Warren / MakerPhones. The **MakerPhones** and **Warren
-Labs** names and brands are *not* covered by these licenses and are protected
-separately by trademark; the licenses cover the design and docs, not the names.
+The **makerphones** and **Warren Labs** names and brands are *not* covered by
+the license and are protected separately by trademark — it covers the design
+and code, not the names.
 
 ## Contributing
 

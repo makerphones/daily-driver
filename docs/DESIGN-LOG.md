@@ -6,6 +6,27 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-13 — Switched to a single MIT license
+
+Replaced the split CERN-OHL-P-2.0 (source) + CC-BY-4.0 (docs) setup with one
+**MIT** license over the whole repo.
+
+- **Why MIT.** Simplicity — one short, universally understood license instead
+  of two, and it's code-native, which fits a design that's *defined in code*
+  rather than shipped as discrete hardware files.
+- **Why permissive.** The whole point is for the design to spread — get used,
+  forked, built, and sold freely. There's no moat here to defend with copyleft
+  or a non-commercial clause.
+- **Where the value actually lives.** Kits (sourced, matched parts in a box), a
+  finished Warren Labs product for people who don't want to build, and merch.
+  None of those depend on the design being closed — a published model doesn't
+  make the kit or the assembled unit any less worth buying.
+- **What stays protected.** The makerphones and Warren Labs *names and brands*
+  are held back by trademark, separately from the code license. Anyone can build
+  and sell the design; nobody can sell it *as* makerphones.
+
+---
+
 ## 2026-06-13 — Licensed open, permissive with attribution
 
 Picked the licenses and made the repo properly open.

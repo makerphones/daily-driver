@@ -1,3 +1,3 @@
-# SPDX-FileCopyrightText: 2026 Jamey Warren / MakerPhones
-# SPDX-License-Identifier: CERN-OHL-P-2.0
+# SPDX-FileCopyrightText: 2026 Jamey Warren
+# SPDX-License-Identifier: MIT
 
