@@ -22,9 +22,19 @@ text files diff and version-control naturally, and anyone can fork and modify.
   - `cup.py` — real first-pass geometry
   - `baffle.py` — real first-pass geometry (flat; print this first)
   - `yoke.py`, `slider.py` — **stubs**: parameters wired, real geometry TODO
+  - `features.py` — **reusable mechanical primitives** (screw boss, post,
+    fillet, thread, snap): established convention, **authored once and reused —
+    never regenerated per part**, never re-derived by hand each time. Currently
+    a stub. (cup.py's inline bosses migrate here later — see DESIGN-LOG.)
 - `build.py` — renders parts to `output/`. `python build.py` for all, or
   `python build.py cup baffle` for specific ones. Failures are isolated per part.
+- `pipeline/` — AI-assisted **design** pipeline (FAL): Stage 1 text→concept
+  images, Stage 2 image→reference mesh. It generates OPTIONS and REFERENCES; it
+  never produces engineered CAD. See `docs/design-pipeline.md`.
 - `docs/design-spec.md` — the functional spec the CAD is built against.
+- `docs/design-pipeline.md` — the AI design pipeline + the taste-vs-convention
+  boundary (taste → `params.py` + parametric form in `parts/*.py`; convention →
+  `parts/features.py`).
 - `docs/DESIGN-LOG.md` — the running record. **For an open design the log is
   part of the product.** Add an entry for every real decision or iteration.
 
