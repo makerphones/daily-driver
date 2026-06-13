@@ -12,6 +12,21 @@ __pycache__/
 venv/
 env/
 
+# Secrets — never commit. FAL_KEY lives in .env (read at runtime).
+.env
+.env.*
+
+# AI design pipeline (FAL)
+# Raw bulk runs are scratch — generate freely, never committed.
+design/_scratch/
+# FAL client cache / temp, if any lands in-repo.
+.fal/
+fal_cache/
+# Curated picks ARE committed (the open-design story). Re-include them even
+# though the global rules above (*.stl, *.3mf) could otherwise catch a mesh.
+!design/explorations/**
+!design/reference-meshes/**
+
 # Editors / OS
 .DS_Store
 .vscode/
