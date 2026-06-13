@@ -6,6 +6,28 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-13 — Licensed open, permissive with attribution
+
+Picked the licenses and made the repo properly open.
+
+- **Source / design files:** CERN-OHL-P-2.0 (CERN Open Hardware Licence v2,
+  Permissive). **Docs** (spec, this log, README prose): CC-BY-4.0. SPDX headers
+  on every `.py`; `LICENSE` + `LICENSE-docs` carry the full legal text.
+- **Why permissive.** The whole point is for the design to spread — get built,
+  forked, remixed, sold by whoever wants to. A copyleft or non-commercial clause
+  would slow that down to protect a moat that isn't there. The design being open
+  costs nothing, because the commercial value doesn't live in the geometry.
+- **Where the value actually lives.** Kits (sourced, matched parts in a box), a
+  finished Warren Labs product for people who don't want to build, and merch.
+  None of those depend on the CAD being secret — a published STL doesn't make
+  the kit or the assembled unit any less worth buying.
+- **What stays protected.** The MakerPhones and Warren Labs *names and brands*
+  are held back by trademark, separately from the design license. Anyone can
+  build and sell the design; nobody can sell it *as* MakerPhones. Open design,
+  protected brand — the two don't conflict.
+
+---
+
 ## 2026-06-13 — Repo scaffolded, code-CAD toolchain chosen
 
 Moved the Daily Driver from spec-only into a parametric CAD repo.
