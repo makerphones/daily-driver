@@ -6,6 +6,66 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-13 — First build runs; all four parts export; cup fillet was masking a failure
+
+First time the toolchain ran against the geometry kernel. Set up a venv and
+installed CadQuery, then ran `python build.py`.
+
+- **Environment.** Only system Python (3.9.6) is available on this machine — no
+  3.10–3.12 as the requirements note prefers. Tried 3.9 anyway since it's the
+  empirical path, and it worked: `pip install -r requirements.txt` pulled
+  **CadQuery 2.5.2** with **cadquery-ocp 7.7.2** (3.9 wheels exist), and import
+  succeeded. No newer Python needed for now.
+- **Result.** All four parts export to both STL and STEP, and all four are valid
+  solids (`isValid() == True`): cup (65 faces), baffle (13), yoke (9, stub),
+  slider (13, stub). The two flagged trouble spots that *did* hold up:
+  - **Cup front-face shell** (`faces(">Z").shell(-wall_thickness)`) — works,
+    clean open cup.
+  - **Side yoke boss** (`Workplane("XZ")` boss union) — works, unions cleanly.
+- **The real problem: the cup edge fillet was failing silently.** Step 6
+  (`cup.edges("|Z").fillet(edge_fillet)`) raises `BRep_API: command not done`
+  every run, and the old `except: pass` swallowed it — so the build printed
+  `[ok]` while shipping a cup with **no fillet applied**. Diagnosed why:
+  `"|Z"` selects all 51 vertical edges, but ~32 of those are the **vent-slot
+  walls** and the rest are boss edges. A 1.5 mm fillet overruns the slot
+  geometry and OCC aborts the whole operation. Scoping to the outer wall doesn't
+  rescue it either — the cup is a **cylinder**, so its only outer vertical edges
+  are the yoke-boss/cylinder intersection (a curved-on-curved saddle), which OCC
+  refuses to fillet even at 0.5 mm.
+- **Conclusion (not silently resolved).** A cylindrical first-pass form has no
+  sharp outer vertical edges worth softening. **Which edges get a comfort fillet
+  is a form-pass decision** that depends on the real outer profile — and the
+  outer profile is an explicitly OPEN form question in the spec. So I did *not*
+  invent a new filleting scheme.
+- **Fix applied (cup.py step 6).** Scoped the fillet to the outer wall only (so
+  it stops trying to fillet the vent slots — that was never the intent), and
+  replaced the silent `except: pass` with a printed `[warn]` so a skipped fillet
+  is **visible in the build**, not hidden behind `[ok]`. `edge_fillet` stays in
+  `params.py`, flagged; the fillet activates once the form pass gives the cup
+  real edges to soften. Build now reports the skip honestly and still produces
+  all four valid solids.
+
+### Repo location
+
+The CAD repo now lives at `builds/daily-driver/` inside the MakerPhones working
+tree (it had been dropped at the wrong path). It remains its own standalone git
+repo (`github.com/makerphones/daily-driver`); the website repo gitignores
+`builds/` so the two stay cleanly decoupled. Room for sibling builds later.
+
+### Next
+
+- Open `output/cup.stl` and `output/baffle.stl` in a viewer and sanity-check
+  proportions (human review — not assessed here).
+- Print the **baffle first** (flat, fast) against a real driver to confirm the
+  cutout, seat, and gasket channel before committing a cup print.
+- When the cup's outer **form pass** happens, decide which edges the comfort
+  fillet should soften — the `[warn]` will clear once it has real edges.
+- Stubs still TODO: `yoke` real gimbal geometry + cup-side mount, `slider`
+  friction clamp — both gated on open questions (yoke-to-cup interface, headband
+  arc radius).
+
+---
+
 ## 2026-06-13 — Switched to a single MIT license
 
 Replaced the split CERN-OHL-P-2.0 (source) + CC-BY-4.0 (docs) setup with one

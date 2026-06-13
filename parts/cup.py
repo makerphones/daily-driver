@@ -14,6 +14,8 @@ plain here and is what gets refined in the build loop. Several dimensions are
 flagged as open in params.py / DESIGN-LOG.md; respect those flags.
 """
 
+import math
+
 import cadquery as cq
 from params import P
 
@@ -82,11 +84,28 @@ def make_cup() -> cq.Workplane:
     cup = cup.union(yoke_boss)
 
     # 6. Soften exposed outer vertical edges for comfort/printability.
-    try:
-        cup = cup.edges("|Z").fillet(P.edge_fillet)
-    except Exception:
-        # filleting can fail on tricky edge sets; skip rather than break the build
-        pass
+    #    Scope to the OUTER WALL only. The original "|Z" selection also grabbed
+    #    the vent-slot and boss edges (never the intent — see the comment above),
+    #    and a 1.5 mm fillet overruns that small geometry, so OCC aborts the whole
+    #    operation. On the current cylindrical first-pass form the outer wall has
+    #    essentially no sharp vertical edges to soften anyway (only the yoke-boss
+    #    intersection, a curved-on-curved saddle OCC won't fillet), so this is
+    #    typically a no-op until the real outer profile lands in the form pass
+    #    (cup outer profile is an OPEN form decision — see docs/DESIGN-LOG.md).
+    #    Whatever happens, warn rather than silently swallow: a skipped comfort
+    #    fillet must be visible in the build, not hidden behind an [ok].
+    outer_r = P.cup_outer_diameter / 2
+    outer_edges = cup.edges("|Z").filter(
+        lambda e: abs(math.hypot(e.Center().x, e.Center().y) - outer_r) < 3.0
+    )
+    if outer_edges.vals():
+        try:
+            cup = outer_edges.fillet(P.edge_fillet)
+        except Exception as e:  # noqa: BLE001 — report, don't mask
+            print(
+                f"  [warn] cup: outer-edge comfort fillet skipped ({e}). "
+                "Deferred to the form pass once the outer profile is set."
+            )
 
     return cup
 
