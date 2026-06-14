@@ -47,17 +47,31 @@ BASE_STYLE = (
 # "open-back" is category jargon, not an appearance — so describe the visual
 # signature explicitly AND keep the words "open-back". Positive, concrete
 # description is the lever here; do NOT add a negative prompt (FLUX.1 [dev]
-# doesn't reward negation).
+# doesn't reward negation). Direction: a HIGH-QUALITY 3D-PRINTED maker object —
+# precisely printed and well-finished, not injection-molded polish and not a
+# crude prototype. Print quality is expressed positively (clean, precise, even).
 VISUAL_DESCRIPTORS = (
-    "open-back over-ear headphone — the entire rear of each earcup is an open "
-    "metal grille with the driver clearly visible behind it, not a solid shell; "
-    "spoked concentric rear grille: a center hub, two concentric rings, and "
-    "radial spokes (echoing the brand mark); you can see straight through the "
-    "grille to the driver, ventilated and airy; "
-    "honest engineered maker aesthetic, pro-audio sensibility, 3D-print-native "
-    "form language; visible modular yoke and slider, spring-steel headband arc; "
-    "matte charcoal body with a single warm-orange accent and visible, "
-    "serviceable fasteners; calm and considered, not glossy consumer plastic"
+    "open-back over-ear headphone, a high-quality 3D-printed object — looks "
+    "precisely printed, clean and well-finished, not injection-molded and not a "
+    "rough prototype; "
+    "matte charcoal printed parts with a fine, even, intentional printed surface "
+    "texture, like well-made fine-layer sintered nylon; "
+    "designed for printing: generous fillets, chamfered edges, uniform wall "
+    "thickness, monolithic printed forms; "
+    "the open back is a printed spoked concentric grille — a central hub and two "
+    "bold concentric rings joined by a small number of thick radial spokes, "
+    "coarse and open enough to see the driver through it (not a fine turbine or "
+    "fan); "
+    "a slim exposed spring-steel metal headband band anchored into printed "
+    "sliders, the bright metal band contrasting the matte printed parts; "
+    "printed yoke and gimbal arms with rounded, filleted edges and visible pivot "
+    "screws, not thin metal wire and not a blocky molded gimbal; "
+    "maker and serviceable detail: exposed stainless socket-head fasteners and "
+    "brass heat-set inserts, intentional assembly seams, clearly openable and "
+    "repairable; "
+    "matte charcoal throughout with a single small warm-orange accent at the "
+    "grille hub or a small yoke tag, orange kept minor, never painted across "
+    "whole parts"
 )
 
 # Vary the camera across the N images so the set doesn't read closed. The REAR

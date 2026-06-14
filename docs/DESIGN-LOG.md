@@ -6,6 +6,41 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Concepts moved to a 3D-printed maker direction
+
+Retuned `VISUAL_DESCRIPTORS` (a human taste call, encoded as written) to aim the
+concept exploration at a **high-quality 3D-printed object** — precisely printed
+and well-finished, explicitly neither injection-molded polish nor a crude
+prototype. Print quality is expressed positively (clean, precise, even,
+well-finished); no negative prompt.
+
+- **Printed-maker surface + form.** Matte charcoal printed parts with a fine,
+  even, intentional printed texture (described as fine-layer sintered nylon, not
+  by acronym); designed-for-print cues: generous fillets, chamfered edges,
+  uniform walls, monolithic forms.
+- **Architecture cues.** A slim **exposed spring-steel metal band** anchored into
+  printed sliders (bright metal contrasting the matte printed parts); **printed**
+  yoke/gimbal arms with rounded filleted edges and visible pivot screws (not thin
+  wire, not a blocky molded gimbal); maker/serviceable detail — exposed stainless
+  socket-head fasteners, brass heat-set inserts, intentional seams, openable.
+- **Grille tuning.** Open back is a printed spoked concentric grille: central hub
+  + two **bold concentric rings** joined by a **small number of thick radial
+  spokes**, coarse/open enough to see the driver — explicitly not a fine
+  turbine/fan.
+- **Orange restraint.** Matte charcoal throughout with a **single small**
+  warm-orange accent (grille hub or a small yoke tag); never painted across whole
+  parts.
+
+Ran one default Stage-1 set (4 images) into gitignored `design/_scratch/`. Reads
+clearly printed-maker now (matte, filleted, monolithic, visible fasteners), a
+strong shift away from the molded-consumer look. Partial on the finer asks: the
+grille landed as concentric rings on most views but still drifted to a fine
+turbine on one, the spring-steel band read matte rather than bright metal, and
+one cup's pad interior came through fully orange. Useful steer for the next
+iteration; left in scratch for me to curate.
+
+---
+
 ## 2026-06-14 — Open-back descriptor tuning; scripts now default to _scratch
 
 Two refinements to Stage 1 after the first run read **closed-back**.
