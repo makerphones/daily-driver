@@ -6,6 +6,23 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Fix show.py for the ocp_vscode 2.6.2 API
+
+`show.py` was written against an older API and crashed with
+`TypeError: show() got an unexpected keyword argument 'name'`. In 2.6.2 the
+signature is `show(*cad_objs, names=None, ...)` — `names` is a list, no singular
+`name=`. Fixed to `show(make_assembly(), names=["daily_driver_cup_baffle"])`;
+`show()` is the only ocp_vscode call in the repo. Confirmed it now runs past the
+`show()` call with no TypeError.
+
+Noted for later (NOT fixed): with no viewer running it then fails in
+`find_port()` with a `ValueError` (port discovery), and there's a likely
+version mismatch — VS Code extension `bernhard-42.ocp-cad-viewer` is **3.4.0**
+while the `ocp_vscode` package is pinned to **2.6.2**. Line these up to clear the
+port/`--backend measure-tool` errors in a later pass.
+
+---
+
 ## 2026-06-14 — Viewer dev-deps split out
 
 Split the live-viewer dependency from the core build deps: `ocp_vscode==2.6.2`
