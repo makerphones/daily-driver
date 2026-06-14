@@ -18,6 +18,7 @@ import math
 
 import cadquery as cq
 from params import P
+from parts import features
 
 
 def make_cup() -> cq.Workplane:
@@ -31,30 +32,11 @@ def make_cup() -> cq.Workplane:
     #    Interior void = cup_interior_diameter x cup_depth.
     cup = cup.faces(">Z").shell(-P.wall_thickness)
 
-    # 3. Baffle-mounting bosses: 4 posts standing up from the interior back,
-    #    reaching toward the front, drilled for M3 heat-set inserts. The baffle
-    #    plate screws down into these (screw direction is an open decision — see
-    #    DESIGN-LOG.md; this assumes inserts in the cup).
-    boss_h = P.insert_boss_depth
-    boss = (
-        cq.Workplane("XY")
-        .workplane(offset=total_h - boss_h)  # start near the front rim
-        .polarArray(P.baffle_screw_radius, 45, 360, P.baffle_screw_count)
-        .circle(P.insert_boss_diameter / 2)
-        .extrude(boss_h)
-    )
-    # bore the insert holes from the front face downward
-    boss = (
-        boss.faces(">Z")
-        .workplane()
-        .polarArray(P.baffle_screw_radius, 45, 360, P.baffle_screw_count)
-        .hole(P.m3_insert_hole_diameter, P.insert_boss_depth - 1.0)
-    )
-    cup = cup.union(boss)
-
-    # 4. Rear vent array: ring of slots cut through the closed back.
-    #    Slot length/width are sized toward the open-fraction target; exact
-    #    open area and slot shape are an iteration point (the signature look).
+    # 3. Rear vent array: ring of slots cut through the closed back. Cut BEFORE
+    #    the bosses so the cutThruAll never slices the boss columns. Slot
+    #    length/width are sized toward the open-fraction target; exact open area
+    #    and slot shape are an iteration point (the signature look) — NOT touched
+    #    here (deferred to the grille taste pass).
     back_r = od / 2
     vent_r = back_r * P.vent_ring_radius_fraction
     # crude size: distribute target open area across the slot count
@@ -68,6 +50,37 @@ def make_cup() -> cq.Workplane:
         .polarArray(vent_r, 0, 360, P.vent_slot_count)
         .slot2D(slot_len, slot_w, 90)  # radial-ish orientation
         .cutThruAll()
+    )
+
+    # 4. Baffle-mounting bosses (convention — features.boss). Columns that stand
+    #    on the interior back floor (part of the closed back wall), merged and
+    #    filleted into it so they're structurally connected and printable. This
+    #    fixes the earlier FLOATING-BOSS bug: the old bosses were short cylinders
+    #    near the front rim at the screw radius, touching nothing, unioned as
+    #    disconnected solids. Now they run floor → baffle underside. The brass
+    #    heat-set insert is installed in the open (front-facing) top; the baffle
+    #    screws into it from the front.
+    #    NOTE: the boss ring (baffle_screw_radius ~70% R) nearly coincides with
+    #    the placeholder vent ring (~62% R), so a boss base can overlap a vent
+    #    slot. Flagged for the grille taste pass (pattern the real grille around
+    #    the four boss footprints). Boss screw direction itself is still an open
+    #    question — see DESIGN-LOG.
+    boss_points = [
+        (
+            P.baffle_screw_radius * math.cos(math.radians(45 + i * 360 / P.baffle_screw_count)),
+            P.baffle_screw_radius * math.sin(math.radians(45 + i * 360 / P.baffle_screw_count)),
+        )
+        for i in range(P.baffle_screw_count)
+    ]
+    cup = features.boss(
+        cup,
+        boss_points,
+        floor_z=P.cup_interior_floor_z,
+        outer_diameter=P.insert_boss_diameter,
+        bore_diameter=P.m3_insert_hole_diameter,
+        height=P.baffle_boss_height,
+        bore_depth=P.insert_boss_depth,
+        base_fillet=P.boss_base_fillet,
     )
 
     # 5. Provisional yoke mount: a single boss on the +X side wall with a bore

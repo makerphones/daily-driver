@@ -6,6 +6,56 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Stage 3 opened: convention primitives, floating-boss fix, cup+baffle assembly
+
+First real-geometry pass. Foundation + convention only — the grille and the
+yoke/slider **form** are deliberately untouched (taste passes).
+
+- **Mechanical primitives implemented (`parts/features.py`).** `boss()` (cylinder
+  + central blind bore for a brass heat-set insert) and `screw_post()` (same, but
+  the bore is a screw clearance/pilot) — both stand on a host plane, merge into
+  the host, and fillet the base junction so features are tied and printable.
+  Shared `_studs()` body; these are convention, reused, not regenerated per part.
+  Verified on a clean host: 1 valid solid with 4 base-fillet faces.
+- **Params added (flagged defaults).** `boss_base_fillet` (1.0), `screw_post_diameter`
+  (7.0), `screw_post_pilot_diameter` (2.5, FLAGGED — confirm vs real screw); plus
+  derived `cup_interior_floor_z`, `baffle_seat_z`, `baffle_boss_height`. The
+  baffle **flush-seat** at the front rim is a flagged PROVISIONAL assumption (the
+  front/pad-lip interface is still open).
+- **Floating-boss bug fixed + migrated (`parts/cup.py`).** The inline boss code is
+  gone; the cup now calls `features.boss()`. The old bosses were short cylinders
+  near the rim touching nothing (unioned as disconnected solids). They're now
+  columns standing on the interior back floor, merged + filleted into it — the
+  cup (excluding the provisional yoke boss, below) is a single connected solid.
+  Vents are now cut **before** the bosses so the cut never slices the columns.
+- **Flagged — boss/vent ring collision.** `baffle_screw_radius` (~70% R, 27.3 mm)
+  nearly coincides with the placeholder vent ring (~62% R, 26 mm), so the boss
+  bases overlap vent slots and the base fillet skips there (it works fine on a
+  clean host). The bosses are still merged/connected. To resolve in the **grille
+  taste pass**: pattern the real grille around the four boss footprints.
+- **Flagged — provisional yoke boss is barely connected.** The cup-side yoke-mount
+  placeholder (a cylinder tangent to the curved wall) only touches along a line,
+  so the cup currently reports **2 disjoint solids** (cup body + that boss). Left
+  untouched on purpose — cup-side yoke attachment is an open question and yoke
+  **form** is deferred. Resolve when the yoke-to-cup interface is designed.
+- **Basic assembly added (`assembly.py`, `show.py`).** Cup + baffle in their real
+  relationship: the baffle flipped so its driver recess faces into the cup, seated
+  flush at the front rim on the boss tops. `build.py` exports `output/assembly.step`
+  (error-isolated); `python show.py` opens it in OCP CAD Viewer. Assembly verified
+  valid and exporting; open it in the viewer to check proportions.
+- **Build.** `python build.py` → 4/4 parts export + `assembly.step`. Yoke/slider
+  still stubs.
+
+### Carry-forward
+
+- Grille **form** (and patterning it around the boss footprints) — taste pass.
+- Yoke/slider **form** + the cup-side yoke mount (fix its connectivity then) —
+  taste pass.
+- Confirm `screw_post_pilot_diameter` and the provisional baffle flush-seat once
+  the real screws and front/pad-lip interface are settled.
+
+---
+
 ## 2026-06-14 — Concepts moved to a 3D-printed maker direction
 
 Retuned `VISUAL_DESCRIPTORS` (a human taste call, encoded as written) to aim the

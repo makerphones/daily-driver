@@ -64,6 +64,15 @@ class Params:
     # Cup-side yoke mount is NOT fully specified in the spec yet — provisional.
     yoke_mount_boss_diameter: float = 9.0
 
+    # ---- Mechanical primitives (convention; see parts/features.py) ----------
+    # Reusable boss/post conventions, not taste. The heat-set boss reuses
+    # insert_boss_diameter / m3_insert_hole_diameter / insert_boss_depth above.
+    boss_base_fillet: float = 1.0         # fillet tying a boss/post to its host wall (printability)
+    screw_post_diameter: float = 7.0      # socket-head fastener post OD (flagged default)
+    # Pilot bore for a thread-forming screw into plastic; M3 ~2.5 mm. FLAGGED —
+    # confirm against the actual screw before relying on it.
+    screw_post_pilot_diameter: float = 2.5
+
     # ---- Print / fit ---------------------------------------------------------
     fit_clearance_friction: float = 0.2   # friction fit
     fit_clearance_slip: float = 0.35      # slip fit
@@ -91,6 +100,23 @@ class Params:
     @property
     def baffle_screw_radius(self) -> float:
         return (self.cup_interior_diameter / 2) * self.baffle_screw_radius_fraction
+
+    @property
+    def cup_interior_floor_z(self) -> float:
+        # top of the interior back floor (the closed back is one wall thick)
+        return self.wall_thickness
+
+    @property
+    def baffle_seat_z(self) -> float:
+        # baffle underside / boss-top height. PROVISIONAL foundation assumption:
+        # the baffle seats flush with the front rim. The front/pad-lip interface
+        # is still an OPEN question (see DESIGN-LOG) — revisit when it's resolved.
+        return self.cup_total_height - self.baffle_thickness
+
+    @property
+    def baffle_boss_height(self) -> float:
+        # boss columns run from the interior back floor up to the baffle underside
+        return self.baffle_seat_z - self.cup_interior_floor_z
 
 
 # Importable singleton used by every part module.

@@ -45,6 +45,16 @@ def build(names):
         except Exception as e:
             print(f"  [FAIL] {name}: {e}")
             failed.append(name)
+
+    # Cup + baffle assembly (the parts with real geometry), isolated like a part.
+    if {"cup", "baffle"} <= set(names):
+        try:
+            from assembly import make_assembly
+            make_assembly().export(os.path.join(OUT, "assembly.step"))
+            print("  [ok]   assembly.step (cup + baffle)")
+        except Exception as e:
+            print(f"  [FAIL] assembly: {e}")
+
     print(f"\nBuilt {len(ok)}/{len(names)}: {', '.join(ok) or 'none'}")
     if failed:
         print(f"Failed: {', '.join(failed)}")
