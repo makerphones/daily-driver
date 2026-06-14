@@ -52,10 +52,22 @@ class Params:
     insert_boss_diameter: float = 7.0
     insert_boss_depth: float = 6.0
 
-    # ---- Rear vent array -----------------------------------------------------
-    vent_slot_count: int = 7              # 6-8 oval slots
-    vent_open_fraction: float = 0.40      # ~40% open area target
-    vent_ring_radius_fraction: float = 0.62  # slot centre, fraction of back radius
+    # ---- Rear vent grille ----------------------------------------------------
+    # The real concentric-ring grille (replaces the old placeholder vent slots).
+    # Remaining material = a center hub + concentric rings + radial spokes; the
+    # gaps between them open to the driver. The OUTER ring's centerline lands on
+    # the baffle-boss radius (see grille_outer_radius property below) so the 4
+    # bosses sit as nodes on it — the screws reinforce the grille.
+    grille_ring_count: int = 2            # concentric rings (FLAGGED — tune in loop)
+    grille_spoke_count: int = 8           # 4 on boss positions + 4 between (FLAGGED)
+    grille_hub_diameter: float = 12.0     # center disc over driver (FLAGGED default)
+    grille_inner_ring_radius: float = 15.0  # between hub and outer ring (FLAGGED default)
+    # Ring + spoke width. Sized to hit grille_target_open_fraction (~3.8 mm gives
+    # ~0.40 open by area-sampling); held to a 2 mm FDM floor — never go thinner to
+    # chase the target, report the actual open fraction instead. FLAGGED — tune.
+    grille_member_width: float = 3.8
+    grille_member_min_width: float = 2.0  # FDM printability floor (hard minimum)
+    grille_target_open_fraction: float = 0.40  # ~40% open area target
 
     # ---- Yoke / pivot --------------------------------------------------------
     pivot_post_diameter: float = 6.0      # project's own interface (not Beyer)
@@ -100,6 +112,14 @@ class Params:
     @property
     def baffle_screw_radius(self) -> float:
         return (self.cup_interior_diameter / 2) * self.baffle_screw_radius_fraction
+
+    @property
+    def grille_outer_radius(self) -> float:
+        # Outer grille ring centerline == the baffle-boss radius, so the 4 bosses
+        # land as nodes on the ring (resolves the old boss/vent collision). This
+        # REFERENCES the boss radius rather than duplicating the value — change
+        # baffle_screw_radius_fraction and the outer ring follows.
+        return self.baffle_screw_radius
 
     @property
     def cup_interior_floor_z(self) -> float:

@@ -6,6 +6,47 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Real concentric-ring grille authored (replaces placeholder vents)
+
+Authored the real rear grille into the cup, replacing the placeholder slot ring
+entirely. This **closes the "first-pass vent grille" carry-forward** (#2 in the
+2026-06-13 form-direction entry).
+
+**Structure (v1, fully parametric so it tunes after we see it).** Remaining
+material = a center hub + two concentric rings + 8 radial spokes; the gaps
+between them open to the driver. Spokes: 4 aligned to the baffle-boss positions,
+4 between them. Built as an annular CUTTER (zone disc minus the kept members)
+cut from the closed back, *before* the bosses are added so no boss column is
+sliced.
+
+**Boss/vent collision resolved.** The outer ring's centerline lands on the
+baffle-boss radius — `P.grille_outer_radius` is a property that returns
+`P.baffle_screw_radius`, so it references the boss radius instead of duplicating
+it. The 4 bosses now sit as NODES on the outer ring (verified: back plate is
+solid under each boss, columns intact), so the screws reinforce the grille
+rather than colliding with a slot. The outer ring's outer edge meets the solid
+rim, so the grille is continuous with the shell.
+
+**Open area.** New params in `params.py` (all flagged): `grille_ring_count=2`,
+`grille_spoke_count=8`, `grille_hub_diameter=12`, `grille_inner_ring_radius=15`,
+`grille_member_width=3.8`, `grille_member_min_width=2.0` (FDM floor),
+`grille_target_open_fraction=0.40`. Member width was sized by area-sampling the
+2D pattern to hit ~0.40 open; 3.8 mm lands it and every member stays well above
+the 2 mm print floor (no need to hold the floor and report a worse number).
+**Measured open fraction from the built solid = 0.401** over the grille zone
+(radius 29.2 mm) — on target.
+
+**Verified.** `python build.py` green (cup/baffle/yoke/slider + assembly all
+export). Cup body is a single connected solid with the grille. (The separate
+2nd solid is the pre-existing floating yoke boss — confirmed it was already
+detached on HEAD; untouched this pass per scope.) The pre-existing fillet
+[warn]s are unchanged and unrelated.
+
+Not touched this pass: yoke/slider form, the floating-yoke-boss carry-forward,
+boss screw direction, pad-lip interface — all still open.
+
+---
+
 ## 2026-06-14 — Pin the VS Code viewer extension to 2.6.x (match the package)
 
 Reconciled the OCP CAD Viewer mismatch the low-risk way: **downgrade the VS Code
