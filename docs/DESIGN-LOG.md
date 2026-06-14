@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Open-back descriptor tuning; scripts now default to _scratch
+
+Two refinements to Stage 1 after the first run read **closed-back**.
+
+- **Open-back is now described, not named.** "Open-back" is category jargon, not
+  an appearance, so the model rendered a solid shell. `VISUAL_DESCRIPTORS` now
+  spells out the visual signature (a human taste call, encoded as written — not
+  reinterpreted): the entire rear of each cup is an open metal grille with the
+  driver visible behind it; a spoked concentric grille (center hub, two rings,
+  radial spokes, echoing the brand mark); see-through and airy; matte charcoal
+  with a single warm-orange accent and visible fasteners. The words "open-back"
+  stay, paired with the look.
+- **Camera view is varied across the N images.** A front-only batch reads closed
+  regardless of wording, so `gen_concepts.py` now makes one call per image and
+  cycles a `VIEWS` list (rear / front / side) with the **rear/grille view first
+  so it's always present**. No negative prompt — FLUX.1 [dev] doesn't reward
+  negation; concrete positive description is the lever. Re-ran (4 images): both
+  rear views now read clearly open-back.
+- **Scripts default to `_scratch`; curation is manual.** Reconciled the code with
+  the scratch-vs-curated convention: `gen_concepts.py` and `gen_reference_mesh.py`
+  now always write raw runs to gitignored `design/_scratch/<timestamp>/`. The
+  `--curated` flag is gone — promoting keepers into `design/explorations/` and
+  `design/reference-meshes/` is a manual curation step. Doc layout/how-to-run
+  lines updated to match. The earlier `explorations/2026-06-13T214426Z/` run is
+  left in place as history.
+
+---
+
 ## 2026-06-13 — AI-assisted design pipeline set up (FAL Stages 1 & 2)
 
 Stood up the AI design pipeline that feeds the form pass. It generates **options

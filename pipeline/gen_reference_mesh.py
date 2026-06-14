@@ -12,10 +12,11 @@ See docs/design-pipeline.md for why there is no render->engineered-CAD step.
 
 Takes ONE chosen concept image (local path or URL), calls the configured
 image-to-3D model, and downloads the mesh (GLB/STL) into
-design/reference-meshes/<UTC-timestamp>/ with a manifest.json.
+design/_scratch/<UTC-timestamp>/ with a manifest.json. Promoting a keeper into
+design/reference-meshes/ is a manual curation step (see docs/design-pipeline.md).
 
 Usage:
-    python pipeline/gen_reference_mesh.py design/explorations/<ts>/concept_01.jpg
+    python pipeline/gen_reference_mesh.py design/_scratch/<ts>/concept_00.jpg
     python pipeline/gen_reference_mesh.py https://example.com/chosen.jpg
 """
 
@@ -66,7 +67,9 @@ def main() -> int:
 
     image_url = resolve_image_url(args.image, fal_client)
     stamp = config.utc_stamp()
-    out_dir = config.REFERENCE_MESH_DIR / stamp
+    # Raw output always lands in scratch (gitignored). Promoting a keeper into
+    # design/reference-meshes/ is a manual curation step.
+    out_dir = config.SCRATCH_DIR / stamp
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"Stage 2: {args.model} -> {out_dir}")
@@ -101,6 +104,7 @@ def main() -> int:
 
     print(f"Saved {mesh_name} + manifest.json to:\n  {out_dir}")
     print("  REFERENCE BODY ONLY — proportion/silhouette check, not a part.")
+    print("  (raw scratch — promote into design/reference-meshes/ to commit)")
     return 0
 
 

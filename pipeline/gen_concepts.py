@@ -12,16 +12,18 @@ Nothing here has a dimension.
 The brief (docs/industrial-design-brief.md) is the source of these descriptors
 and is hashed into the manifest for provenance, but its prose, constraints, and
 dimensions are deliberately NOT sent to the model. To steer the look, edit
-BASE_STYLE / VISUAL_DESCRIPTORS below.
+BASE_STYLE / VISUAL_DESCRIPTORS below. The camera view is varied across the N
+images (VIEWS) so the set doesn't read closed — the rear/grille view is always
+included.
 
-Output: design/_scratch/<UTC-timestamp>/ by default (raw, gitignored). Pass
---curated to write straight to design/explorations/<UTC-timestamp>/ (committed).
-A manifest.json records prompt, model slug, seed(s), timestamp, and brief hash.
+Output: ALWAYS design/_scratch/<UTC-timestamp>/ (raw, gitignored). Promoting
+keepers into design/explorations/ is a manual curation step (see
+docs/design-pipeline.md). A manifest.json records per-image prompt/view/seed,
+model slug, timestamp, and brief hash.
 
 Usage:
     python pipeline/gen_concepts.py                 # 4 images -> _scratch
     python pipeline/gen_concepts.py --count 6
-    python pipeline/gen_concepts.py --curated       # -> explorations (keepers)
     python pipeline/gen_concepts.py --seed 12345    # reproducible
 """
 
@@ -30,7 +32,6 @@ import hashlib
 import json
 import sys
 import urllib.request
-from pathlib import Path
 
 import config
 
@@ -40,21 +41,38 @@ import config
 
 BASE_STYLE = (
     "industrial design concept render, studio product photography, neutral "
-    "background, soft even lighting, three-quarter front view"
+    "background, soft even lighting"
 )
 
+# "open-back" is category jargon, not an appearance — so describe the visual
+# signature explicitly AND keep the words "open-back". Positive, concrete
+# description is the lever here; do NOT add a negative prompt (FLUX.1 [dev]
+# doesn't reward negation).
 VISUAL_DESCRIPTORS = (
-    "open-back over-ear headphone, honest engineered maker aesthetic, "
-    "pro-audio sensibility, 3D-print-native form language, "
-    "circular cup with a legible open rear grille pattern, "
-    "visible modular yoke and slider, spring-steel headband arc, "
-    "matte charcoal finish with warm-orange accents, "
-    "calm and considered, looks serviceable and modular, not glossy consumer plastic"
+    "open-back over-ear headphone — the entire rear of each earcup is an open "
+    "metal grille with the driver clearly visible behind it, not a solid shell; "
+    "spoked concentric rear grille: a center hub, two concentric rings, and "
+    "radial spokes (echoing the brand mark); you can see straight through the "
+    "grille to the driver, ventilated and airy; "
+    "honest engineered maker aesthetic, pro-audio sensibility, 3D-print-native "
+    "form language; visible modular yoke and slider, spring-steel headband arc; "
+    "matte charcoal body with a single warm-orange accent and visible, "
+    "serviceable fasteners; calm and considered, not glossy consumer plastic"
 )
 
+# Vary the camera across the N images so the set doesn't read closed. The REAR
+# view is first, so a rear shot showing the open grille is always present (even
+# at --count 1). Views cycle if N exceeds the list.
+VIEWS = [
+    "three-quarter rear view that clearly shows the entire open grille back, "
+    "with the driver visible through the grille",
+    "three-quarter front view",
+    "side profile view",
+]
 
-def build_prompt() -> str:
-    return f"{BASE_STYLE}, {VISUAL_DESCRIPTORS}"
+
+def build_prompt(view: str) -> str:
+    return f"{BASE_STYLE}, {view}, {VISUAL_DESCRIPTORS}"
 
 
 def brief_provenance() -> dict:
@@ -74,71 +92,73 @@ def main() -> int:
     ap.add_argument("--count", type=int, default=config.DEFAULT_IMAGE_COUNT)
     ap.add_argument("--seed", type=int, default=config.DEFAULT_SEED)
     ap.add_argument("--model", default=config.IMAGE_MODEL)
-    ap.add_argument(
-        "--curated",
-        action="store_true",
-        help="write to design/explorations/ (committed) instead of _scratch/",
-    )
     args = ap.parse_args()
 
     config.require_fal_key()
     import fal_client
 
-    prompt = build_prompt()
     provenance = brief_provenance()
     stamp = config.utc_stamp()
-    base = config.EXPLORATIONS_DIR if args.curated else config.SCRATCH_DIR
-    out_dir = base / stamp
+    # Raw bulk runs always land in scratch (gitignored). Promoting keepers into
+    # design/explorations/ is a manual curation step — see docs/design-pipeline.md.
+    out_dir = config.SCRATCH_DIR / stamp
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    arguments = {
-        "prompt": prompt,
-        "image_size": config.DEFAULT_IMAGE_SIZE,
-        "num_images": args.count,
-    }
-    if args.seed is not None:
-        arguments["seed"] = args.seed
-
+    # One call per image so the camera view can vary across the set (a
+    # front-only batch reads closed regardless of wording).
     print(f"Stage 1: {args.model} — {args.count} image(s) -> {out_dir}")
-    try:
-        result = fal_client.subscribe(args.model, arguments=arguments)
-    except Exception as e:  # noqa: BLE001
-        print(f"FAL call FAILED: {type(e).__name__}: {e}", file=sys.stderr)
-        print("  Check key / billing (FAL is pay-per-call) / model slug.", file=sys.stderr)
-        return 1
-
-    images = result.get("images") or []
-    if not images:
-        print(f"No images in result: {result}", file=sys.stderr)
-        return 1
-
     saved = []
-    for i, img in enumerate(images):
-        url = img.get("url")
-        if not url:
-            continue
+    for i in range(args.count):
+        view = VIEWS[i % len(VIEWS)]
+        prompt = build_prompt(view)
+        arguments = {
+            "prompt": prompt,
+            "image_size": config.DEFAULT_IMAGE_SIZE,
+            "num_images": 1,
+        }
+        if args.seed is not None:
+            arguments["seed"] = args.seed + i  # vary so images differ but stay reproducible
+
+        try:
+            result = fal_client.subscribe(args.model, arguments=arguments)
+        except Exception as e:  # noqa: BLE001
+            print(f"FAL call {i} FAILED: {type(e).__name__}: {e}", file=sys.stderr)
+            print("  Check key / billing (FAL is pay-per-call) / model slug.", file=sys.stderr)
+            return 1
+
+        images = result.get("images") or []
+        if not images or not images[0].get("url"):
+            print(f"No image in result {i}: {result}", file=sys.stderr)
+            return 1
+
         fname = f"concept_{i:02d}.jpg"
-        urllib.request.urlretrieve(url, out_dir / fname)
-        saved.append(fname)
+        urllib.request.urlretrieve(images[0]["url"], out_dir / fname)
+        saved.append({
+            "file": fname,
+            "view": view,
+            "prompt": prompt,
+            "requested_seed": (args.seed + i) if args.seed is not None else None,
+            "result_seed": result.get("seed"),
+        })
+        print(f"  [{i}] {fname}  ({view.split(' that')[0].split(' view')[0]} view)")
 
     manifest = {
         "stage": 1,
         "kind": "concept_images",
         "timestamp_utc": stamp,
         "model": args.model,
-        "prompt": prompt,
-        "requested_seed": args.seed,
-        "result_seed": result.get("seed"),
+        "base_style": BASE_STYLE,
+        "visual_descriptors": VISUAL_DESCRIPTORS,
         "image_count": len(saved),
         "images": saved,
         "brief": provenance,
-        "note": "Form/mood exploration only — nothing here has a dimension.",
+        "note": "Form/mood exploration only — nothing here has a dimension. "
+        "Raw scratch run; promote keepers into design/explorations/ to commit.",
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
     print(f"Saved {len(saved)} image(s) + manifest.json to:\n  {out_dir}")
-    if not args.curated:
-        print("  (raw scratch — promote keepers into design/explorations/ to commit)")
+    print("  (raw scratch — promote keepers into design/explorations/ to commit)")
     return 0
 
 

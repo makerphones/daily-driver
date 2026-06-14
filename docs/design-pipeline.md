@@ -38,8 +38,11 @@ language, materials, finish, stance) drawn from the brief, and deliberately
 leaves out constraints, dimensions, and manufacturing notes. Edit that template
 to steer the look.
 
-- Output: `design/explorations/<UTC-timestamp>/` (curated picks) + a
-  `manifest.json` recording the prompt, model slug, seed(s), and timestamp.
+- Output: raw run to `design/_scratch/<UTC-timestamp>/` (gitignored) + a
+  `manifest.json` recording per-image prompt/view/seed, model slug, and
+  timestamp. Promote keepers into `design/explorations/` by hand.
+- The camera view is varied across the N images so the set doesn't read closed;
+  a rear/grille view is always included.
 - These are mood/appearance only. Nothing here has a dimension.
 
 ### Stage 2 — Image → rough 3D reference
@@ -55,8 +58,9 @@ auto-generated mesh often adds little over a good set of multi-angle 2D concepts
 — and it costs a call. Reach for Stage 2 only when 3D proportion is genuinely
 unclear from the 2D, not by default.
 
-- Output: `design/reference-meshes/<UTC-timestamp>/` (GLB/STL) + a `manifest.json`
-  recording the source image, model slug, and timestamp.
+- Output: raw run to `design/_scratch/<UTC-timestamp>/` (GLB/STL, gitignored) +
+  a `manifest.json` recording the source image, model slug, and timestamp.
+  Promote a keeper into `design/reference-meshes/` by hand.
 - The mesh file's header/manifest says, in words: **REFERENCE BODY ONLY, not a
   manufacturable part.**
 
@@ -168,12 +172,15 @@ pip install -r requirements.txt        # includes the FAL client
 # confirm connectivity
 python pipeline/smoke_test.py
 
-# Stage 1 — generate concepts from the brief
-python pipeline/gen_concepts.py        # -> design/explorations/<timestamp>/
+# Stage 1 — generate concepts from the brief (raw -> gitignored _scratch)
+python pipeline/gen_concepts.py        # -> design/_scratch/<timestamp>/
 
-# Stage 2 — turn ONE chosen concept into a reference mesh
+# Curate: copy the keepers into design/explorations/<timestamp>/ by hand, commit
+
+# Stage 2 — turn ONE chosen concept into a reference mesh (raw -> _scratch)
 python pipeline/gen_reference_mesh.py <path-or-url-to-chosen-image>
-                                       # -> design/reference-meshes/<timestamp>/
+                                       # -> design/_scratch/<timestamp>/
+# Curate: copy a keeper into design/reference-meshes/<timestamp>/ by hand, commit
 
 # Stage 3 — engineer it by hand (no command; this is you + CadQuery)
 ```
