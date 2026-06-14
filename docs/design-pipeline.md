@@ -1,6 +1,6 @@
 # Daily Driver — AI-Assisted Design Pipeline
 
-**v0.1 · for the form / industrial-design pass**
+**v0.2 · for the form / industrial-design pass**
 
 This describes how AI assists the Daily Driver's design and, just as importantly,
 **where it stops**. The pipeline generates *options* and *references*. It never
@@ -8,20 +8,82 @@ produces engineered CAD. The headphone you can actually build is authored by han
 in CadQuery, from human decisions — the AI helps you see and choose, it does not
 design the part.
 
+The work moves through three phases — **Diverge → Resolve → Engineer** (next
+section). The FAL image pipeline described later in this doc is the tooling for
+**Diverge** only; **Resolve** happens in chat; **Engineer** is hand-authored
+CadQuery in Claude Code.
+
 ---
 
-## The three stages
+## Workflow: Diverge → Resolve → Engineer
+
+The design moves through three phases. Each has its own surface and its own job;
+the discipline is not doing one phase's work on another's surface.
+
+```
+DIVERGE                          RESOLVE                          ENGINEER
+find the visual direction        develop it into a buildable      author the geometry
+chat + FAL image gen             design — chat + SVG sketches      Claude Code + CadQuery
+(Stage 1; Stage 2 optional)      parts, fit, fasteners,           params.py + parts/*.py
+text → reference images          acoustics, wall, weight          build · verify · commit
+       │                                  │                                │
+  picked concept screenshots ───> resolved design intent ──CC prompt──> verified parts
+       └──────── shared into chat ────────┘
+```
+
+**1 · DIVERGE — find the look, when you don't yet know what it should be.**
+Broad appearance exploration: silhouette, stance, finish, aesthetic. The concept
+discussion happens in chat with Claude; the image generation runs in FAL via
+Claude Code (the pipeline scripts), and results come back as **screenshots shared
+into the chat**. Image-gen is strong at divergent *appearance* and weak at precise
+structure — it could not draw the concentric-ring grille, it kept producing
+turbines. Output: a general visual direction + reference images. This is the
+existing **Stage 1** (concept generation); **Stage 2** (image → rough 3D) is an
+optional sub-tool here, not a required step.
+
+**2 · RESOLVE — develop the chosen direction into a buildable design.**
+*(This layer was missing from the original doc; it's the key addition.)* With the
+direction picked, share the chosen concept screenshots and work the design
+conversationally in chat: the parts, how they fit and fasten, then the
+engineering-taste calls — connector choice, acoustic treatment, wall thickness,
+weight, and the design language carried across parts. Claude sketches schematic
+2D concepts (SVG) and reasons through structure, constraints, acoustics, and
+printability; iterate until resolved. **This is where the acoustic and mechanical
+decisions are made, not just the visual ones** — chat is the only one of the
+three surfaces that can *reason*, so the judgment calls live here. The sketches
+are schematic 2D, not photoreal: for a finished-look gut-check, drop back to a
+render (Diverge's image tool). Output: a resolved design intent, ready to engineer.
+
+**3 · ENGINEER — author the geometry.** In Claude Code: take the resolved design
+intent and author the parametric CadQuery geometry (`params.py` + `parts/*.py`),
+then build, verify, and commit. The CC loop is for engineering and verification —
+**not** for iterating taste one tweak at a time; that belongs in Resolve. This is
+the existing **Stage 3** (engineered geometry).
+
+**Handoffs.** Diverge → Resolve is the picked concept images shared into chat.
+Resolve → Engineer is a precise Claude Code prompt carrying the resolved design
+intent.
+
+---
+
+## The pipeline stages in detail
+
+The numbered **stages** below are the FAL pipeline's tooling — the detail behind
+the phases above, **not a competing model**. Stage 1 (and optional Stage 2) are
+the image tools **Diverge** runs; Stage 3 is **Engineer**. Resolve has no FAL
+stage — it lives in chat (SVG sketches + reasoning), which is exactly why the
+original three-stage pipeline left no room for it.
 
 ```
 Stage 1  CONCEPT / MOOD          Stage 2  IMAGE -> ROUGH 3D         Stage 3  ENGINEERED GEOMETRY
   text -> images (FAL)             image -> mesh (FAL)                 human + CadQuery
-  explores FORM                    reference body ONLY                 real parts, dims, screws
+  Diverge's image tool             Diverge sub-tool (optional)         the Engineer phase
         │                                  │                                   │
   design/explorations/             design/reference-meshes/            params.py + parts/*.py
         │                                  │                                   │
         └────────── pick a concept ───────┘                                    │
                             └──────── eyeball proportion/silhouette ───────────┘
-                                          (then DECIDE the numbers by hand)
+                                          (then RESOLVE in chat, ENGINEER in code)
 ```
 
 ### Stage 1 — Concept / mood generation
@@ -101,7 +163,8 @@ Two different kinds of work, handled two different ways:
 
 **TASTE is human and manual.** Cup depth, vent form, where the screws go,
 proportions, stance, finish. These are judgment calls — you decide them from
-concepts/references **plus real measurements**. Taste is encoded two ways, and
+concepts/references **plus real measurements** (that deciding is the **Resolve**
+phase; **Engineer** only encodes the result). Taste is encoded two ways, and
 both are authored by you, in code: some taste is a **number** (cup depth → a
 value in `params.py`), and some taste is **form** (vent shape, grille pattern,
 cup profile) authored as parametric **geometry in `parts/*.py`** and driven by
@@ -176,16 +239,22 @@ python pipeline/smoke_test.py
 python pipeline/gen_concepts.py        # -> design/_scratch/<timestamp>/
 
 # Curate: copy the keepers into design/explorations/<timestamp>/ by hand, commit
+# This is the DIVERGE phase. (Stage 1 above; Stage 2 below is optional.)
 
 # Stage 2 — turn ONE chosen concept into a reference mesh (raw -> _scratch)
 python pipeline/gen_reference_mesh.py <path-or-url-to-chosen-image>
                                        # -> design/_scratch/<timestamp>/
 # Curate: copy a keeper into design/reference-meshes/<timestamp>/ by hand, commit
 
-# Stage 3 — engineer it by hand (no command; this is you + CadQuery)
+# RESOLVE — no command: share the picked screenshots into chat and work the
+#   design conversationally (SVG sketches + reasoning) until the intent is resolved
+
+# Stage 3 / ENGINEER — author it by hand (no command; this is you + Claude Code + CadQuery)
 ```
 
 ---
 
-*v0.1 · 2026-06-13 · Written as the form pass opens. Update the "how to run"
+*v0.2 · 2026-06-14 · Added the Diverge → Resolve → Engineer workflow and folded
+the three FAL stages under it as tooling detail (Resolve was the missing layer).
+v0.1 · 2026-06-13 · Written as the form pass opens. Update the "how to run"
 section and model slugs as the scripts and FAL's model lineup evolve.*

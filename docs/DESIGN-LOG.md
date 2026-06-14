@@ -6,6 +6,23 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Design-pipeline doc: one workflow (Diverge → Resolve → Engineer)
+
+Captured the refined workflow in `docs/design-pipeline.md` (→ v0.2). Added a
+top-level **Diverge → Resolve → Engineer** section near the start and folded the
+old "three stages" under it as tooling detail, so the doc now has ONE model, not
+two competing ones. **Resolve** was the missing layer: developing a picked
+direction into a buildable design in chat (parts/fit/fasteners + the
+engineering-taste calls — connector, acoustics, wall, weight, cross-part design
+language), via schematic SVG sketches and reasoning, before any geometry. Diverge
+= old Stage 1 (Stage 2 image→3D is an optional sub-tool); Engineer = old Stage 3.
+Handoffs: picked screenshots into chat (Diverge→Resolve), a precise CC prompt
+carrying resolved intent (Resolve→Engineer). The boundary (no render →
+engineered CAD) and taste-vs-convention sections were reconciled to read
+alongside it (taste is decided in Resolve, only encoded in Engineer).
+
+---
+
 ## 2026-06-14 — Real concentric-ring grille authored (replaces placeholder vents)
 
 Authored the real rear grille into the cup, replacing the placeholder slot ring
