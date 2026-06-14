@@ -6,6 +6,16 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Viewer dev-deps split out
+
+Split the live-viewer dependency from the core build deps: `ocp_vscode==2.6.2`
+now lives in a new `requirements-dev.txt` (which pulls in `requirements.txt` via
+`-r`), not in `requirements.txt` — `build.py` doesn't need it. README and a
+`requirements.txt` comment point to it. Confirmed `.vscode/` is gitignored so a
+machine-specific interpreter path never gets committed.
+
+---
+
 ## 2026-06-14 — Stage 3 opened: convention primitives, floating-boss fix, cup+baffle assembly
 
 First real-geometry pass. Foundation + convention only — the grille and the

@@ -30,6 +30,14 @@ python build.py baffle          # just one
 
 STLs and STEPs land in `output/`.
 
+For the live VS Code [OCP CAD Viewer](https://github.com/bernhard-42/vscode-ocp-cad-viewer)
+(`python show.py`), also install the viewer-only deps and point VS Code's Python
+interpreter at this `.venv`:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
 ### Modify it
 
 Open `params.py` — every dimension lives there with a comment. Common changes:

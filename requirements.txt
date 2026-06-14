@@ -1,5 +1,6 @@
-# Daily Driver CAD toolchain
+# Daily Driver CAD toolchain — core deps to BUILD the parts (build.py).
 # Python 3.10-3.12 recommended (CadQuery's OCP wheels track these closely).
+# For the live VS Code OCP CAD Viewer, also: pip install -r requirements-dev.txt
 cadquery>=2.4
 
 # AI-assisted design pipeline (Stages 1-2): official FAL Python client.

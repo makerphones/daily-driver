@@ -1,0 +1,9 @@
+# Viewer / dev-only dependencies — NOT needed to build parts.
+# These power the live VS Code "OCP CAD Viewer" (python show.py). build.py and
+# the part modules do not import them.
+#
+# Installing this file also pulls in the core build deps via the line below, so
+# `pip install -r requirements-dev.txt` gives you core + viewer in one go.
+-r requirements.txt
+
+ocp_vscode==2.6.2
