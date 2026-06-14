@@ -6,6 +6,27 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Pin the VS Code viewer extension to 2.6.x (match the package)
+
+Reconciled the OCP CAD Viewer mismatch the low-risk way: **downgrade the VS Code
+extension to match the Python package**, not the reverse. The package stays
+`ocp_vscode==2.6.2` and the env is untouched (Python 3.9.6 / CadQuery 2.5.2 /
+OCP 7.7.2).
+
+- **Why not bump the package.** `ocp_vscode` 3.4.0 declares `requires_python
+  >=3.10` (confirmed via PyPI); 2.6.2 is `>=3.9`. Bumping to 3.4 would force a
+  Python upgrade off the working 3.9.6 and likely reinstalls of OCP/CadQuery —
+  exactly the disruption to avoid for a viewer convenience.
+- **Action.** Pin the `bernhard-42.ocp-cad-viewer` extension to **2.6.2** (exact
+  match; 2.6.1/2.6.3/2.6.4 also exist on the Marketplace, major.minor 2.6 is what
+  must match). The `code` CLI isn't on PATH, so it's installed manually via the
+  Extensions panel → "Install Specific Version…" → 2.6.2, then disable auto-update
+  for that extension so it can't jump back to 3.4.0.
+- **Unchanged:** ocp_vscode, CadQuery, OCP, Python, and requirements-dev.txt
+  (pin stays 2.6.2).
+
+---
+
 ## 2026-06-14 — Fix show.py for the ocp_vscode 2.6.2 API
 
 `show.py` was written against an older API and crashed with
