@@ -6,6 +6,59 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Renders, in-browser 3D viewer, and a committed CI gate
+
+Three pieces of build infrastructure so the open design is inspectable and
+unprintable parts can't slip through.
+
+**1 · Headless multi-view renders.** New `render.py` parses a binary STL with
+numpy and writes front/iso/side PNGs via matplotlib's Agg backend — no display,
+no GL, no VTK, so it can't reintroduce the OCP-viewer port/version problems.
+`build.py` calls it behind a guarded import (`_HAVE_RENDER`): after each STL
+export it renders, wrapped so a render failure never fails the build, and a
+forker with only the core deps still builds parts (rendering just skips).
+`matplotlib>=3.8` is **render-only** — it lives in `requirements-dev.txt`, not
+`requirements.txt`, keeping the core build pure. Renders land in `renders/`
+(repo root, NOT gitignored — they ship with the design). Sample:
+
+![cup · iso](../renders/cup_iso.png)
+
+**2 · In-browser 3D viewer.** `build.py` now also exports the assembly to
+`docs/models/daily-driver.glb` via CadQuery's glTF exporter
+(`asm.export(..., exportType="GLTF")`). **GLB export worked first try** (valid
+`glTF` binary, ~1.6 MB) — no three.js/STLLoader fallback needed. A branded
+`docs/index.html` build page embeds it with Google `<model-viewer>` (orbit,
+auto-rotate, AR) so anyone can spin the assembly before downloading, from any
+device. The GLB is an **intentional published artifact**, so it's committed
+(unlike the gitignored working STL/STEP); `docs/.nojekyll` serves the GLB + HTML
+statically.
+
+**3 · Printability gate → committed CI linter.** The verification ritual we'd
+been running by hand is now `gate.py`: it builds the printed parts in-process and
+asserts they're printable, exiting non-zero on any HARD failure. Checks are
+unchanged, just enforceable — manifold/single-solid (all 4 parts), wall ≥ floor,
+grille member ≥ 2 mm, grille open area in range (measured 0.397), pivot clearance,
+pivot-insert depth, boss-wall blend, boss-bore wall. Cosmetic/deferred items
+(fillets, guard-setback-vs-lamina) are SOFT — they print but don't fail.
+Confirmed it passes clean (0 hard, 0 soft) AND fails (exit 1) when a check is
+violated. `.github/workflows/gate.yml` runs `build.py` then `gate.py` on push +
+PR (incl. forks) with **core deps only** — no render/viewer extras in CI.
+
+**Decisions (logged, not silently resolved):**
+- *Where the site lives.* This CAD repo has no web site of its own and the Astro
+  manual is a separate repo; `build.py` writes relative paths within this repo.
+  The task's example path (`docs/models/…`) and relative embed `src` both fit
+  **this repo's `docs/` as the GitHub Pages source**. So the GLB + build page
+  live here. **One-time human step:** set the repo's Pages source to
+  *Deploy from branch → `main` → `/docs`* for the viewer to go live.
+- *"The gate" didn't exist as a file* — it was the inline verification I'd run
+  each session. Promoted to `gate.py` without changing any check.
+
+Build stays green (5/5 + assembly + GLB + 12 renders); the only `[warn]`s are the
+two carried-forward cosmetic fillet deferrals.
+
+---
+
 ## 2026-06-14 — Two flagged fits resolved (baffle lamina, pivot clearance)
 
 Cleared the two real fit flags from the engineering pass, both as ESTIMATE param
