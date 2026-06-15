@@ -4,6 +4,9 @@ An open-source **40 mm open-back headphone** you can build yourself, modify, and
 make your own. Parametric CAD — change a driver, a pad, or a head size and the
 model follows. A project of [MakerPhones](https://makerphones.com) / Warren Labs.
 
+> **🧊 Spin it in 3D** — inspect the assembly in your browser before you build:
+> **[live 3D preview →](https://makerphones.github.io/daily-driver/)**
+
 > **Status: early / in active development.** The cup and baffle are first-pass
 > geometry; the headband parts (yoke, slider) are stubs. Nothing has been
 > print-verified yet. Follow along — and fork freely.

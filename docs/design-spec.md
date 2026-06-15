@@ -6,6 +6,9 @@
 spec the CAD is built against, and the reference behind the build guide, the parts list, and the
 measurements.
 
+> **🧊 Spin it in 3D** — inspect the assembly in your browser before you build:
+> **[live 3D preview →](https://makerphones.github.io/daily-driver/)**
+
 > **Every dimension below is a first-pass starting value pending measured parts.** Numbers are
 > here so the geometry has something to build against, not because they're confirmed. They get
 > replaced as real drivers, pads, and the bow are measured with calipers. Where a number depends

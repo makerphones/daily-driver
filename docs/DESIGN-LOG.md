@@ -6,6 +6,24 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-15 — Surface the live 3D preview from the docs
+
+Linked the published viewer (<https://makerphones.github.io/daily-driver/>, the
+`docs/` Pages build page from the prior entry) from the three places people land:
+
+- **README.md** and **docs/design-spec.md** — a blockquote callout near the top
+  ("🧊 Spin it in 3D → live 3D preview"), so GitHub readers can inspect before they
+  build.
+- **The manual's Daily Driver page** (`learn/daily-driver-design-spec.md`, in the
+  separate Astro repo) — a branded HTML callout card (charcoal `#2d3748` / orange
+  `#ea580c` accent) at the top of the page. Verified the Astro build renders it
+  (51 pages built, card + link present in the output HTML); committed in the
+  manual repo, noted here.
+
+No geometry change.
+
+---
+
 ## 2026-06-14 — Renders, in-browser 3D viewer, and a committed CI gate
 
 Three pieces of build infrastructure so the open design is inspectable and
