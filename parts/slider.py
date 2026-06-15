@@ -2,49 +2,68 @@
 # SPDX-License-Identifier: MIT
 
 """
-Slider — wraps the spring-steel arc, adjusts length, carries the yoke pivot.
+Slider — rides the bow, carries the fork (v0.3 engineering pass).
 
-STUB. The friction-clamp spring arm that presses on the steel face, the
-three-sided wrap around the 10 mm x 0.7 mm arc, and the detent-ready boss are
-all open work. The pivot post here must match the yoke bore. Build out in the
-loop once the headband arc radius is settled (an open question in the spec).
+A clamp block with a vertical channel that rides the bow (height adjust), a
+vertical swivel bore at the bottom that mates the fork's swivel hub (the swivel
+joint), and an M3 grub-screw boss on the back that presses a friction pad onto
+the bow to set the height.
+
+Frame: block centred on the origin. The bow channel is on the -Y face (head
+side); the grub boss on the +Y face (back). All dimensions ESTIMATES (params.py).
 """
 
 import cadquery as cq
 from params import P
 
-# Spring-steel arc cross section the slider wraps (from spec)
-ARC_WIDTH = 10.0
-ARC_THICKNESS = 0.7
-
 
 def make_slider() -> cq.Workplane:
-    # Minimal placeholder: a block with a slot sized to the steel arc, plus a
-    # pivot post matching the yoke. Real clamp geometry is TODO.
-    body_l = 30.0
-    body_w = ARC_WIDTH + 6.0
-    body_h = 14.0
+    w = P.slider_block_width      # X (22)
+    d = P.slider_block_depth      # Y (16)
+    h = P.slider_block_height     # Z (26)
 
-    slider = cq.Workplane("XY").box(body_l, body_w, body_h)
+    slider = cq.Workplane("XY").box(w, d, h)
 
-    # channel for the steel arc (slip fit)
-    slot_w = ARC_THICKNESS + P.fit_clearance_slip
-    slider = (
-        slider.faces(">Z").workplane()
-        .rect(body_l, slot_w)
-        .cutBlind(-(ARC_WIDTH))
+    # Vertical bow channel on the -Y face: bow runs vertically (Z) for height
+    # adjust. Width = slider_bow_channel_width (X), depth = channel_depth (Y).
+    ch_w = P.slider_bow_channel_width
+    ch_d = P.slider_bow_channel_depth
+    channel = (
+        cq.Workplane("XY")
+        .workplane(offset=0)
+        .center(0, -d / 2 + ch_d / 2)          # sit against the -Y face
+        .box(ch_w, ch_d + 0.2, h + 2, centered=(True, True, True))
     )
+    slider = slider.cut(channel)
 
-    # pivot post matching the yoke bore
-    slider = (
-        slider.faces("<Y").workplane()
-        .circle(P.pivot_post_diameter / 2)
-        .extrude(P.pivot_post_height)
+    # Swivel bore at the bottom (axis Z) — takes the fork swivel-hub pin.
+    swivel = (
+        cq.Workplane("XY")
+        .workplane(offset=-h / 2 - 1)
+        .circle(P.slider_swivel_bore / 2)
+        .extrude(h * 0.75)                      # up from the bottom, not through
     )
+    slider = slider.cut(swivel)
+
+    # M3 grub-screw boss on the +Y face, set high enough to clear the swivel bore
+    # below. The grub threads in and presses a friction pad onto the bow. Built
+    # with explicit Y-axis cylinders (named-plane normals are easy to get wrong).
+    grub_z = h / 2 - 6.0                         # ESTIMATE: upper third, clears swivel
+    boss_len = 4.0
+    boss = cq.Solid.makeCylinder(
+        3.5, boss_len, cq.Vector(0, d / 2, grub_z), cq.Vector(0, 1, 0)
+    )
+    slider = slider.union(cq.Workplane(obj=boss))
+    grub_len = d / 2 + boss_len + ch_d + 0.5     # through boss + block into channel
+    grub = cq.Solid.makeCylinder(
+        P.slider_grub_hole_diameter / 2, grub_len,
+        cq.Vector(0, d / 2 + boss_len, grub_z), cq.Vector(0, -1, 0)
+    )
+    slider = slider.cut(cq.Workplane(obj=grub))
 
     return slider
 
 
 if __name__ == "__main__":
     cq.exporters.export(make_slider(), "output/slider.stl")
-    print("wrote output/slider.stl  (STUB geometry)")
+    print("wrote output/slider.stl")

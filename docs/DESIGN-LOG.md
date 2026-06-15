@@ -6,6 +6,59 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Engineering pass: CAD reconciled to v0.3, all parts authored
+
+Full engineering pass — the CAD now matches the v0.3 spec and every part has real
+geometry. We are **not** waiting on measured parts: every dimension is an
+ESTIMATE flagged in `params.py` (with `REF` for bought-part references and `TODO`
+for genuine unknowns) so a measured value overwrites cleanly later. Worked part
+by part, building and verifying after each; `python build.py` is green
+(cup/baffle/yoke/slider STL+STEP, bow STEP-only reference, + assembly).
+
+- **params.py** reorganised to the v0.3 stack with an explicit ESTIMATE policy
+  banner. Grille **decoupled** from the bosses (its own `grille_outer_ring_radius`);
+  bolt circle is now explicit (`baffle_bolt_circle_diameter=70`), not a fraction.
+- **Cup.** Bosses moved OFF the grille and BLENDED into the perimeter wall
+  (`baffle_boss_diameter=10` so each reaches the inner wall at the bolt circle and
+  merges). Grille cleaned (hub 16 / rings 24+32 / 8 spokes). Two **pivot bosses**
+  added at 0/180 on the side walls (mid-height), each a through-wall radial boss
+  housing an M3 heat-set insert for the fork shoulder screw. Verified: single
+  connected solid; **measured open fraction 0.398** (target 0.40).
+  - *Deviation flagged:* spec listed `member_w=3`, but at the new ring radii 3.0
+    gives 0.51 open. Tuned to **4.0** to hit the 0.40 target (still ≫ 2 mm floor),
+    per the standing "size member width to the open-area target" rule. Documented
+    in `params.py`, not silently changed.
+- **Baffle.** Front-mount plate (od 77, th 4): back driver recess (42×3), raised
+  front pad lip (od 62, h 3.5), 4 M3 holes counterbored from the front, controlled
+  vent holes. Integral driver guard (6 spokes, 2 mm) across the aperture.
+  - *Conflict flagged (not forced):* recess 3 of a 4 mm plate leaves only a ~1 mm
+    front lamina — the only solid the guard can anchor to — so the requested
+    1.5 mm guard setback can't fit. The guard seats in the lamina and the build
+    **warns**; TODO to deepen the plate or shallow the recess once the driver is
+    measured. The REF dome-proud vs recess-depth also suggests a dome/guard
+    clearance check — flagged in `baffle.py`.
+- **Fork-yoke.** DT880 wishbone: two arms from a top swivel hub (vertical bore,
+  mates the slider) down to two pivot eyes (M3 clearance) at `yoke_pivot_centres`.
+  Arms routed vertically past the cup then angled in — a straight eye→hub bar would
+  pass through the cup. TODO: ±tilt clearance against the real cup pose.
+- **Slider.** Clamp block with a vertical bow channel, a bottom swivel bore
+  (mates the fork hub), and an M3 grub boss pressing a friction pad onto the bow.
+- **Bow (REFERENCE only).** Bought Beyer / DIY 1095 — modelled as a reference
+  body (arc band + relief slot + end-tab holes), STEP only, excluded from the
+  printed-STL set. NOTE: this OCP build's `revolve` fails outright (`BRep_API:
+  command not done`) even on a textbook offset revolve — built the band from
+  **extruded annular sectors** instead. Bow dims are TBD from the measured part.
+- **assembly.py / build.py / show.py.** Assembly now poses the full one-side chain
+  (cup → baffle → yoke → slider → bow ref); the bow pose is representative
+  (full head-size kinematics TBD). build.py splits PRINTED (STL+STEP) from
+  REFERENCE (STEP only). Assembly loads and exports (5 parts).
+
+Carried-forward `[warn]`s unchanged: cup outer-edge comfort fillet (no-op on the
+cylinder) and the yoke junction fillet (OCC declines it) — both best-effort and
+caught, geometry is unaffected.
+
+---
+
 ## 2026-06-14 — Off EOL Python 3.9 → 3.13; stack updated; ocp_vscode matches the extension
 
 Moved the repo's environment off end-of-life Python 3.9 (EOL Oct 2025) to
