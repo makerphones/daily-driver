@@ -68,11 +68,11 @@ def make_baffle() -> cq.Workplane:
     #    peripheral-only guard. NOT resolved here.
     # The only solid aperture wall is the front lamina (z = recess_depth .. t),
     # because the driver recess eats the inner plate below recess_depth. So the
-    # guard must live in that lamina to be supported. With recess_depth (3) of a
-    # baffle_thickness (4) plate, the lamina is only ~1 mm — too thin to honor
-    # the requested guard_setback (1.5). We seat the guard in the lamina and WARN
-    # rather than float it. TODO: to get a true setback, deepen the plate or
-    # shallow the recess once the driver is measured.
+    # guard must live in that lamina to be supported. baffle_thickness=6 with
+    # recess_depth=3 leaves a 3 mm lamina, enough to hold guard_thickness (1.5)
+    # AND the requested guard_setback (1.5). The clamp below stays parametric: if
+    # a measured driver forces a deeper recess and the lamina shrinks, the setback
+    # is held to what fits and the build WARNS rather than floating the guard.
     lamina = t - P.driver_recess_depth
     g_th = min(P.guard_thickness, lamina)
     setback = min(P.guard_setback, lamina - g_th)

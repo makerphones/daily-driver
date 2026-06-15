@@ -97,9 +97,9 @@ def make_yoke() -> cq.Workplane:
     except Exception as e:  # noqa: BLE001
         print(f"  [warn] yoke: junction fillet skipped ({e}).")
 
-    # TODO (tilt clearance): arms sit ~2 mm proud of the cup wall at Y=0; verify
-    # the cup clears the arms through the full ±tilt_range once the real cup pose
-    # is set. Not resolved here — flagged for the measured-fit pass.
+    # TODO (tilt clearance): with yoke_pivot_centres=92 the arms sit ~4 mm proud
+    # of the cup wall at Y=0; verify the cup clears the arms through the full
+    # ±tilt_range on a TEST PRINT. Not resolved here — flagged for the fit pass.
     return yoke
 
 

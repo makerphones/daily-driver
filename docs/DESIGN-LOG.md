@@ -6,6 +6,28 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Two flagged fits resolved (baffle lamina, pivot clearance)
+
+Cleared the two real fit flags from the engineering pass, both as ESTIMATE param
+bumps (still driver-/print-measured later):
+
+- **Baffle guard lamina.** `baffle_thickness` 4 → **6**, so the front lamina
+  (`th − recess_depth`) is now 3 mm — enough to hold the 1.5 mm guard plus the
+  full **1.5 mm guard_setback**. The guard-setback `[warn]` is gone (verified:
+  guard recessed 1.5 below the front face, baffle still one solid). `recess_depth`
+  and `guard_setback` stay parametric; the clamp still warns if a measured driver
+  later forces a deeper recess than the lamina can hold.
+- **Pivot clearance.** `yoke_pivot_centres` 88 → **92**, putting the boss outer
+  face ~4 mm proud of the cup wall (was ~2 mm) — room for boss + insert + fork-arm
+  seat. Cup and yoke both still one solid; eyes and bosses align at r=46. **±20°
+  tilt clearance is left as a TODO to verify on a test print.**
+
+`build.py` green (5/5 + assembly). Left as-is per scope: grille open fraction
+(0.398), the bow extruded-sector workaround (revolve still broken), and the two
+cosmetic best-effort fillet `[warn]`s (cup outer edge, yoke junction).
+
+---
+
 ## 2026-06-14 — Engineering pass: CAD reconciled to v0.3, all parts authored
 
 Full engineering pass — the CAD now matches the v0.3 spec and every part has real

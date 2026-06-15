@@ -63,9 +63,9 @@ class Params:
     # an M3 heat-set bore (radial, outward-facing) for the fork shoulder-screw.
     pivot_boss_count: int = 2             # ESTIMATE  count (0/180)
     pivot_boss_diameter: float = 12.0     # ESTIMATE  external boss OD
-    # TODO: yoke_pivot_centres (88) sits only ~2 mm proud of cup_od (84) per side,
-    # so the boss spans THROUGH the wall (inside lug + outside seat) to fully
-    # house a 6 mm insert. Revisit boss form once the real fork is in hand.
+    # yoke_pivot_centres=92 puts the boss outer face ~4 mm proud of cup_od (84)
+    # per side — room for the boss + insert + fork-arm seat. The boss still spans
+    # THROUGH the wall (inside lug + outside seat) to fully house a 6 mm insert.
     pivot_boss_through_span: float = 9.0  # ESTIMATE  radial length across the wall
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
@@ -76,7 +76,11 @@ class Params:
 
     # ---- Baffle plate (front-mount) -----------------------------------------
     baffle_outer_diameter: float = 77.0   # ESTIMATE  baffle_od (drops into id 78)
-    baffle_thickness: float = 4.0         # ESTIMATE  baffle_th
+    baffle_thickness: float = 6.0         # ESTIMATE  baffle_th — 6 (was 4) leaves a
+                                          #   solid front lamina (th − recess_depth)
+                                          #   for the driver guard to anchor in, so
+                                          #   guard_setback fits. recess_depth and
+                                          #   guard_setback stay driver-measured.
     driver_aperture: float = 35.0         # ESTIMATE  acoustic opening (front-back)
     driver_recess_diameter: float = 42.0  # ESTIMATE  driver_recess_dia (on BACK)
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
@@ -106,7 +110,9 @@ class Params:
     driver_cutout_tolerance: float = 0.3  # ESTIMATE  fit allowance on the recess
 
     # ---- Fork / yoke ---------------------------------------------------------
-    yoke_pivot_centres: float = 88.0      # ESTIMATE  pivot_centres (hole-to-hole)
+    yoke_pivot_centres: float = 92.0      # ESTIMATE  pivot_centres (hole-to-hole);
+                                          #   92 (was 88) for boss + insert + arm room.
+                                          #   TODO: verify ±tilt clearance on a test print.
     yoke_arm_width: float = 8.0           # ESTIMATE  arm_w
     yoke_arm_thickness: float = 5.0       # ESTIMATE  arm_th
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
