@@ -9,3 +9,9 @@
 # Pin must match the installed VS Code extension (bernhard-42.ocp-cad-viewer).
 # Extension and package are both 3.4.0. Needs Python >=3.10.
 ocp_vscode==3.4.0
+
+# Headless multi-view renders (render.py): numpy (already a core/cadquery dep)
+# + matplotlib's Agg backend — no display, no GL, no VTK, so it can't reintroduce
+# the OCP viewer problems. RENDER-ONLY: build.py imports render behind a guard and
+# the gate/CI never need it. NOT in requirements.txt (keeps the core build pure).
+matplotlib>=3.8

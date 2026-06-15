@@ -5,6 +5,12 @@ output/
 *.step
 *.3mf
 
+# Published build artifacts that DO ship in the tree (intentional, not scratch):
+#   renders/*.png        multi-view PNGs (render.py) — shown in the DESIGN-LOG
+#   docs/models/*.glb    the web 3D viewer model (Pages build page)
+# These are .png/.glb so the rules above don't catch them; noted here so a future
+# broad ignore doesn't either. Both regenerate from `python build.py`.
+
 # Python
 __pycache__/
 *.py[cod]
