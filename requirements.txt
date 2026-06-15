@@ -1,7 +1,8 @@
 # Daily Driver CAD toolchain — core deps to BUILD the parts (build.py).
-# Python 3.10-3.12 recommended (CadQuery's OCP wheels track these closely).
+# This repo's env is Python 3.13 (off EOL 3.9). CadQuery's OCP wheels cover
+# 3.10-3.13 on macOS arm64; 3.14 has no OCP wheels yet, so don't go past 3.13.
 # For the live VS Code OCP CAD Viewer, also: pip install -r requirements-dev.txt
-cadquery>=2.4
+cadquery>=2.7,<2.8        # pulls cadquery-ocp 7.8.1.x (arm64 wheels incl. cp313)
 
 # AI-assisted design pipeline (Stages 1-2): official FAL Python client.
 # Package is `fal-client`; import is `fal_client`. Reads FAL_KEY from env.

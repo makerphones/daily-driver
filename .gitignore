@@ -9,6 +9,8 @@ output/
 __pycache__/
 *.py[cod]
 .venv/
+# backup/temp venvs (e.g. .venv-old, .venv-new)
+.venv-*/
 venv/
 env/
 

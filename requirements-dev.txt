@@ -6,4 +6,6 @@
 # `pip install -r requirements-dev.txt` gives you core + viewer in one go.
 -r requirements.txt
 
-ocp_vscode==2.6.2
+# Pin must match the installed VS Code extension (bernhard-42.ocp-cad-viewer).
+# Extension and package are both 3.4.0. Needs Python >=3.10.
+ocp_vscode==3.4.0

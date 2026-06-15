@@ -6,6 +6,38 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Off EOL Python 3.9 → 3.13; stack updated; ocp_vscode matches the extension
+
+Moved the repo's environment off end-of-life Python 3.9 (EOL Oct 2025) to
+**Python 3.13.14**, and updated the CAD stack to match the installed OCP CAD
+Viewer extension (3.4.0) — chosen over downgrading the extension now that we're
+on a current Python.
+
+- **Why 3.13.** Newest Python with prebuilt macOS-arm64 wheels across the whole
+  stack: `cadquery-ocp` ships arm64 wheels for cp310–cp313 (no cp314 yet), so
+  3.13 is the ceiling. `ocp_vscode` 3.4.0 and `cadquery` 2.7.0 both need >=3.10.
+- **Interpreter source.** The Homebrew `python@3.13` bottle was unusable on
+  macOS 26.2 — its `pyexpat` failed to load (`Symbol not found:
+  _XML_SetAllocTrackerActivationThreshold` vs the system libexpat), which breaks
+  pip bootstrap. Switched to the **python.org 3.13.14 universal2 installer**
+  (`/Library/Frameworks/Python.framework/Versions/3.13`), which bundles its own
+  libexpat — `pyexpat`/pip/ssl all clean.
+- **New stack.** Python 3.13.14 · CadQuery **2.7.0** · cadquery-ocp
+  **7.8.1.1.post1** · ocp_vscode **3.4.0** (matches the 3.4.0 extension —
+  resolves the viewer mismatch by upgrading) · fal-client 1.0.0.
+- **Verified.** `build.py` exports all four parts + assembly.step on 3.13 (same
+  pre-existing fillet [warn]s, unchanged). `show.py` now gets past port discovery
+  ("Using port 3939") with no TypeError and no `find_port()` ValueError — the
+  3.4.0 package fixed that; full connect just needs the live panel.
+- **Env swap.** New env built at `.venv-new`, then swapped into `.venv` (the path
+  VS Code points at) with relocated script paths fixed; the old 3.9 env is kept
+  as `.venv-old` (backup, not deleted until confirmed working).
+- **Pins.** `requirements.txt` → `cadquery>=2.7,<2.8`; `requirements-dev.txt` →
+  `ocp_vscode==3.4.0`. Both verified to resolve against the new env with no
+  changes needed.
+
+---
+
 ## 2026-06-14 — Direction locked: DT880-family, around-ear (docs-only pass)
 
 Settled the Daily Driver's direction and rewrote the spec to match — **docs only, no CAD/geometry
