@@ -6,6 +6,44 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-14 — Direction locked: DT880-family, around-ear (docs-only pass)
+
+Settled the Daily Driver's direction and rewrote the spec to match — **docs only, no CAD/geometry
+touched** (no `params.py`, no `parts/*.py`). The form is the **Beyerdynamic DT880 family**:
+spring-steel **bow** → printed **slider** (height + swivel) → printed **fork-yoke** (±20° tilt) →
+printed **cup** → printed **baffle** → driver → pad. Explicitly **not** Grado-minimal (on-ear,
+too small/fiddly) and **not** DCA thin-metal (only makes sense in metal fab, not FDM).
+
+Resolved decisions captured in `design-spec.md` (→ **v0.3**):
+
+- **Headband.** Design the slider/mount to accept the **Beyerdynamic Metal Head Bow as a drop-in**
+  (~$11, sourced); DIY 1095 spring steel to the same geometry stays as the maker option. Exact bow
+  dims are **TBD from the measured part** — slider + jig geometry derive from a real bow on the bench.
+- **Pivot (yoke↔cup).** **Screw-pin** — M3 shoulder screw through the fork arm into a heat-set
+  insert in the cup. **Supersedes** the old "project's own 6 mm pivot post" interface.
+- **Baffle.** **Front-mount** plate (OD ~77, ~4 mm); **integral raised pad lip ⌀62** (pad-lip
+  location now resolved to the baffle, not the cup); **⌀35 aperture with an integral printed driver
+  guard**; **⌀42 driver pocket** on the back; 4 M3 rim screws **counterbored from the front, hidden
+  under the pad**; controlled venting + a damping spot, **not a hard seal**.
+- **Cup.** Shell + integral grille (hub + 2 rings + 8 spokes, ~40% open, members ≥ 2 mm). The 4 M3
+  bosses move to **blended-into-the-perimeter-wall**, clocked off the pivot axis — **supersedes** the
+  free-standing 70%-radius posts, and decouples the grille's outer ring from the boss radius.
+- **Driver.** ~40 mm dynamic, **candidate Peerless HPD-40N16** (not locked — baffle stays
+  parametric), damped with a rear air space. **Pad:** Brainwavz HM5 oval velour ~90 mm.
+- Every dimension flagged as a **first-pass starting value pending measured parts.**
+
+Added three sections to the spec — **Parts table**, **Interfaces** (the 3 joints: cup↔baffle
+front-mount, yoke↔cup screw-pin, yoke↔bow slider), and an updated **BOM** with the bow sourcing
+link. Created **`docs/drawings/`** with schematic SVG sheets (assembly + cup/baffle/yoke/slider/bow),
+each referenced from its spec section; all six render clean. Added a reconciliation banner to
+`industrial-design-brief.md` so its older "Locked" bullets point to the resolved spec.
+
+**Deferred to the next engineering pass (NOT this pass):** clean grille, relocating the cup bosses
+to the perimeter wall, the integral driver guard, and real yoke/slider/bow geometry — the current
+CAD still reflects the older boss placement and stubbed yoke/slider.
+
+---
+
 ## 2026-06-14 — Design-pipeline doc: one workflow (Diverge → Resolve → Engineer)
 
 Captured the refined workflow in `docs/design-pipeline.md` (→ v0.2). Added a

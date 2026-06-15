@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 560" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="720" height="560" fill="#ffffff"/>
+  <style>
+    .lbl{fill:#2d3748;font-size:15px;font-weight:600}
+    .sub{fill:#64748b;font-size:11px}
+    .joint{fill:#ea580c;font-size:11.5px;font-weight:700}
+    .jnote{fill:#475569;font-size:10.5px}
+    .part{fill:#f1f5f9;stroke:#2d3748;stroke-width:1.6}
+    .bought{fill:#fff5ee;stroke:#ea580c;stroke-width:1.6}
+    .axis{stroke:#cbd5e1;stroke-width:1;stroke-dasharray:4 4}
+    .lead{stroke:#ea580c;stroke-width:1}
+  </style>
+
+  <!-- title block -->
+  <text x="36" y="40" fill="#2d3748" font-size="22" font-weight="700">Daily Driver — assembly</text>
+  <text x="36" y="60" class="sub">DT880-family · 7 parts per side · exploded top-of-head → ear · first-pass, not to scale</text>
+  <line x1="36" y1="72" x2="684" y2="72" stroke="#2d3748" stroke-width="1.2"/>
+
+  <!-- centre stack axis -->
+  <line x1="250" y1="100" x2="250" y2="500" class="axis"/>
+
+  <!-- BOW -->
+  <path d="M150 120 q100 -34 200 0" fill="none" stroke="#ea580c" stroke-width="3.4"/>
+  <text x="370" y="118" class="lbl">Spring-steel bow</text>
+  <text x="370" y="134" class="sub">BOUGHT — Beyerdynamic Metal Head Bow (drop-in) · or DIY 1095</text>
+
+  <!-- SLIDER -->
+  <rect x="214" y="156" width="72" height="30" rx="5" class="part"/>
+  <text x="370" y="168" class="lbl">Slider ×2</text>
+  <text x="370" y="184" class="sub">printed — height adjust + swivel; clamps the bow</text>
+
+  <!-- FORK-YOKE -->
+  <path d="M216 214 v-12 h68 v12 M226 214 v22 M274 214 v22" fill="none" stroke="#2d3748" stroke-width="2.2"/>
+  <text x="370" y="214" class="lbl">Fork-yoke ×2</text>
+  <text x="370" y="230" class="sub">printed — straddles cup; ±20° tilt</text>
+
+  <!-- CUP -->
+  <path d="M210 262 h80 v40 a40 18 0 0 1 -80 0 z" class="part"/>
+  <circle cx="250" cy="278" r="6" fill="none" stroke="#ea580c" stroke-width="1.4"/>
+  <circle cx="250" cy="278" r="13" fill="none" stroke="#2d3748" stroke-width="1.1"/>
+  <text x="370" y="270" class="lbl">Cup ×2</text>
+  <text x="370" y="286" class="sub">printed — shell + integral grille; perimeter-wall bosses</text>
+
+  <!-- BAFFLE -->
+  <ellipse cx="250" cy="338" rx="42" ry="13" class="part"/>
+  <ellipse cx="250" cy="338" rx="18" ry="6" fill="none" stroke="#ea580c" stroke-width="1.4"/>
+  <text x="370" y="334" class="lbl">Baffle ×2</text>
+  <text x="370" y="350" class="sub">printed — front-mount; integral pad lip + driver guard</text>
+
+  <!-- DRIVER -->
+  <ellipse cx="250" cy="392" rx="26" ry="9" class="bought"/>
+  <text x="370" y="388" class="lbl">Driver ×2</text>
+  <text x="370" y="404" class="sub">BOUGHT — ~40 mm dynamic, damped, rear air space</text>
+
+  <!-- PAD -->
+  <ellipse cx="250" cy="446" rx="48" ry="15" class="bought"/>
+  <text x="370" y="442" class="lbl">Pad ×2</text>
+  <text x="370" y="458" class="sub">BOUGHT — Brainwavz HM5 oval velour ~90 mm</text>
+
+  <!-- joint callouts (left side) -->
+  <line x1="206" y1="171" x2="120" y2="171" class="lead"/>
+  <text x="36" y="168" class="joint">JOINT 3</text>
+  <text x="36" y="182" class="jnote">yoke↔bow: slider</text>
+
+  <line x1="210" y1="225" x2="120" y2="225" class="lead"/>
+  <text x="36" y="222" class="joint">JOINT 2</text>
+  <text x="36" y="236" class="jnote">yoke↔cup: M3 screw-pin</text>
+
+  <line x1="208" y1="330" x2="120" y2="330" class="lead"/>
+  <text x="36" y="318" class="joint">JOINT 1</text>
+  <text x="36" y="332" class="jnote">cup↔baffle: front-mount,</text>
+  <text x="36" y="346" class="jnote">4× M3 hidden under pad</text>
+
+  <!-- footer -->
+  <line x1="36" y1="516" x2="684" y2="516" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="36" y="536" class="sub">makerphones · Warren Labs — drawings/assembly.svg — schematic, first-pass dims pending measured parts</text>
+</svg>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="720" height="520" fill="#ffffff"/>
+  <style>
+    .sub{fill:#64748b;font-size:11px}
+    .dim{fill:#475569;font-size:11px}
+    .dimline{stroke:#94a3b8;stroke-width:0.9}
+    .note{fill:#ea580c;font-size:11px;font-weight:600}
+    .vt{fill:#2d3748;font-size:13px;font-weight:700}
+    .body{fill:#f1f5f9;stroke:#2d3748}
+    .open{fill:#fff5ee;stroke:#ea580c;font-size:11px}
+    .lead{stroke:#ea580c;stroke-width:1}
+  </style>
+
+  <text x="36" y="40" fill="#2d3748" font-size="22" font-weight="700">Slider — bow clamp</text>
+  <text x="36" y="60" class="sub">printed · rides the bow · height adjust + swivel · first-pass, not to scale</text>
+  <line x1="36" y1="72" x2="684" y2="72" stroke="#2d3748" stroke-width="1.2"/>
+
+  <!-- SECTION across the bow -->
+  <text x="210" y="104" class="vt" text-anchor="middle">section — clamp on bow</text>
+  <g transform="translate(120,180)">
+    <!-- clamp body wrapping bow on 3 sides -->
+    <path d="M0 0 h150 v80 h-150 v-18 h132 v-44 h-132 z" class="body" stroke-width="2"/>
+    <!-- bow ribbon passing through -->
+    <rect x="18" y="18" width="160" height="10" fill="#e2e8f0" stroke="#2d3748" stroke-width="1.4"/>
+    <text x="184" y="26" class="sub">bow (~10 mm wide)</text>
+    <!-- friction spring arm -->
+    <path d="M18 50 q40 -12 120 0" fill="none" stroke="#ea580c" stroke-width="2"/>
+
+    <line x1="0" y1="98" x2="150" y2="98" class="dimline"/>
+    <text x="75" y="112" class="dim" text-anchor="middle">clamp wraps 3 sides</text>
+    <text x="0" y="134" class="note">orange = friction spring arm (presses the steel)</text>
+  </g>
+
+  <!-- height + swivel diagram -->
+  <text x="520" y="104" class="vt" text-anchor="middle">motions</text>
+  <g transform="translate(430,150)">
+    <!-- bow -->
+    <line x1="0" y1="20" x2="200" y2="20" stroke="#2d3748" stroke-width="4"/>
+    <!-- slider block -->
+    <rect x="70" y="6" width="44" height="28" rx="5" class="body" stroke-width="1.8"/>
+    <!-- height arrows -->
+    <line x1="48" y1="20" x2="20" y2="20" stroke="#ea580c" stroke-width="1.4" marker-end="url(#a)"/>
+    <line x1="136" y1="20" x2="164" y2="20" stroke="#ea580c" stroke-width="1.4" marker-end="url(#a)"/>
+    <text x="92" y="0" class="note" text-anchor="middle">height ←→</text>
+    <!-- swivel -->
+    <circle cx="92" cy="78" r="26" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+    <path d="M70 70 A26 26 0 0 1 114 70" fill="none" stroke="#ea580c" stroke-width="1.6" marker-end="url(#a)"/>
+    <line x1="92" y1="34" x2="92" y2="78" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 3"/>
+    <text x="92" y="120" class="note" text-anchor="middle">swivel ↻ (cup to head)</text>
+    <defs>
+      <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0 0 L6 3 L0 6 z" fill="#ea580c"/>
+      </marker>
+    </defs>
+  </g>
+
+  <!-- OPEN decision box -->
+  <rect x="430" y="300" width="240" height="92" rx="6" fill="#fff7ef" stroke="#ea580c" stroke-width="1.2"/>
+  <text x="446" y="322" class="note">OPEN — adjustment mechanism</text>
+  <text x="446" y="342" class="sub">• friction (printed spring arm), or</text>
+  <text x="446" y="358" class="sub">• detent (punched holes in the bow), or</text>
+  <text x="446" y="374" class="sub">• reuse Beyer's metal wiper</text>
+
+  <text x="120" y="352" class="sub">carries the fork-yoke below</text>
+
+  <line x1="36" y1="476" x2="684" y2="476" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="36" y="496" class="sub">makerphones · Warren Labs — drawings/slider.svg — geometry derives from the measured bow</text>
+</svg>

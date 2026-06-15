@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="720" height="520" fill="#ffffff"/>
+  <style>
+    .sub{fill:#64748b;font-size:11px}
+    .dim{fill:#475569;font-size:11px}
+    .dimline{stroke:#94a3b8;stroke-width:0.9}
+    .note{fill:#ea580c;font-size:11px;font-weight:600}
+    .vt{fill:#2d3748;font-size:13px;font-weight:700}
+    .body{fill:#f1f5f9;stroke:#2d3748}
+    .lead{stroke:#ea580c;stroke-width:1}
+  </style>
+
+  <text x="36" y="40" fill="#2d3748" font-size="22" font-weight="700">Baffle — front-mount plate</text>
+  <text x="36" y="60" class="sub">printed flat · integral pad lip + driver guard · ~4 mm thick · first-pass, not to scale</text>
+  <line x1="36" y1="72" x2="684" y2="72" stroke="#2d3748" stroke-width="1.2"/>
+
+  <!-- FRONT VIEW -->
+  <text x="205" y="104" class="vt" text-anchor="middle">front view</text>
+  <g transform="translate(205,250)">
+    <circle r="115" fill="#f8fafc" stroke="#2d3748" stroke-width="2"/>           <!-- OD ~77 -->
+    <circle r="92" fill="none" stroke="#ea580c" stroke-width="3"/>               <!-- pad lip 62 -->
+    <circle r="52" fill="#ffffff" stroke="#2d3748" stroke-width="1.4"/>          <!-- aperture 35 -->
+    <!-- driver guard: thin spokes across aperture -->
+    <g stroke="#2d3748" stroke-width="2">
+      <line x1="-52" y1="0" x2="52" y2="0"/><line x1="0" y1="-52" x2="0" y2="52"/>
+      <line x1="-37" y1="-37" x2="37" y2="37"/><line x1="-37" y1="37" x2="37" y2="-37"/>
+      <circle r="14" fill="none"/>
+    </g>
+    <!-- 4 rim screw counterbores -->
+    <g fill="#fff5ee" stroke="#ea580c" stroke-width="1.6">
+      <circle cx="74" cy="-74" r="8"/><circle cx="-74" cy="-74" r="8"/>
+      <circle cx="74" cy="74" r="8"/><circle cx="-74" cy="74" r="8"/>
+    </g>
+  </g>
+  <line x1="280" y1="176" x2="345" y2="150" class="lead"/>
+  <text x="349" y="148" class="note">4× M3 rim screws</text>
+  <text x="349" y="162" class="sub">counterbored from front,</text>
+  <text x="349" y="176" class="sub">hidden under the pad</text>
+  <line x1="245" y1="210" x2="345" y2="206" class="lead"/>
+  <text x="349" y="204" class="note">⌀35 aperture + guard</text>
+  <line x1="297" y1="250" x2="345" y2="250" class="lead"/>
+  <text x="349" y="248" class="note">raised pad lip ⌀62</text>
+  <text x="205" y="390" class="sub" text-anchor="middle">OD ~77 · drops into cup front (ID 78)</text>
+
+  <!-- SECTION -->
+  <text x="540" y="104" class="vt" text-anchor="middle">section</text>
+  <g transform="translate(440,200)">
+    <!-- plate body ~4mm thick -->
+    <rect x="0" y="40" width="200" height="22" class="body" stroke-width="2"/>
+    <!-- raised pad lip (front = up) -->
+    <rect x="36" y="20" width="14" height="20" fill="#fff5ee" stroke="#ea580c" stroke-width="1.4"/>
+    <rect x="150" y="20" width="14" height="20" fill="#fff5ee" stroke="#ea580c" stroke-width="1.4"/>
+    <!-- driver pocket on back (down) -->
+    <rect x="62" y="62" width="76" height="14" fill="#e2e8f0" stroke="#2d3748" stroke-width="1"/>
+    <!-- aperture gap -->
+    <rect x="86" y="40" width="28" height="22" fill="#ffffff" stroke="#2d3748" stroke-width="1"/>
+
+    <text x="-10" y="34" class="dim" text-anchor="end">front</text>
+    <text x="-10" y="74" class="dim" text-anchor="end">back</text>
+
+    <line x1="210" y1="40" x2="210" y2="62" class="dimline"/>
+    <text x="216" y="56" class="dim">~4 thick</text>
+    <line x1="62" y1="86" x2="138" y2="86" class="dimline"/>
+    <text x="100" y="98" class="dim" text-anchor="middle">driver pocket ⌀42 (back)</text>
+    <line x1="36" y1="14" x2="164" y2="14" class="dimline"/>
+    <text x="100" y="10" class="dim" text-anchor="middle">pad lip ⌀62 (front)</text>
+  </g>
+  <text x="540" y="320" class="note" text-anchor="middle">controlled venting + damping spot — not a hard seal</text>
+
+  <line x1="36" y1="476" x2="684" y2="476" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="36" y="496" class="sub">makerphones · Warren Labs — drawings/baffle.svg — schematic, first-pass dims pending the measured driver</text>
+</svg>

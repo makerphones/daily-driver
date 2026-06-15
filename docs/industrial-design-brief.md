@@ -2,6 +2,15 @@
 
 **v0.1 · for the form / industrial-design pass**
 
+> **Direction resolved (2026-06-14).** This brief drove the form pass; the pass is now done. The
+> chosen direction is **DT880-family, around-ear** (spring-steel bow + fork-yoke + sliders) — see
+> `design-spec.md` (v0.3) for the resolved decisions. A few "Locked" bullets below are
+> **superseded** by that spec: the *6 mm pivot post* is now an **M3 screw-pin** (yoke↔cup), the
+> baffle is **front-mount** with the **pad lip and driver guard integral to the baffle**, the cup
+> bosses are **blended into the perimeter wall**, and the headband is a **Beyerdynamic Metal Head
+> Bow drop-in** (DIY 1095 optional). Read this brief as the form input; read `design-spec.md` as
+> the current source of truth.
+
 This is the brief for the *form* of the Daily Driver — what it looks like and feels like.
 It exists because the functional skeleton (parametric CAD, build pipeline) is proven, and the
 form is the next pass. Output of this pass is 3–5 form directions to choose from; the chosen

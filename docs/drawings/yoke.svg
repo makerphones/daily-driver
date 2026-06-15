@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="720" height="520" fill="#ffffff"/>
+  <style>
+    .sub{fill:#64748b;font-size:11px}
+    .dim{fill:#475569;font-size:11px}
+    .dimline{stroke:#94a3b8;stroke-width:0.9}
+    .note{fill:#ea580c;font-size:11px;font-weight:600}
+    .vt{fill:#2d3748;font-size:13px;font-weight:700}
+    .body{fill:#f1f5f9;stroke:#2d3748}
+    .cup{fill:#eef2f6;stroke:#94a3b8}
+    .lead{stroke:#ea580c;stroke-width:1}
+  </style>
+
+  <text x="36" y="40" fill="#2d3748" font-size="22" font-weight="700">Fork-yoke — DT880-style</text>
+  <text x="36" y="60" class="sub">printed · mirror L/R · straddles the cup · ±20° tilt · first-pass, not to scale</text>
+  <line x1="36" y1="72" x2="684" y2="72" stroke="#2d3748" stroke-width="1.2"/>
+
+  <!-- FRONT: fork straddling cup -->
+  <text x="220" y="104" class="vt" text-anchor="middle">front — fork straddles cup</text>
+  <g transform="translate(220,260)">
+    <!-- cup (ghost) -->
+    <circle r="95" class="cup" stroke-width="1.4"/>
+    <!-- fork: U-shape over the cup -->
+    <path d="M-118 -30 v90 a14 14 0 0 0 14 14 h18 v-30 h-2 v28 h-14 a8 8 0 0 1 -8 -8 v-84 z" class="body" stroke-width="2"/>
+    <path d="M118 -30 v90 a14 14 0 0 1 -14 14 h-18 v-30 h2 v28 h14 a8 8 0 0 0 8 -8 v-84 z" class="body" stroke-width="2"/>
+    <!-- top bridge to slider -->
+    <rect x="-26" y="-58" width="52" height="22" rx="5" class="body" stroke-width="2"/>
+    <line x1="-118" y1="-30" x2="-26" y2="-40" class="body" stroke-width="2"/>
+    <line x1="118" y1="-30" x2="26" y2="-40" class="body" stroke-width="2"/>
+    <!-- pivot screws at the arms -->
+    <circle cx="-90" cy="40" r="7" fill="#fff5ee" stroke="#ea580c" stroke-width="1.8"/>
+    <circle cx="90" cy="40" r="7" fill="#fff5ee" stroke="#ea580c" stroke-width="1.8"/>
+    <circle cx="-90" cy="40" r="2" fill="#ea580c"/>
+    <circle cx="90" cy="40" r="2" fill="#ea580c"/>
+  </g>
+  <line x1="130" y1="300" x2="70" y2="330" class="lead"/>
+  <text x="36" y="346" class="note">screw-pin pivot</text>
+  <text x="36" y="360" class="sub">M3 shoulder screw →</text>
+  <text x="36" y="374" class="sub">heat-set insert in cup</text>
+  <line x1="220" y1="202" x2="300" y2="160" class="lead"/>
+  <text x="304" y="158" class="note">bridge → slider</text>
+  <text x="304" y="172" class="sub">(swivel + height above)</text>
+
+  <!-- SIDE: tilt -->
+  <text x="540" y="104" class="vt" text-anchor="middle">side — ±20° tilt</text>
+  <g transform="translate(540,270)">
+    <circle r="70" class="cup" stroke-width="1.4"/>
+    <circle r="6" fill="#ea580c"/>
+    <!-- arm at neutral -->
+    <line x1="0" y1="0" x2="0" y2="-92" stroke="#2d3748" stroke-width="6" stroke-linecap="round"/>
+    <!-- tilt range -->
+    <line x1="0" y1="0" x2="-31" y2="-87" stroke="#ea580c" stroke-width="2" stroke-dasharray="4 3"/>
+    <line x1="0" y1="0" x2="31" y2="-87" stroke="#ea580c" stroke-width="2" stroke-dasharray="4 3"/>
+    <path d="M-31 -87 A92 92 0 0 1 31 -87" fill="none" stroke="#ea580c" stroke-width="1.2"/>
+    <text x="0" y="-104" class="note" text-anchor="middle">±20°</text>
+    <text x="0" y="40" class="sub" text-anchor="middle">cable hard-stops in geometry</text>
+  </g>
+
+  <line x1="36" y1="476" x2="684" y2="476" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="36" y="496" class="sub">makerphones · Warren Labs — drawings/yoke.svg — CAD stub; real geometry in the engineering pass</text>
+</svg>

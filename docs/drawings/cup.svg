@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" font-family="'Helvetica Neue',Arial,sans-serif">
+  <rect width="720" height="520" fill="#ffffff"/>
+  <style>
+    .sub{fill:#64748b;font-size:11px}
+    .dim{fill:#475569;font-size:11px}
+    .dimline{stroke:#94a3b8;stroke-width:0.9}
+    .note{fill:#ea580c;font-size:11px;font-weight:600}
+    .vt{fill:#2d3748;font-size:13px;font-weight:700}
+    .steel{fill:#f1f5f9;stroke:#2d3748}
+    .lead{stroke:#ea580c;stroke-width:1}
+  </style>
+
+  <text x="36" y="40" fill="#2d3748" font-size="22" font-weight="700">Cup — shell + integral grille</text>
+  <text x="36" y="60" class="sub">printed · symmetric L/R · grille flat-down, no supports · first-pass, not to scale</text>
+  <line x1="36" y1="72" x2="684" y2="72" stroke="#2d3748" stroke-width="1.2"/>
+
+  <!-- REAR VIEW (grille) -->
+  <text x="200" y="104" class="vt" text-anchor="middle">rear view — grille</text>
+  <g transform="translate(200,250)">
+    <!-- OD + wall -->
+    <circle r="120" fill="#f8fafc" stroke="#2d3748" stroke-width="2"/>
+    <circle r="111" fill="#ffffff" stroke="#2d3748" stroke-width="1"/>
+    <!-- outer ring -->
+    <circle r="78" fill="none" stroke="#2d3748" stroke-width="9"/>
+    <!-- inner ring -->
+    <circle r="43" fill="none" stroke="#2d3748" stroke-width="9"/>
+    <!-- hub -->
+    <circle r="17" fill="#2d3748"/>
+    <!-- 8 spokes -->
+    <g stroke="#2d3748" stroke-width="9">
+      <line x1="0" y1="0" x2="0" y2="-86"/><line x1="0" y1="0" x2="0" y2="86"/>
+      <line x1="0" y1="0" x2="86" y2="0"/><line x1="0" y1="0" x2="-86" y2="0"/>
+      <line x1="0" y1="0" x2="61" y2="-61"/><line x1="0" y1="0" x2="-61" y2="61"/>
+      <line x1="0" y1="0" x2="61" y2="61"/><line x1="0" y1="0" x2="-61" y2="-61"/>
+    </g>
+    <!-- 4 perimeter-wall bosses (clocked off pivot axis: at 0/90/180/270... shown at diagonals) -->
+    <g>
+      <circle cx="74" cy="-74" r="8" fill="#fff5ee" stroke="#ea580c" stroke-width="1.6"/>
+      <circle cx="-74" cy="-74" r="8" fill="#fff5ee" stroke="#ea580c" stroke-width="1.6"/>
+      <circle cx="74" cy="74" r="8" fill="#fff5ee" stroke="#ea580c" stroke-width="1.6"/>
+      <circle cx="-74" cy="74" r="8" fill="#fff5ee" stroke="#ea580c" stroke-width="1.6"/>
+    </g>
+    <!-- pivot axis -->
+    <line x1="-120" y1="0" x2="120" y2="0" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 4"/>
+  </g>
+  <text x="200" y="408" class="sub" text-anchor="middle">hub + 2 rings + 8 spokes · ~40% open · members ≥ 2 mm</text>
+  <line x1="296" y1="176" x2="324" y2="152" class="lead"/>
+  <text x="328" y="150" class="note">M3 bosses — blended into</text>
+  <text x="328" y="164" class="sub">the perimeter wall, clocked</text>
+  <text x="328" y="178" class="sub">off the pivot axis</text>
+
+  <!-- SECTION VIEW -->
+  <text x="540" y="104" class="vt" text-anchor="middle">section</text>
+  <g transform="translate(450,150)">
+    <!-- cup section: open front (top), closed grille back (bottom) -->
+    <path d="M0 0 h180 v150 h-12 v-138 h-156 v138 h-12 z" class="steel" stroke-width="2"/>
+    <!-- closed back wall with grille (hatched-ish bar) -->
+    <rect x="12" y="138" width="156" height="12" fill="#e2e8f0" stroke="#2d3748" stroke-width="1"/>
+    <!-- perimeter-wall boss (front-facing top) -->
+    <rect x="0" y="0" width="12" height="20" fill="#fff5ee" stroke="#ea580c" stroke-width="1.4"/>
+    <rect x="168" y="0" width="12" height="20" fill="#fff5ee" stroke="#ea580c" stroke-width="1.4"/>
+    <text x="90" y="-8" class="note" text-anchor="middle">insert boss in wall ↑</text>
+
+    <!-- dims -->
+    <line x1="0" y1="172" x2="180" y2="172" class="dimline"/>
+    <line x1="0" y1="166" x2="0" y2="178" class="dimline"/>
+    <line x1="180" y1="166" x2="180" y2="178" class="dimline"/>
+    <text x="90" y="188" class="dim" text-anchor="middle">OD ~84</text>
+
+    <line x1="12" y1="158" x2="168" y2="158" class="dimline"/>
+    <text x="90" y="170" class="dim" text-anchor="middle">ID 78</text>
+
+    <line x1="-22" y1="0" x2="-22" y2="150" class="dimline"/>
+    <line x1="-28" y1="0" x2="-16" y2="0" class="dimline"/>
+    <line x1="-28" y1="150" x2="-16" y2="150" class="dimline"/>
+    <text x="-30" y="78" class="dim" text-anchor="end">depth 30</text>
+
+    <text x="200" y="100" class="dim">← wall 3</text>
+    <text x="90" y="210" class="note" text-anchor="middle">grille = closed back wall</text>
+  </g>
+
+  <line x1="36" y1="476" x2="684" y2="476" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="36" y="496" class="sub">makerphones · Warren Labs — drawings/cup.svg — engineering pass moves bosses to the wall + cleans grille</text>
+</svg>
