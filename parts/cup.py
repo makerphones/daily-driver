@@ -90,6 +90,12 @@ def make_cup() -> cq.Workplane:
         ring_specs = [(r_lo + (r_out - r_lo) * k / (n - 1),
                        P.grille_outer_ring_width if k == n - 1 else P.grille_inner_ring_width)
                       for k in range(n)]
+    # Fine support-lattice rings distributed across the open zone — braces the
+    # spokes so no thin member spans far enough to be poked in.
+    n_lat = P.grille_lattice_ring_count
+    for k in range(1, n_lat + 1):
+        rr = hub_r + (r_out - hub_r) * k / (n_lat + 1)
+        ring_specs.append((rr, P.grille_lattice_member_width))
     zone_r = r_out + P.grille_outer_ring_width / 2  # outer edge of the outer ring = zone
 
     z0 = -1.0

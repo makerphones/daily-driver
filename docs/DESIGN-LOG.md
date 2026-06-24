@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Grille support lattice (stable, not brittle)
+
+The thin logo-grille spokes were weak/pokeable. Added a **fine concentric support
+lattice** so no thin member has a long unsupported span — explicitly trading some
+openness for stability (the build's "stable not brittle" requirement). Build 6/6,
+gate PASS.
+
+- 3 fine support rings (`grille_lattice_ring_count=3`, width 2.0) distributed
+  across the open zone, braced by **more, thicker spokes** (`grille_spoke_count`
+  6→10, `grille_spoke_width` 2.0→2.5). The bold hero rings + dot still read as the
+  makerphones mark on top of the finer mesh.
+- **Open area 0.486 → 0.313** — still inside the gate band and open-back, but
+  deliberately denser. This is the human's call ("goes against the open
+  requirement … needs to be stable too"); the 0.30 floor still holds with margin.
+  If we want it denser still, lower `OPEN_MIN` (logged) rather than under-support.
+- Thinnest member now 2.5 mm (≥ 2 mm floor); cup stays one solid.
+
+---
+
 ## 2026-06-24 — Form pass: tapered wishbone yoke
 
 Styled the fork-yoke from constant-width bars into a **tapered wishbone**: full

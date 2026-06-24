@@ -55,10 +55,17 @@ class Params:
     grille_outer_ring_radius: float = 30.0  # ESTIMATE  outer ring (rim left for the chamfered back)
     grille_outer_ring_width: float = 6.0  # ESTIMATE  outer ring weight (the heavier ring)
     grille_inner_ring_width: float = 3.0  # ESTIMATE  inner ring weight (~½ outer, per the mark)
-    grille_spoke_count: int = 6           # ESTIMATE  structural spokes (the mark has none)
-    grille_spoke_width: float = 2.0       # ESTIMATE  thin spokes — rings/dot read, not spokes
+    grille_spoke_count: int = 10          # ESTIMATE  structural spokes (the mark has none)
+    grille_spoke_width: float = 2.5       # ESTIMATE  spokes — thickened for poke resistance
     grille_member_min_width: float = 2.0  # HARD FLOOR — FDM printability minimum
     grille_target_open_fraction: float = 0.40  # ESTIMATE  target_open (~40%)
+    # Supporting lattice — fine concentric rings braced across the spokes so no thin
+    # member has a long, pokeable span (stability > maximum openness, per the build's
+    # "stable not brittle" requirement). At the 2 mm print floor. The bold hero rings
+    # + dot still read as the mark on top of the finer support mesh.
+    grille_lattice_ring_count: int = 3    # ESTIMATE  fine support rings in the open zones
+    grille_lattice_member_width: float = 2.0  # ESTIMATE  lattice member width (= floor)
+    grille_open_min: float = 0.30         # gate band lower bound (see gate.py OPEN_MIN)
 
     # ---- Baffle-mounting bosses in the cup (wall-blended) --------------------
     # Four heat-set bosses on the diagonals (45/135/225/315), blended into the
