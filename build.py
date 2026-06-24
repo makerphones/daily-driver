@@ -32,6 +32,7 @@ from parts.slider import make_slider
 from parts.bow import make_bow
 from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
+from parts.grille_dot import make_grille_dot
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
 # on it: no matplotlib → rendering simply skips, parts still build.
@@ -53,6 +54,7 @@ PRINTED = {
 ACCESSORY = {
     "adapter_ring": make_adapter_ring,
     "headband_pad": make_headband_pad,
+    "grille_dot": make_grille_dot,
 }
 # Reference bodies → STEP only (NOT printed).
 REFERENCE = {

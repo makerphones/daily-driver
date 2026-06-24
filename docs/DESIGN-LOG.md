@@ -6,6 +6,20 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Orange accent dot + headband pad retention
+
+- **Orange accent dot** (`parts/grille_dot.py`): the makerphones mark's dot is its
+  only accent, so the grille center gets a separate warm-orange cap (press-in;
+  single-extruder builds can't print two-tone in one part — modular + on-brand).
+  Seats on the grille hub, stands `grille_dot_proud=1.5` mm proud of the grille
+  face. Placed + coloured in the assembly (next).
+- **Headband pad retention**: the pad was a floating band. Cut a retention channel
+  (`headband_pad_channel_depth=3`) into its bow-facing face — the bow nests in and
+  the pad's ~4 mm side rails grip its edges (rough press/snap fit; exact retention
+  TBD). Build 8/8, gate PASS (both new parts manifold).
+
+---
+
 ## 2026-06-24 — Form polish: smoother yoke + clearer baffle pad lip
 
 Two refinements from the live-model review. Build 7/7, gate PASS.

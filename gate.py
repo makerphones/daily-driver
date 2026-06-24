@@ -33,6 +33,7 @@ from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
+from parts.grille_dot import make_grille_dot
 from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
 # ---- Thresholds (named + transparent; not new checks, just the limits) -------
@@ -183,8 +184,10 @@ def main():
     slider = make_slider()
     adapter = make_adapter_ring()
     headband_pad = make_headband_pad()
+    grille_dot = make_grille_dot()
     parts = {"cup": cup, "baffle": baffle, "yoke": yoke, "slider": slider,
-             "adapter_ring": adapter, "headband_pad": headband_pad}
+             "adapter_ring": adapter, "headband_pad": headband_pad,
+             "grille_dot": grille_dot}
 
     r = Report()
 

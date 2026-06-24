@@ -66,6 +66,11 @@ class Params:
     grille_lattice_ring_count: int = 3    # ESTIMATE  fine support rings in the open zones
     grille_lattice_member_width: float = 2.0  # ESTIMATE  lattice member width (= floor)
     grille_open_min: float = 0.30         # gate band lower bound (see gate.py OPEN_MIN)
+    # Orange ACCENT dot — a press-in cap at the grille center (the mark's only
+    # accent, printed in the warm orange). Seats on the grille hub, stands proud
+    # on the outboard face.
+    grille_dot_diameter: float = 9.0      # ESTIMATE  accent dot (<= hub dia, seats on it)
+    grille_dot_proud: float = 1.5         # ESTIMATE  stands proud of the grille face
 
     # ---- Baffle-mounting bosses in the cup (wall-blended) --------------------
     # Four heat-set bosses on the diagonals (45/135/225/315), blended into the
@@ -227,6 +232,7 @@ class Params:
     headband_pad_arc_degrees: float = 80.0   # ESTIMATE  contact arc at the crown
     headband_pad_thickness: float = 8.0      # ESTIMATE  cushion depth (radial)
     headband_pad_width: float = 26.0         # ESTIMATE  wider than the bow, for comfort
+    headband_pad_channel_depth: float = 3.0  # ESTIMATE  bow nests this deep; side rails grip it
 
     # ---- Mechanical primitives (convention; see parts/features.py) ----------
     boss_base_fillet: float = 1.0         # fillet tying a boss to its host (print)

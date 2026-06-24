@@ -34,13 +34,29 @@ def make_headband_pad() -> cq.Workplane:
 
     Ao, Mo, Bo = p(ro, a0), p(ro, am), p(ro, a1)
     Bi, Mi, Ai = p(ri, a1), p(ri, am), p(ri, a0)
-    return (
+    pad = (
         cq.Workplane("XZ")
         .moveTo(*Ao).threePointArc(Mo, Bo)
         .lineTo(*Bi).threePointArc(Mi, Ai)
         .close()
         .extrude(P.headband_pad_width / 2, both=True)
     )
+
+    # Retention channel: the bow nests into the pad's outer (bow-facing) face so
+    # the pad's side rails grip the bow edges — a rough press/snap fit (TBD). Cut a
+    # narrower arc band (bow width + clearance, along Y) out of the outer radius.
+    ch_w = P.bow_width + 1.5
+    co, ci = ro + 1.0, ro - P.headband_pad_channel_depth
+    Co, CMo, CBo = p(co, a0), p(co, am), p(co, a1)
+    CBi, CMi, CAi = p(ci, a1), p(ci, am), p(ci, a0)
+    channel = (
+        cq.Workplane("XZ")
+        .moveTo(*Co).threePointArc(CMo, CBo)
+        .lineTo(*CBi).threePointArc(CMi, CAi)
+        .close()
+        .extrude(ch_w / 2, both=True)
+    )
+    return pad.cut(channel)
 
 
 if __name__ == "__main__":
