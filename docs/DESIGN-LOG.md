@@ -6,6 +6,33 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Head orientation + kinematics rework (resolves the deferred item)
+
+The assembly now poses like a **worn headphone** — cups vertical with pads facing
+inward, yokes arching up, bow over the crown — instead of the cups lying face-up.
+Assembly-only (no part geometry changed); build 8/8, gate PASS.
+
+- **Root cause (from the earlier flag):** the cup and yoke are co-designed with
+  the pad axis colinear with the yoke arch (both cup-local +Z), so any rigid pose
+  put the pad and the headband in the same direction. Fix = mount them at the
+  correct **90° relative clocking** in `make_assembly`:
+  - `T_cup`: cup +Z (pad) → −X (inward), cup ±X (pivot bosses) → ±Y (front-back),
+    cup +Y → +Z (up); pivot centre → (Xe, 0, 0).
+  - `T_yoke`: a −90° clock about Z so the eyes go to ±Y (mating the bosses) while
+    the arch stays +Z (up); pivot centre → (Xe, 0, 0).
+  Verified the bosses and eyes coincide at (Xe, ±~46, 0). Left ear = mirror across
+  x=0. Confirmed by render: pads inward, yokes up, bow over the top.
+- **Head spacing** ties to the bow: `Xe = bow_radius·cos(end_a)` so the bow ends
+  land on the two sliders. The bow is oversized/REF, so the spacing is wide and
+  still representative — tighten once the real bow is measured.
+- **FLAGGED follow-up:** the over-rotation stop pin/slot are still clocked for the
+  old pad-up rest, so they read ~90° off in the assembly view (cosmetic — the gate
+  verifies the stop at the part level). Re-clock them to this rest pose next.
+- The published GLB carries the new pose, so the manual's 3D viewer shows the worn
+  orientation on next load (cross-origin, nothing to re-sync).
+
+---
+
 ## 2026-06-24 — Sub-assembly manifest for the manual's parts viewer
 
 Groundwork for an interactive per-part / sub-assembly / explode viewer on the

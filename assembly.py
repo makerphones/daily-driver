@@ -48,12 +48,24 @@ SUBASSEMBLIES = {
 
 
 def make_assembly() -> cq.Assembly:
-    """Both ears + the shared headband — a full-headphone preview.
+    """Both ears + the shared headband, posed like a WORN headphone.
 
-    The RIGHT ear is the real kinematic chain at the origin; the LEFT ear is its
-    mirror across the bow's apex plane (x = -ex). The bow and the crown pad are
-    single shared parts. Bow pose + head-size kinematics stay representative
-    (ESTIMATE, see params/bow).
+    Head frame (global): X = inter-ear (right ear at +Xe, pad facing −X inward),
+    Z = up (bow over the crown), Y = front-back (the tilt-pivot axis). The cup and
+    yoke are co-designed with pad ∥ arch (both +Z), which is why earlier the cup sat
+    "face-up". Here they're mounted at the correct 90° relative clocking:
+      • cup-group  T_cup : pad (cup +Z) → −X (inward), pivot (cup ±X) → ±Y,
+                           up (cup +Y) → +Z;  pivot centre → (Xe, 0, 0).
+      • yoke-group T_yoke: eyes (yoke ±X) → ±Y, arch (yoke +Z) stays +Z (up);
+                           pivot centre → (Xe, 0, 0)  (90° clocked about Y vs the cup).
+    The two pivots coincide at (±Xe, 0, 0); the LEFT ear is the mirror across x=0.
+    The bow + crown pad are shared parts arcing between the two sliders; ear spacing
+    = the bow's own end span so the headband fits the cups. Bow dims + exact head
+    fit remain ESTIMATE (see params/bow).
+
+    FLAGGED: the over-rotation stop pin/slot are still clocked for the old pad-up
+    rest pose, so they read ~90° off in this view — cosmetic here (the gate verifies
+    the stop at the part level). Re-clocking them to this rest pose is a follow-up.
     """
     CHARCOAL = cq.Color(0.30, 0.32, 0.35)
     ORANGE = cq.Color(0.92, 0.45, 0.10)
@@ -64,56 +76,61 @@ def make_assembly() -> cq.Assembly:
     SCREW_C = cq.Color(0.55, 0.57, 0.60)
     PAD_C = cq.Color(0.13, 0.13, 0.15)   # near-black foam/velour
 
-    # ---- RIGHT-ear chain (the real poses) ----
-    cup = make_cup()
-    baffle = make_baffle().translate((0, 0, P.baffle_seat_z))
-    yoke = make_yoke().translate((0, 0, P.pivot_boss_z))
-    fork_hub_top = P.pivot_boss_z + P.yoke_fork_height + P.yoke_swivel_hub_height / 2
-    slider_z = fork_hub_top - 5.0 + P.slider_block_height / 2
-    slider = make_slider().translate((0, 0, slider_z))
-
-    # ---- Shared headband: bow + crown pad ----
+    pbz = P.pivot_boss_z
     end_a = 90 - P.bow_arc_degrees / 2
-    ex = P.bow_radius * math.cos(math.radians(end_a))
+    Xe = P.bow_radius * math.cos(math.radians(end_a))      # ear half-spacing = bow end x
     ez = P.bow_radius * math.sin(math.radians(end_a))
-    channel_y = -P.slider_block_depth / 2 + P.slider_bow_channel_depth / 2
-    bow_xf = (-ex, channel_y, slider_z - ez)              # right end at the slider; sweeps left
+
+    def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe,0,0)
+        return (w.rotate((0, 0, 0), (0, 1, 0), -90)
+                 .rotate((0, 0, 0), (1, 0, 0), 90)
+                 .translate((Xe + pbz, 0, 0)))
+
+    def T_yoke(w):   # eyes → ±Y, arch stays +Z (up); pivot centre → (Xe,0,0)
+        return w.rotate((0, 0, 0), (0, 0, 1), -90).translate((Xe, 0, 0))
+
+    def mirror_L(w):  # right ear → left ear (true mirror across the head centre)
+        return w.mirror("YZ", (0, 0, 0))
+
+    # ---- RIGHT ear ----
+    cup = T_cup(make_cup())
+    baffle = T_cup(make_baffle().translate((0, 0, P.baffle_seat_z)))
+    grille_dot = T_cup(make_grille_dot())
+    yoke = T_yoke(make_yoke())
+    slider_z = P.yoke_fork_height + P.yoke_swivel_hub_height / 2 - 5.0 + P.slider_block_height / 2
+    slider = T_yoke(make_slider().translate((0, 0, slider_z)))
+
+    # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
+    bow_xf = (0, 0, slider_z - ez)                         # ends land at (±Xe, 0, slider_z)
     bow = make_bow().translate(bow_xf)
-    pad = make_headband_pad().translate(bow_xf)            # hugs the bow's inner face at the crown
-    mx = -ex                                               # apex plane: left ear = mirror across x=mx
+    pad = make_headband_pad().translate(bow_xf)
 
     asm = cq.Assembly(name="daily_driver")
-
-    # Per-ear parts: RIGHT as-posed, LEFT mirrored across the apex plane (true
-    # mirror image — correct chirality for the opposite ear).
-    # grille_dot: the warm-orange accent cap at the cup's grille center.
-    grille_dot = make_grille_dot()
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
                            ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C),
                            ("grille_dot", grille_dot, ORANGE)):
         asm.add(solid, name=f"{nm}_R", color=col)
-        asm.add(solid.mirror("YZ", (mx, 0, 0)), name=f"{nm}_L", color=col)
+        asm.add(mirror_L(solid), name=f"{nm}_L", color=col)
 
     asm.add(bow, name="bow_ref", color=STEEL)              # shared headband (REF)
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
 
-    # Pivot hardware on both ears (viz). Guarded — accurate insert if cq_warehouse
-    # is present, else the primitive; never fails the build.
+    # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:
         from parts.hardware import make_shoulder_screw, make_heatset_insert
         for sign in (+1, -1):
             tag = "p" if sign > 0 else "m"
-            insert = (make_heatset_insert()
-                      .rotate((0, 0, 0), (0, 1, 0), -90 * sign)
-                      .translate((sign * P.pivot_boss_outer_radius, 0, P.pivot_boss_z)))
-            screw = (make_shoulder_screw()
-                     .rotate((0, 0, 0), (0, 1, 0), 90 * sign)
-                     .translate((sign * (P.pivot_boss_outer_radius - P.yoke_arm_thickness),
-                                 0, P.pivot_boss_z)))
+            insert = T_cup(make_heatset_insert()
+                           .rotate((0, 0, 0), (0, 1, 0), -90 * sign)
+                           .translate((sign * P.pivot_boss_outer_radius, 0, pbz)))
+            screw = T_cup(make_shoulder_screw()
+                          .rotate((0, 0, 0), (0, 1, 0), 90 * sign)
+                          .translate((sign * (P.pivot_boss_outer_radius - P.yoke_arm_thickness),
+                                      0, pbz)))
             asm.add(insert, name=f"insert_{tag}_R", color=BRASS)
-            asm.add(insert.mirror("YZ", (mx, 0, 0)), name=f"insert_{tag}_L", color=BRASS)
+            asm.add(mirror_L(insert), name=f"insert_{tag}_L", color=BRASS)
             asm.add(screw, name=f"screw_{tag}_R", color=SCREW_C)
-            asm.add(screw.mirror("YZ", (mx, 0, 0)), name=f"screw_{tag}_L", color=SCREW_C)
+            asm.add(mirror_L(screw), name=f"screw_{tag}_L", color=SCREW_C)
     except Exception as e:  # noqa: BLE001 — viz only; never block the build
         print(f"  [warn] assembly: pivot hardware skipped ({e}).")
     return asm
