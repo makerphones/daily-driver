@@ -37,6 +37,8 @@ text files diff and version-control naturally, and anyone can fork and modify.
   `parts/features.py`).
 - `docs/DESIGN-LOG.md` — the running record. **For an open design the log is
   part of the product.** Add an entry for every real decision or iteration.
+- `docs/filesystem-mcp-setup.md` — how to give a chat-side review session
+  read-only access to this repo via the filesystem MCP (config + manual enable step).
 
 ## Setup
 

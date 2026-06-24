@@ -6,6 +6,35 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Filesystem MCP groundwork (chat-side read access)
+
+Config + docs only — **no geometry change**, build still 5/5, gate PASS (0/0).
+Goal: let a chat-side review session read this live working tree, since the
+GitHub MCP connector is platform-blocked on this account.
+
+- **No move needed.** `daily-driver` is its own repo nested at
+  `~/Projects/makerphones/builds/daily-driver` (gitignored by the parent website
+  repo), so it is *already* under `~/Projects`. Verified there are no absolute
+  paths baked into the tree (`git grep /Users/...` → none). Added a convenience
+  top-level alias `~/Projects/daily-driver -> makerphones/builds/daily-driver`
+  (symlink resolves within `~/Projects`, so it stays in-scope for a `~/Projects`
+  server).
+- **Read-only is a client-side lockdown, not a server flag — flagged finding.**
+  Checked the installed `@modelcontextprotocol/server-filesystem` (v2026.1.14)
+  source directly rather than guessing: it has **no `--readonly` flag**, takes
+  allowed dirs as positional args, and always registers the write tools
+  (`write_file`/`edit_file`/`create_directory`/`move_file`). The `readOnly`
+  strings in it are only advisory `readOnlyHint` annotations. So the setup doc
+  enforces read-only by **denying those four write tools client-side**, and
+  documents that "switch to read-write" = drop the deny list. Did not invent a
+  flag that doesn't exist.
+- Wrote `docs/filesystem-mcp-setup.md` (scoped to `~/Projects` only, the config
+  snippet, the read-only mechanism, and the exact manual enable step) + a one-line
+  pointer in `CLAUDE.md`. **Nothing is enabled by the repo** — adding the
+  connector is a manual step the human takes in the Claude app.
+
+---
+
 ## 2026-06-15 — Embed the 3D preview in the manual (keep it on-site)
 
 Follow-up to the entry below. The manual's link-out card sent readers to the
