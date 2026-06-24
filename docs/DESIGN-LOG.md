@@ -6,6 +6,18 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Headband pad (rough draft)
+
+Added `parts/headband_pad.py` — a soft comfort cushion hugging the bow's concave
+underside at the crown, so the assembly reads as a real headphone. Rough first
+pass: an arc band on the bow's inner radius (`headband_pad_arc_degrees=80`,
+`_thickness=8`, `_width=26` — wider than the steel band). Form, retention (how it
+clips to the bow), and material (foam vs printed TPU) are all TBD — ESTIMATE.
+Builds as an accessory (STL+STEP), manifold-gated; wired into the assembly in the
+two-sided rebuild next. Build 7/7, gate PASS.
+
+---
+
 ## 2026-06-24 — Yoke: smooth curved arms (de-blocked)
 
 Replaced the yoke's angular straight-bar-with-knee arms with a **smooth curve**:

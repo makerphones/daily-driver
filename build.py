@@ -31,6 +31,7 @@ from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.bow import make_bow
 from parts.adapter_ring import make_adapter_ring
+from parts.headband_pad import make_headband_pad
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
 # on it: no matplotlib → rendering simply skips, parts still build.
@@ -51,6 +52,7 @@ PRINTED = {
 # (e.g. the step-down driver adapter ring — an optional "design big, adapt down").
 ACCESSORY = {
     "adapter_ring": make_adapter_ring,
+    "headband_pad": make_headband_pad,
 }
 # Reference bodies → STEP only (NOT printed).
 REFERENCE = {

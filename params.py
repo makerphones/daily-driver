@@ -219,6 +219,14 @@ class Params:
     bow_endtab_width: float = 16.0        # ESTIMATE/REF  endtab_w
     bow_arc_degrees: float = 150.0        # ESTIMATE  modelled arc span (reference)
 
+    # ---- Headband pad (ROUGH DRAFT — crown cushion under the bow) -------------
+    # Soft comfort pad (foam / printed TPU) hugging the bow's concave underside at
+    # the crown. First pass — a simple arc band; form/retention refined later. All
+    # ESTIMATE. One shared pad at the crown (not per-ear).
+    headband_pad_arc_degrees: float = 80.0   # ESTIMATE  contact arc at the crown
+    headband_pad_thickness: float = 8.0      # ESTIMATE  cushion depth (radial)
+    headband_pad_width: float = 26.0         # ESTIMATE  wider than the bow, for comfort
+
     # ---- Mechanical primitives (convention; see parts/features.py) ----------
     boss_base_fillet: float = 1.0         # fillet tying a boss to its host (print)
     screw_post_diameter: float = 7.0      # socket-head fastener post OD
