@@ -6,6 +6,42 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Settled decisions from the prior-art review (no geometry)
+
+Recorded rulings from the clean-room prior-art review (Open-Omega CERN-OHL-P;
+Capra/Variable Openmod). Logging + parking only — no params, parts, or gate
+touched. Each is a decision, not a maybe.
+
+- **DECISION — treble is the unit-to-unit variance budget.** Open-Omega's
+  multi-unit FR overlay shows bass/mids clustered to ~±1.5 dB but the treble
+  (>3 kHz) fanning to ~±5 dB across nominally identical printed units. So for a
+  build-in-public design: **lock the near-ear variables that drive treble** — pad
+  seat, baffle-to-ear distance, driver seating, and vent consistency — and
+  **publish an FR *band*, not a single "golden" curve.** This shapes the REW loop
+  (measure the spread, not one unit) and the eventual FR-publication format in the
+  manual. Credit Open-Omega.
+- **DECISION — headband is a SOURCED metal bow.** The Beyerdynamic Metal Head Bow
+  is the **recommended** part; DIY 1095 spring steel is the metal fallback. A
+  printable headband *may* be documented later but is **explicitly not
+  recommended** — printed spring arms creep/snap under sustained clamp load
+  (Capra's own PETG-arm "breaks if under-printed" warning is the evidence). The
+  printed parts are the cup / yoke / baffle / adapter; **the spring stays metal.**
+  (The BOM already encodes this: Beyer bow as REF, DIY 1095 as the alt.)
+- **DECISION — reference pad locked to Brainwavz HM5 (large velour).** The DIY
+  community default (Openmod also uses HM5; ~10 cm velour is the open-back norm).
+  Already carried in the BOM and the baffle pad-lip params.
+- **PARKED — laser-cut baffle + bonded stainless mesh variant.** Open-Omega's
+  approach gives finer treble control, but it **adds a fabrication method (laser
+  cut + adhesive bond) that cuts against first-timer buildability.** Keep
+  everything printable or easily purchasable for the reference build. Revisit only
+  **after the printed baffle is measured** and if treble control demands it.
+- **OPEN (do not resolve in CAD) — 40 mm vs 50 mm reference driver.** Held at
+  40 mm for identity + first-build forgiveness; the baffle is now parametric so
+  the lock is a one-line change. **Resolve by REW measurement, not a spec guess.**
+  (Full rationale in the driver-parametric entry below.)
+
+---
+
 ## 2026-06-24 — Driver size is now a parameter + a step-down adapter ring
 
 Made driver size a regenerate, not a commitment, and added an accessory ring so
