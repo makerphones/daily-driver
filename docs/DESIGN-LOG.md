@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Re-clock the over-rotation stop to the worn rest + tighten head spacing
+
+Two follow-ups from the orientation rework. Build 8/8, gate PASS (stop unchanged
+numerically — free ±20°, engages ≈±29°).
+
+- **Stop pin/slot re-clocked.** The worn pose mounts the cup 90° clocked vs the
+  yoke, so the stop pin (was cup −Z) and slot (yoke −Z) read 90° apart. Moved the
+  pin to **cup −Y**, which maps to global −Z in the worn pose — landing it in the
+  slot at the tilt rest. The yoke slot is unchanged. The gate's `_stop_engagement`
+  now applies `STOP_REST_CLOCK=90°` before the ±tilt sweep, so it tests the stop
+  around the **actual worn rest** (it previously tested around the old, wrong
+  pad-up rest). Pin↔slot now align in the assembly view; stop still engages ≈±29°.
+- **Head spacing tightened.** Ear spacing ties to the bow span (`Xe =
+  bow_radius·cos(end_a)`). `bow_radius` 100 → **81**, so cups go from ~193 mm apart
+  to **~156 mm** (a real head width); the bow tightens to match. Still ESTIMATE —
+  TBD from the measured Beyerdynamic bow.
+
+---
+
 ## 2026-06-24 — Head orientation + kinematics rework (resolves the deferred item)
 
 The assembly now poses like a **worn headphone** — cups vertical with pads facing

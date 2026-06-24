@@ -27,9 +27,11 @@ def pivot_stop_pins() -> cq.Workplane:
 
     Shared by make_cup (unioned onto the cup) and gate.py (rotated to verify the
     hard stop), so the gate checks the exact geometry that ships. Each pin sits on
-    a boss end-cap face, pivot_stop_radius below the pivot axis (−Z), and reaches
-    through the mating yoke eye's arc slot. Re-derived from Open-Omega's cup
-    rotation limiter (credited in DESIGN-LOG); nothing copied.
+    a boss end-cap face at pivot_stop_radius from the pivot axis, in the cup −Y
+    direction. In the assembly's worn pose the cup is mounted 90° clocked vs the
+    yoke, which rotates cup −Y to global −Z — landing the pin in the yoke eye's
+    −Z arc slot at the tilt rest. Re-derived from Open-Omega's cup rotation limiter
+    (credited in DESIGN-LOG); nothing copied.
     """
     r_out_boss = P.pivot_boss_outer_radius
     zc = P.pivot_boss_z
@@ -38,7 +40,7 @@ def pivot_stop_pins() -> cq.Workplane:
         pin = (
             cq.Workplane("YZ")
             .workplane(offset=sign * (r_out_boss - 2.0))
-            .center(0, zc - P.pivot_stop_radius)
+            .center(-P.pivot_stop_radius, zc)        # cup −Y → worn-pose slot at global −Z
             .circle(P.pivot_stop_pin_diameter / 2)
             .extrude(sign * (P.yoke_arm_thickness + 2.0))
         )
@@ -185,13 +187,13 @@ def make_cup() -> cq.Workplane:
         )
         cup = cup.cut(bore)
 
-    # 5b. Over-rotation STOP pin — a small pin on each boss end-cap face, offset
-    #     pivot_stop_radius straight up (+Z) from the pivot axis, protruding into
-    #     the mating yoke eye's arc slot (see yoke.py). The slot ends are the hard
-    #     stop; this pin is the follower. Re-derived from Open-Omega's cup rotation
-    #     limiter (credited in DESIGN-LOG); nothing copied. Placed at the BOTTOM
-    #     of the eye (−Z), clear of the arm bar that joins at the top. Geometry is
-    #     in pivot_stop_pins() so the gate verifies exactly what ships.
+    # 5b. Over-rotation STOP pin — a small pin on each boss end-cap face at
+    #     pivot_stop_radius from the pivot axis (cup −Y), protruding into the mating
+    #     yoke eye's arc slot. In the worn pose the cup is 90° clocked vs the yoke,
+    #     so cup −Y lands at the slot (yoke −Z), away from the arm. The slot ends are
+    #     the hard stop; this pin is the follower. Re-derived from Open-Omega's cup
+    #     rotation limiter (credited in DESIGN-LOG); nothing copied. Geometry is in
+    #     pivot_stop_pins() so the gate verifies exactly what ships.
     cup = cup.union(pivot_stop_pins())
 
     # 6. Edge treatment: the back-outer comfort/print break is now the chamfer in

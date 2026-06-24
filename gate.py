@@ -46,6 +46,8 @@ MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
 STOP_OVER_ANGLE = 35.0  # deg — the over-rotation stop MUST block the cup by here
 STOP_EPS = 0.05         # mm³ — pin∩yoke above this = stop engaged (vs free in slot)
+STOP_REST_CLOCK = 90.0  # deg — cup↔yoke relative clock at the worn rest (pad ⟂ arch);
+                        # the pin (cup −Y) lands at the slot (yoke −Z) here. Tilt is ± this.
 # The yoke is LOAD-BEARING, so its load-path sections are held to the 4 mm
 # STRUCTURAL floor (params.wall_thickness_structural), not the 2 mm wall floor —
 # per the spec's "4 mm at structural points" and Openmod's v1→Mk2 thin-section fix.
@@ -150,17 +152,18 @@ def _tilt_clearance(cup, yoke_origin):
 def _stop_engagement(yoke_origin):
     """Probe the over-rotation hard stop: (working_vol, over_vol, first_blocked_deg).
 
-    Rotates the cup's stop pins about the pivot axis and intersects them with the
-    slotted yoke. ~0 = pin riding free in the slot; a jump = the slot end (the hard
-    stop) has engaged. Isolated to the pins, so the messy eye/boss bearing overlap
-    doesn't pollute the reading.
+    Tests at the WORN rest clocking: the assembly mounts the cup 90° clocked vs the
+    yoke (pad ⟂ arch), so the pin (cup −Y) lands at the slot (yoke −Z) at rest. We
+    apply that STOP_REST_CLOCK base rotation, then sweep the tilt around it. ~0 =
+    pin riding free in the slot; a jump = a slot end (the hard stop) engaged.
+    Isolated to the pins, so the eye/boss bearing overlap doesn't pollute it.
     """
     pins = pivot_stop_pins()
     yoke = yoke_origin.translate((0, 0, P.pivot_boss_z))
     zc = P.pivot_boss_z
 
-    def vol(angle):
-        p = pins.rotate((0, 0, zc), (1, 0, zc), angle)
+    def vol(tilt):  # tilt is measured from the worn rest; base clock aligns pin↔slot
+        p = pins.rotate((0, 0, zc), (1, 0, zc), STOP_REST_CLOCK + tilt)
         try:
             return _solid_volume(p.intersect(yoke))
         except Exception:  # noqa: BLE001

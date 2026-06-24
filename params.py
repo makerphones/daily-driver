@@ -217,7 +217,10 @@ class Params:
     # Reference body for assembly + a DIY template. Dimensions are TBD from the
     # measured Beyer part; these are placeholders so the slider channel and end
     # interface have something to mate. NOT a printed part.
-    bow_radius: float = 100.0             # ESTIMATE/REF  bow_radius (arc)
+    bow_radius: float = 81.0              # ESTIMATE/REF  bow_radius (arc); also sets the
+                                          #   ear spacing in the assembly (Xe = R·cos(end_a)),
+                                          #   so 81 → cups ~156 mm apart (a real head width).
+                                          #   Was 100 (cups ~193, too wide). TBD from the Beyer part.
     bow_width: float = 16.0               # ESTIMATE/REF  bow_width
     bow_thickness: float = 0.8            # ESTIMATE/REF  bow_th
     bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  endtab_hole_dia
