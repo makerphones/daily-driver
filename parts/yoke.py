@@ -68,7 +68,7 @@ def make_yoke() -> cq.Workplane:
         # (no visible corner). Width tapers eye→hub along the path. Built from short
         # tapered segments (robust; OCC sweep/fillet are unreliable on this build).
         cpts = [(x, 0.0), (x, knee_z)]
-        n_up = 12
+        n_up = 28                       # dense → the chord facets read as a smooth curve
         for i in range(1, n_up + 1):
             u = i / n_up
             cpts.append((x * math.cos(math.pi / 2 * u),          # |x|: arm_w → 0 (to hub)

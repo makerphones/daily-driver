@@ -140,8 +140,9 @@ class Params:
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
     pad_lip_outer_diameter: float = 62.0  # ESTIMATE  pad_lip_od — Brainwavz HM5
-    pad_lip_height: float = 3.5           # ESTIMATE  pad_lip_h (raised, FRONT)
-    pad_lip_wall: float = 2.0             # ESTIMATE  lip wall thickness
+    pad_lip_height: float = 5.0           # ESTIMATE  pad_lip_h (raised, FRONT) — taller, clear lip
+    pad_lip_wall: float = 2.5             # ESTIMATE  lip wall thickness (the pad slips OVER it)
+    pad_lip_leadin: float = 0.8           # ESTIMATE  top chamfer so the pad slides on
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance
     baffle_counterbore_depth: float = 2.5     # ESTIMATE  head sinks below front
     baffle_vent_count: int = 6            # ESTIMATE  small controlled-vent holes

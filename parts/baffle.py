@@ -64,6 +64,12 @@ def make_baffle() -> cq.Workplane:
         .circle(lip_ir)
         .extrude(P.pad_lip_height)
     )
+    # Lead-in chamfer on the lip top so the HM5 pad's ring slides over it (and it
+    # reads clearly as a retaining lip). On the clean annulus before the union.
+    try:
+        lip = lip.edges(">Z").chamfer(P.pad_lip_leadin)
+    except Exception as e:  # noqa: BLE001 — report, don't mask; taller lip still stands
+        print(f"  [warn] baffle: pad-lip lead-in chamfer skipped ({e}).")
     baffle = baffle.union(lip)
 
     # 5. Integral driver guard across the aperture — guard_spoke_count thin

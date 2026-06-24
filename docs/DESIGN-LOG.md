@@ -6,6 +6,22 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Form polish: smoother yoke + clearer baffle pad lip
+
+Two refinements from the live-model review. Build 7/7, gate PASS.
+
+- **Yoke facets.** The curved arm's chord segments read as visible steps ("lines
+  cut in"). Bumped the ease sampling 12 → 28 segments so the facets are fine and
+  read as a smooth curve (and the GLB's smooth-shaded normals soften them further;
+  the flat-shaded PNG exaggerates them). Still one solid — the "missing fill" was a
+  flat-shading artifact of the coarse facets, not an actual gap.
+- **Baffle pad lip.** The raised pad lip existed but was subtle. Made it a clear
+  retaining lip: `pad_lip_height` 3.5 → 5.0, `pad_lip_wall` 2.0 → 2.5, plus a
+  `pad_lip_leadin` 0.8 mm top chamfer so the HM5 pad's ring slides over it. The
+  HM5 still slips over the ⌀62 lip.
+
+---
+
 ## 2026-06-24 — Two-sided assembly (full-headphone preview)
 
 `make_assembly` now builds **both ears + the shared headband**, so the GLB reads
