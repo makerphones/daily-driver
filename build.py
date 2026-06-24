@@ -24,6 +24,7 @@ Usage:
 import sys
 import os
 import json
+import shutil
 import cadquery as cq
 
 from parts.cup import make_cup
@@ -134,6 +135,20 @@ def build(names):
             print(f"  [ok]   {write_bom()} (hardware bill of materials)")
         except Exception as e:  # noqa: BLE001 — never fail the build on the BOM
             print(f"  [warn] BOM.md skipped: {e}")
+
+    # Mirror the per-part renders into docs/ so GitHub Pages serves them at
+    # /renders/<name>.png — the manual's parts gallery uses them as posters from the
+    # SAME cross-origin origin as the GLB (renders/ at the repo root is not served).
+    if os.path.isdir(RENDERS):
+        docs_renders = os.path.join("docs", "renders")
+        os.makedirs(docs_renders, exist_ok=True)
+        copied = 0
+        for fn in os.listdir(RENDERS):
+            if fn.endswith(".png"):
+                shutil.copy2(os.path.join(RENDERS, fn), os.path.join(docs_renders, fn))
+                copied += 1
+        if copied:
+            print(f"  [ok]   docs/renders/ ({copied} part posters for the manual)")
 
     print(f"\nBuilt {len(ok)}/{len(names)}: {', '.join(ok) or 'none'}")
     if failed:
