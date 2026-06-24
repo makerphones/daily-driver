@@ -31,6 +31,7 @@ from parts.cup import make_cup, pivot_stop_pins
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
+from parts.adapter_ring import make_adapter_ring
 from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
 # ---- Thresholds (named + transparent; not new checks, just the limits) -------
@@ -179,7 +180,9 @@ def main():
     baffle = make_baffle()
     yoke = make_yoke()
     slider = make_slider()
-    parts = {"cup": cup, "baffle": baffle, "yoke": yoke, "slider": slider}
+    adapter = make_adapter_ring()
+    parts = {"cup": cup, "baffle": baffle, "yoke": yoke, "slider": slider,
+             "adapter_ring": adapter}
 
     r = Report()
 
@@ -266,6 +269,14 @@ def main():
     hub_wall = (P.yoke_swivel_hub_diameter - P.yoke_swivel_bore) / 2
     r.hard(hub_wall >= MIN_YOKE_STRUCTURAL, "yoke-hub-wall",
            f"swivel-hub wall {hub_wall:.1f} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+
+    # --- Step-down adapter ring (accessory) — printable walls. ---
+    adapter_wall = (P.adapter_host_diameter - P.adapter_target_driver_od) / 2
+    r.hard(adapter_wall >= MIN_WALL, "adapter-ring-wall",
+           f"ring wall {adapter_wall:.1f} mm >= {MIN_WALL} mm")
+    adapter_seat = (P.adapter_target_driver_od - P.adapter_target_aperture) / 2
+    r.hard(adapter_seat >= MIN_WALL, "adapter-seat-ledge",
+           f"seat ledge {adapter_seat:.1f} mm >= {MIN_WALL} mm")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2

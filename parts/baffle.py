@@ -24,6 +24,15 @@ def make_baffle() -> cq.Workplane:
     t = P.baffle_thickness
     ap_r = P.driver_aperture / 2
 
+    # Aperture SHAPE hook — only round is authored today (see params + DESIGN-LOG).
+    # Non-round (oval / planar-magnetic) is a future variant: fail loudly rather
+    # than silently building a round hole when something else was asked for.
+    if P.driver_aperture_shape != "round":
+        raise NotImplementedError(
+            f"driver_aperture_shape={P.driver_aperture_shape!r}: only 'round' is "
+            "built today. Author the non-round aperture/recess/guard before enabling."
+        )
+
     # 1. Round plate (z=0 back → z=t front).
     baffle = cq.Workplane("XY").circle(r).extrude(t)
 
@@ -119,8 +128,14 @@ def make_baffle() -> cq.Workplane:
         baffle = baffle.cut(through).cut(cbore)
 
     # 7. Controlled venting — a few small holes through the plate (NOT a hard
-    #    seal). Placed in the flat ring just outside the aperture.
-    vent_r = ap_r + 5.5  # ESTIMATE: between aperture and pad-lip inner wall
+    #    seal), in the flat ring between the aperture and the pad lip. vent_r
+    #    DERIVES (midway in that ring) so it tracks driver_od; flag if the growing
+    #    aperture crowds the pad lip and the ring vanishes.
+    pad_lip_inner_r = P.pad_lip_outer_diameter / 2 - P.pad_lip_wall
+    vent_r = (ap_r + pad_lip_inner_r) / 2
+    if ap_r + P.baffle_vent_diameter / 2 >= pad_lip_inner_r:
+        print(f"  [warn] baffle: at driver_od={P.driver_od} the aperture crowds the "
+              "pad lip — the vent ring is gone; revisit venting/pad for this driver.")
     for i in range(P.baffle_vent_count):
         a = math.radians(i * 360 / P.baffle_vent_count + 30)
         vx, vy = vent_r * math.cos(a), vent_r * math.sin(a)

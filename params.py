@@ -116,8 +116,9 @@ class Params:
                                           #   for the driver guard to anchor in, so
                                           #   guard_setback fits. recess_depth and
                                           #   guard_setback stay driver-measured.
-    driver_aperture: float = 35.0         # ESTIMATE  acoustic opening (front-back)
-    driver_recess_diameter: float = 42.0  # ESTIMATE  driver_recess_dia (on BACK)
+    # driver_aperture and driver_recess_diameter now DERIVE from driver_od (see the
+    # derived helpers), so the baffle aperture/guard/vents stay coherent when the
+    # driver size changes — "different baffle plates" is a regenerate, not a redesign.
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
     pad_lip_outer_diameter: float = 62.0  # ESTIMATE  pad_lip_od — Brainwavz HM5
     pad_lip_height: float = 3.5           # ESTIMATE  pad_lip_h (raised, FRONT)
@@ -143,6 +144,24 @@ class Params:
     driver_body_depth: float = 8.0        # REF  frame depth behind the baffle
     driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame
     driver_cutout_tolerance: float = 0.3  # ESTIMATE  fit allowance on the recess
+    driver_seat_ledge: float = 3.5        # ESTIMATE  radial frame seat (per side);
+                                          #   driver_aperture derives as od − 2·this
+    # Aperture SHAPE hook: only "round" is authored today. "oval"/"planar" (e.g. a
+    # planar-magnetic driver) is a FUTURE variant — baffle.py raises if not round.
+    # See DESIGN-LOG. Kept here so the param surface is ready before the geometry is.
+    driver_aperture_shape: str = "round"  # ESTIMATE  only "round" is built today
+
+    # ---- Step-down adapter ring (accessory; "design big, adapt down") --------
+    # A printed ring so a baffle built for a LARGER driver can host a smaller one
+    # with NO reprint — a real driver-testing workflow. Worked example: a 50 mm-
+    # class host hosting the 40 mm reference driver. INDEPENDENT of the reference
+    # build (driver_od stays 42). All ESTIMATE. NOTE: a step-down ring changes the
+    # front cavity / adds a step — NOT acoustically neutral; ring variants are
+    # REW-loop items (see DESIGN-LOG), not a free swap.
+    adapter_host_diameter: float = 50.0     # ESTIMATE  host baffle recess the ring drops into
+    adapter_target_driver_od: float = 42.0  # ESTIMATE  smaller driver it adapts to (40 mm class)
+    adapter_height: float = 6.0             # ESTIMATE  ring height (shims the driver-depth delta)
+    adapter_seat_thickness: float = 2.0     # ESTIMATE  front seat floor the driver rests on
 
     # ---- Fork / yoke ---------------------------------------------------------
     yoke_pivot_centres: float = 92.0      # ESTIMATE  pivot_centres (hole-to-hole);
@@ -190,6 +209,22 @@ class Params:
     edge_fillet: float = 1.5              # general comfort/print fillet
 
     # ---- Derived helpers -----------------------------------------------------
+    @property
+    def driver_aperture(self) -> float:
+        # front acoustic opening = frame od − a seat ledge each side; derives from
+        # driver_od so the baffle regenerates coherently for any driver size.
+        return self.driver_od - 2 * self.driver_seat_ledge
+
+    @property
+    def driver_recess_diameter(self) -> float:
+        # back recess the driver frame drops into = od + fit tolerance.
+        return self.driver_od + self.driver_cutout_tolerance
+
+    @property
+    def adapter_target_aperture(self) -> float:
+        # the adapter's front opening, by the same seat-ledge rule as the baffle.
+        return self.adapter_target_driver_od - 2 * self.driver_seat_ledge
+
     @property
     def cup_outer_diameter(self) -> float:        # cup_od = 84
         return self.cup_interior_diameter + 2 * self.wall_thickness

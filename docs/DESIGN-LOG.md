@@ -6,6 +6,47 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Driver size is now a parameter + a step-down adapter ring
+
+Made driver size a regenerate, not a commitment, and added an accessory ring so
+one baffle can host several drivers without a reprint. Build **6/6** (adapter_ring
+joins), gate PASS — 21 hard checks, 1 soft (the carried-over stop-slot flag).
+Credit: prior-art review (Open-Omega driver-specific vs Openmod's "most 40–52 mm"
++ 52 mm adapter) — re-derived, nothing copied.
+
+- **Parametric baffle.** `driver_aperture` and `driver_recess_diameter` now DERIVE
+  from `driver_od` (new `driver_seat_ledge=3.5`: aperture = od − 2·ledge; recess =
+  od + cutout_tolerance). The guard spans the derived aperture and the vent ring
+  `vent_r` now derives midway between aperture and pad lip, so all of
+  aperture/guard/vents stay coherent when `driver_od` changes. **Verified** by
+  regenerating at od = 42/50/58: aperture 35/43/51, recess 42.3/50.3/58.3, guard
+  span 37/45/53 — baffle stays one valid solid throughout. At od = 64 the new
+  **coherence flag fires** (aperture crowds the pad lip → vent ring gone) rather
+  than silently breaking — exactly the "FLAG it" ask.
+- **Reference build unchanged where it matters.** `driver_od` stays 42 (40 mm
+  class, HPD-40N16 candidate); the acoustic aperture stays **35** (unchanged). The
+  only delta: the back recess now applies the documented 0.3 mm fit tolerance
+  (42 → 42.3) — a coherence fix, not a redesign.
+- **Step-down adapter ring** (`parts/adapter_ring.py`, accessory — STL+STEP, NOT
+  in the assembly). Worked example: a **50 mm-class host hosting the 40 mm
+  reference driver** (params `adapter_*`, independent of `driver_od`). Gated:
+  `adapter-ring-wall` 4.0 ≥ 2, `adapter-seat-ledge` 3.5 ≥ 2, manifold 1 solid.
+  **Acoustic honesty (flagged):** a step-down ring lengthens/steps the front
+  cavity — NOT acoustically neutral. Ring variants are **REW-loop items**, not a
+  free swap.
+- **Non-round / planar future (hook + TODO).** Added `driver_aperture_shape`
+  ("round" only today); `baffle.py` raises `NotImplementedError` for anything
+  else. Round-only is built now; an oval / planar-magnetic aperture is a future
+  variant — the param surface is ready before the geometry is.
+- **Open decision (flagged, do NOT resolve in CAD): 40 mm vs 50 mm reference
+  driver.** Community converges on the Peerless/Tymphany HPD family — the 50 mm
+  HPD-50N25 is the open-back favorite (Kennerton Vali), while the 40 mm HPD-40N16
+  leans closed-back. Held at 40 mm for identity + first-build forgiveness; the
+  baffle is now parametric so the lock is a one-line change. **Resolve by REW
+  measurement, not by spec guess.**
+
+---
+
 ## 2026-06-24 — Yoke structural-floor gate checks (credit: Openmod v1→Mk2)
 
 Codified that the load-bearing yoke can't regress into under-thickness — the

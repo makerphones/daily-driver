@@ -30,6 +30,7 @@ from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.bow import make_bow
+from parts.adapter_ring import make_adapter_ring
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
 # on it: no matplotlib → rendering simply skips, parts still build.
@@ -46,11 +47,16 @@ PRINTED = {
     "yoke": make_yoke,
     "slider": make_slider,
 }
+# Printable ACCESSORIES → STL + STEP, but NOT part of the reference assembly
+# (e.g. the step-down driver adapter ring — an optional "design big, adapt down").
+ACCESSORY = {
+    "adapter_ring": make_adapter_ring,
+}
 # Reference bodies → STEP only (NOT printed).
 REFERENCE = {
     "bow": make_bow,
 }
-PARTS = {**PRINTED, **REFERENCE}
+PARTS = {**PRINTED, **ACCESSORY, **REFERENCE}
 
 OUT = "output"
 RENDERS = "renders"                                  # ships with the design (NOT gitignored)
@@ -76,10 +82,11 @@ def build(names):
         try:
             model = PARTS[name]()
             cq.exporters.export(model, os.path.join(OUT, f"{name}.step"))
-            if name in PRINTED:
+            if name in PRINTED or name in ACCESSORY:
                 stl_path = os.path.join(OUT, f"{name}.stl")
                 cq.exporters.export(model, stl_path)
-                print(f"  [ok]   {name}.stl + {name}.step")
+                tag = "" if name in PRINTED else "  (ACCESSORY — not in the assembly)"
+                print(f"  [ok]   {name}.stl + {name}.step{tag}")
                 _render_part(stl_path, name)
             else:
                 print(f"  [ok]   {name}.step  (REFERENCE — not printed)")
