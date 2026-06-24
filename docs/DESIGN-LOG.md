@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Two-sided assembly (full-headphone preview)
+
+`make_assembly` now builds **both ears + the shared headband**, so the GLB reads
+as a real headphone instead of one side. Build 7/7, gate PASS.
+
+- **Right ear** is the real kinematic chain at the origin; the **left ear** is its
+  **true mirror across the bow's apex plane** (`x = -ex`, `ex = bow_radius·cos(end_a)`)
+  — a reflection (correct chirality for the opposite ear), done with
+  `Workplane.mirror("YZ", (mx,0,0))` on each posed part. 18 children: cup/baffle/
+  yoke/slider ×(R,L), shared `bow_ref` + `headband_pad`, and pivot hardware on both
+  ears.
+- The **bow and crown pad are single shared parts** (one headband), placed with
+  the bow's transform so the pad hugs its inner face at the crown.
+- Still representative: the bow pose + full head-size kinematics (ear spacing,
+  slider travel) are ESTIMATE — the preview reads correctly but isn't a fitted
+  head model yet.
+
+---
+
 ## 2026-06-24 — Headband pad (rough draft)
 
 Added `parts/headband_pad.py` — a soft comfort cushion hugging the bow's concave
