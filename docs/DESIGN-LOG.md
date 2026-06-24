@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Yoke structural-floor gate checks (credit: Openmod v1→Mk2)
+
+Codified that the load-bearing yoke can't regress into under-thickness — the
+lesson behind Variable Openmod's v1→Mk2 fix (a 1 mm section snapped, thickened to
+2 mm) and Open-Omega's analogue. No geometry change; build 5/5, gate **0 hard /
+1 soft** (the soft is an intended flag, below). Now 18 hard checks.
+
+- **Current floors (reported) + flagged conflict.** The gate's load-bearing wall
+  floor is `MIN_WALL=2.0`; the spec calls for **4.0 mm at structural points**
+  (`wall_thickness_structural`). The yoke is load-bearing but had **no dimensional
+  gate check at all** (only manifold). Flagged and resolved by adding yoke checks
+  at the **4 mm structural floor** (not 2 mm). Did **not** lower the cup's 2 mm
+  `MIN_WALL` — that's correct for the 3 mm cup wall.
+- **New HARD checks** (`MIN_YOKE_STRUCTURAL = wall_thickness_structural = 4`):
+  `yoke-arm-structural` (min arm t/w 5.0 ≥ 4), `yoke-eye-web` (bearing ring 4.3 ≥
+  4), `yoke-hub-wall` ((14−6)/2 = **4.0, exactly at the floor** — flagged as
+  no-margin; a measured slider pin or any hub shrink would breach it).
+- **Discovered + FLAGGED — the Task-1 stop slot is itself a thin section.** The
+  over-rotation slot notches the ⌀12 eye; the web between the slot and the pivot
+  bore is **~0.7 mm**, below the 2 mm print floor. New SOFT check
+  `yoke-stop-slot-web` surfaces it. It's a non-load-path clearance notch at the
+  *unloaded* eye bottom, but it's thin/fragile and **a slot in a ⌀12 eye can't
+  keep a ≥2 mm bore web** (would need a much larger eye, or relocating the stop
+  off the eye entirely). **Open decision for the human:** accept pending a test
+  print, enlarge the eye, or relocate the stop. Not silently resolved.
+
+---
+
 ## 2026-06-24 — Pivot over-rotation hard stop (credit: Open-Omega)
 
 Added a physical hard stop to the yoke↔cup pivot so the cup can't be forced past

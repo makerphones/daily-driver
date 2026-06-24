@@ -43,6 +43,10 @@ MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
 STOP_OVER_ANGLE = 35.0  # deg — the over-rotation stop MUST block the cup by here
 STOP_EPS = 0.05         # mm³ — pin∩yoke above this = stop engaged (vs free in slot)
+# The yoke is LOAD-BEARING, so its load-path sections are held to the 4 mm
+# STRUCTURAL floor (params.wall_thickness_structural), not the 2 mm wall floor —
+# per the spec's "4 mm at structural points" and Openmod's v1→Mk2 thin-section fix.
+MIN_YOKE_STRUCTURAL = P.wall_thickness_structural
 
 
 class Report:
@@ -248,6 +252,21 @@ def main():
            f"blocked by ±{STOP_OVER_ANGLE:.0f}° ({over:.2f} mm³); "
            f"engages ≈ ±{first_blocked}°")
 
+    # --- Yoke structural floor — load-bearing sections held to the 4 mm
+    #     STRUCTURAL floor, not the 2 mm wall floor (Openmod's v1→Mk2 lesson:
+    #     thin yoke sections snap). ---
+    yoke_arm_min = min(P.yoke_arm_thickness, P.yoke_arm_width)
+    r.hard(yoke_arm_min >= MIN_YOKE_STRUCTURAL, "yoke-arm-structural",
+           f"arm min(t,w) {yoke_arm_min} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+
+    eye_web = (P.yoke_pivot_eye_diameter - P.yoke_pivot_hole_diameter) / 2
+    r.hard(eye_web >= MIN_YOKE_STRUCTURAL, "yoke-eye-web",
+           f"eye bearing web {eye_web:.1f} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+
+    hub_wall = (P.yoke_swivel_hub_diameter - P.yoke_swivel_bore) / 2
+    r.hard(hub_wall >= MIN_YOKE_STRUCTURAL, "yoke-hub-wall",
+           f"swivel-hub wall {hub_wall:.1f} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
     inner_r = P.cup_interior_diameter / 2
@@ -267,6 +286,18 @@ def main():
     r.soft(lamina >= need, "guard-setback-lamina",
            f"front lamina {lamina:.1f} mm vs guard {P.guard_thickness}+setback "
            f"{P.guard_setback}={need:.1f} mm")
+
+    # The Task-1 over-rotation stop slot notches the eye; the web between the slot
+    # and the pivot bore is below the 2 mm print floor. It's a non-load-path
+    # clearance notch at the unloaded eye bottom, but thin/fragile — FLAGGED, not
+    # silently accepted: a slot in a ⌀12 eye can't keep a ≥2 mm bore web (would
+    # need a much larger eye or relocating the stop off the eye). Open decision;
+    # confirm on a test print.
+    slot_web = (P.pivot_stop_radius - (P.pivot_stop_pin_diameter / 2 + P.pivot_stop_slot_clearance)
+                - P.yoke_pivot_hole_diameter / 2)
+    r.soft(slot_web >= MIN_WALL, "yoke-stop-slot-web",
+           f"stop-slot↔bore web {slot_web:.1f} mm vs {MIN_WALL} mm print floor "
+           f"(non-load-path notch; FLAGGED for test print / relief)")
 
     print(f"\n{'='*60}")
     print(f"HARD failures: {r.fails}   SOFT warnings: {r.warns}")
