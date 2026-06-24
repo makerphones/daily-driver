@@ -6,6 +6,27 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — build.py emits a hardware BOM (BOM.md)
+
+`build.py` now writes `BOM.md` (new `bom.py`) on a full build — part of the open
+product, like the DESIGN-LOG: what a forker needs to source the build. Build 5/5,
+gate PASS (0/0), no geometry change.
+
+- **Quantities derived from the design, not hand-typed.** Counts come from
+  `params.py` × 2 ears (`baffle_screw_count=4` → 8 baffle screws + 8 inserts;
+  `pivot_boss_count=2` → 4 M3 shoulder screws + 4 inserts → 12 inserts total), so
+  the BOM tracks the model automatically.
+- **Flags carried through:** the Beyer Metal Head Bow is `REF` (~$11,
+  north-america.beyerdynamic.com); the shoulder screws, inserts, driver, pads,
+  cable, damping, and printed parts are `ESTIMATE` — starting points, with the
+  header repeating the project rule to verify prices against the live supplier
+  page (never present a guessed price as confirmed). The driver carries the widest
+  estimate since it's still unlocked (candidate Peerless HPD-40N16).
+- Emitted in the full-build block (a partial `build.py cup` won't rewrite it);
+  guarded so the BOM never fails the build. Committed alongside the model.
+
+---
+
 ## 2026-06-24 — Real pivot hardware + geometric fit checks (cq_warehouse)
 
 Replaced the placeholder pivot arithmetic with REAL fastener geometry and wired it

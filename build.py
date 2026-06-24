@@ -107,6 +107,14 @@ def build(names):
         except Exception as e:
             print(f"  [FAIL] assembly: {e}")
 
+        # Hardware BOM — what a forker needs to source (part of the open product,
+        # like the DESIGN-LOG). Derived from params, so it tracks the design.
+        try:
+            from bom import write_bom
+            print(f"  [ok]   {write_bom()} (hardware bill of materials)")
+        except Exception as e:  # noqa: BLE001 — never fail the build on the BOM
+            print(f"  [warn] BOM.md skipped: {e}")
+
     print(f"\nBuilt {len(ok)}/{len(names)}: {', '.join(ok) or 'none'}")
     if failed:
         print(f"Failed: {', '.join(failed)}")
