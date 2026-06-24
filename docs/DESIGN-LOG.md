@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Form pass: chamfered cup back (direction "A")
+
+First real form-pass move on the cup — turning the bare cylinder into a
+considered profile. Direction **"A · chamfered"** (chosen over tapered/domed): a
+45° bevel on the back-outer edge down to a smaller flat back face. Build 6/6,
+gate PASS (0 hard / 1 soft). This is the GLB the live preview will show.
+
+- **How it's built (no wall/grille regression).** Switched the cup from a uniform
+  `shell` to an explicit acoustic-void cut, so the closed back band can be thicker
+  than the side wall: `cup_back_thickness=6` (was an implicit 3) while the side
+  wall stays 3 mm. The `cup_back_chamfer=5.5` 45° bevel lives **entirely in that
+  back band** — the structural side wall (z ≥ back band) and the grille zone
+  (r ≤ 34) are untouched. Back face lands at r≈36.5 (2.5 mm rim around the grille).
+- **Acoustics unchanged.** The air space behind the baffle is still 24 mm (both
+  the void floor and the rim shift up together); only the grille substrate is
+  deeper (6 mm) and the cup is ~3 mm taller. Grille open area still 0.397.
+- **Cleared the long-deferred warn.** The no-op "outer-edge comfort fillet" warn
+  was explicitly waiting for "the outer profile to be set" — it now is, and the
+  chamfer *is* the edge break, so that fillet code is retired. The only remaining
+  build warn is the yoke junction fillet (OCC declines it; cosmetic).
+- **Ripple checked:** `cup_total_height` 33 → 36 and `cup_interior_floor_z` 3 → 6
+  now derive from `cup_back_thickness`; the baffle boss height is unchanged (24),
+  pivot bosses/stop/tilt re-verified (tilt 520 vs 515 mm³; stop still ≈±29°).
+- Still open from the form pass: the rear-vent → logo grille refinement, the
+  accent ring (geometry vs finish), and yoke styling — next moves.
+
+---
+
 ## 2026-06-24 — Settled decisions from the prior-art review (no geometry)
 
 Recorded rulings from the clean-room prior-art review (Open-Omega CERN-OHL-P;

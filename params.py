@@ -30,6 +30,13 @@ class Params:
     wall_thickness: float = 3.0           # ESTIMATE  wall — 3 mm min shell
     wall_thickness_structural: float = 4.0  # ESTIMATE  at bosses / structural pts
     # cup_od = 84 is derived (cup_outer_diameter property = id + 2*wall).
+    # ---- Form pass: chamfered back (direction "A", 2026-06-24) ----------------
+    # The closed (grille) back is thickened past the side wall so a 45° outer
+    # bevel reads without thinning the 3 mm side wall (the bevel lives entirely in
+    # this back band). The acoustic air space behind the baffle is unchanged — only
+    # the grille substrate gets deeper and the cup ~3 mm taller. See DESIGN-LOG.
+    cup_back_thickness: float = 6.0       # ESTIMATE  closed-back depth (grille substrate)
+    cup_back_chamfer: float = 5.5         # ESTIMATE  ~45° back-outer bevel (< back thickness)
 
     # ---- Rear vent grille (DECOUPLED from the baffle bosses, v0.3) -----------
     # Remaining material = center hub + concentric rings + radial spokes; the
@@ -231,8 +238,9 @@ class Params:
 
     @property
     def cup_total_height(self) -> float:
-        # interior depth plus one wall thickness for the closed (grille) back
-        return self.cup_depth + self.wall_thickness
+        # interior depth plus the closed (grille) back band (thickened for the
+        # chamfered-back form pass; the air space behind the baffle is unchanged)
+        return self.cup_depth + self.cup_back_thickness
 
     @property
     def baffle_screw_radius(self) -> float:
@@ -241,8 +249,8 @@ class Params:
 
     @property
     def cup_interior_floor_z(self) -> float:
-        # top of the interior back floor (the closed back is one wall thick)
-        return self.wall_thickness
+        # top of the interior back floor (now the thickened back band)
+        return self.cup_back_thickness
 
     @property
     def baffle_seat_z(self) -> float:

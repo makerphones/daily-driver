@@ -53,8 +53,22 @@ def make_cup() -> cq.Workplane:
     # 1. Solid blank, front (+Z) up, closed back at the bottom.
     cup = cq.Workplane("XY").circle(od / 2).extrude(total_h)
 
-    # 2. Shell out the front face → open cup, walls = wall_thickness, back closed.
-    cup = cup.faces(">Z").shell(-P.wall_thickness)
+    # 2. Hollow the acoustic void from the front (+Z), leaving side walls of
+    #    wall_thickness and a thicker closed back (cup_back_thickness) — the grille
+    #    substrate the chamfer lives in. Explicit cut (not shell) so the back band
+    #    can be thicker than the side wall.
+    void_r = P.cup_interior_diameter / 2
+    void = (
+        cq.Workplane("XY").workplane(offset=P.cup_back_thickness)
+        .circle(void_r).extrude(total_h)          # up through the open front (and beyond)
+    )
+    cup = cup.cut(void)
+
+    # 2b. Chamfered back (form pass direction "A"): a ~45° bevel on the back-outer
+    #     edge, confined to the back band so the 3 mm side wall (z ≥ back band) is
+    #     untouched and the grille zone (r ≤ 34) stays on a flat face. Done before
+    #     the grille while the bottom is still a clean disc (one outer edge).
+    cup = cup.edges("<Z").chamfer(P.cup_back_chamfer)
 
     # 3. Rear vent grille — clean concentric-ring grille, DECOUPLED from the
     #    bosses. Remaining material = center hub + grille_ring_count rings +
@@ -76,7 +90,7 @@ def make_cup() -> cq.Workplane:
     zone_r = r_out + w / 2  # outer edge of the outer ring = grille zone radius
 
     z0 = -1.0
-    cut_h = P.wall_thickness + 2.0
+    cut_h = P.cup_back_thickness + 2.0          # pierce the full (thicker) back band
 
     def _disc(radius):
         return cq.Workplane("XY").workplane(offset=z0).circle(radius).extrude(cut_h)
@@ -171,21 +185,9 @@ def make_cup() -> cq.Workplane:
     #     in pivot_stop_pins() so the gate verifies exactly what ships.
     cup = cup.union(pivot_stop_pins())
 
-    # 6. Best-effort comfort fillet on the outer wall (no-op on the current
-    #    cylindrical form; warns rather than silently swallowing — see history).
-    outer_r = P.cup_outer_diameter / 2
-    outer_edges = cup.edges("|Z").filter(
-        lambda e: abs(math.hypot(e.Center().x, e.Center().y) - outer_r) < 3.0
-    )
-    if outer_edges.vals():
-        try:
-            cup = outer_edges.fillet(P.edge_fillet)
-        except Exception as e:  # noqa: BLE001 — report, don't mask
-            print(
-                f"  [warn] cup: outer-edge comfort fillet skipped ({e}). "
-                "Deferred to the form pass once the outer profile is set."
-            )
-
+    # 6. Edge treatment: the back-outer comfort/print break is now the chamfer in
+    #    step 2b (the form pass "set the outer profile"), so the old no-op outer-
+    #    wall fillet — which only ever warned on the bare cylinder — is retired.
     return cup
 
 
