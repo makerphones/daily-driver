@@ -28,6 +28,25 @@ from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
 
 
+# Sub-assembly groups for the manual's interactive parts viewer. The node NAMES
+# below are a PUBLIC CONTRACT: the website viewer toggles/isolates parts by them
+# (they match the asm.add(name=...) calls in make_assembly). Renaming a part there
+# means updating this too (and the manual). build.py emits this to
+# docs/models/daily-driver.groups.json next to the GLB; the viewer fetches it.
+SUBASSEMBLIES = {
+    "groups": [
+        {"id": "earcup", "label": "Earcup",
+         "nodes": ["cup_R", "cup_L", "baffle_R", "baffle_L", "grille_dot_R", "grille_dot_L"]},
+        {"id": "gimbal", "label": "Gimbal",
+         "nodes": ["yoke_R", "yoke_L", "insert_p_R", "insert_p_L", "insert_m_R",
+                   "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
+        {"id": "headband", "label": "Headband",
+         "nodes": ["bow_ref", "headband_pad", "slider_R", "slider_L"]},
+    ],
+    "bought": ["bow_ref"],
+}
+
+
 def make_assembly() -> cq.Assembly:
     """Both ears + the shared headband — a full-headphone preview.
 

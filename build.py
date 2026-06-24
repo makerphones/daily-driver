@@ -23,6 +23,7 @@ Usage:
 
 import sys
 import os
+import json
 import cadquery as cq
 
 from parts.cup import make_cup
@@ -66,6 +67,7 @@ OUT = "output"
 RENDERS = "renders"                                  # ships with the design (NOT gitignored)
 MODELS = os.path.join("docs", "models")              # Pages-served GLB target
 GLB_PATH = os.path.join(MODELS, "daily-driver.glb")
+GROUPS_PATH = os.path.join(MODELS, "daily-driver.groups.json")
 
 
 def _render_part(stl_path, name):
@@ -113,8 +115,15 @@ def build(names):
                 asm.export(GLB_PATH, exportType="GLTF",
                            tolerance=0.05, angularTolerance=0.1)
                 print(f"  [ok]   {GLB_PATH} (web 3D viewer)")
+                # Sub-assembly manifest the manual's parts viewer fetches (groups +
+                # node names). Single source: assembly.SUBASSEMBLIES. Committed next
+                # to the GLB and served from the same Pages origin.
+                from assembly import SUBASSEMBLIES
+                with open(GROUPS_PATH, "w") as gf:
+                    json.dump(SUBASSEMBLIES, gf, indent=2)
+                print(f"  [ok]   {GROUPS_PATH} (sub-assembly manifest)")
             except Exception as e:  # noqa: BLE001
-                print(f"  [warn] GLB export skipped: {e}")
+                print(f"  [warn] GLB/manifest export skipped: {e}")
         except Exception as e:
             print(f"  [FAIL] assembly: {e}")
 

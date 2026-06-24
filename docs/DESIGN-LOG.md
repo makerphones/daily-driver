@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Sub-assembly manifest for the manual's parts viewer
+
+Groundwork for an interactive per-part / sub-assembly / explode viewer on the
+website manual (built in the separate makerphones repo). No geometry change; build
+8/8, gate PASS.
+
+- **`assembly.SUBASSEMBLIES`** — the single source for the three sub-assembly
+  groups (Earcup / Gimbal / Headband) as lists of GLB node names. The node names
+  are now a documented **public contract** (the manual's viewer isolates/toggles by
+  them; renaming a part means updating this + the manual).
+- **`build.py` emits `docs/models/daily-driver.groups.json`** next to the GLB, from
+  `SUBASSEMBLIES`, served from the same Pages origin (committable; not gitignored).
+- The viewer reuses the **existing** `daily-driver.glb` (20 named per-part nodes,
+  verified) and the committed per-part PNG renders — no per-part GLB exports, no
+  baked explode animation. The explode + isolate are done at runtime in the
+  manual's three.js viewer; this repo just publishes the geometry + the manifest.
+
+---
+
 ## 2026-06-24 — Accent dot in the assembly; head-orientation rework deferred (flagged)
 
 - **Orange dot live.** The assembly now places the warm-orange `grille_dot` at
