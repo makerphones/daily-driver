@@ -24,16 +24,20 @@ import cadquery as cq
 from params import P
 
 
-def _bar(p0, p1, width, thick):
-    """A flat bar (width × thick) in the XZ plane from p0 to p1 (each (x, z))."""
+def _bar(p0, p1, w0, w1, thick):
+    """A flat bar in the XZ plane from p0 to p1 (each (x, z)), tapering in width
+    from w0 (at p0) to w1 (at p1). w0 == w1 gives a constant bar. Built from a
+    trapezoid profile (no fillets/chamfers — robust on this OCC build)."""
     (x0, z0), (x1, z1) = p0, p1
     cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
     length = math.hypot(x1 - x0, z1 - z0)
     ang = math.degrees(math.atan2(z1 - z0, x1 - x0))
+    half = length / 2
+    pts = [(-half, -w0 / 2), (-half, w0 / 2), (half, w1 / 2), (half, -w1 / 2)]
     return (
         cq.Workplane("XZ")
         .transformed(offset=(cx, cz, 0), rotate=(0, 0, ang))
-        .rect(length, width)
+        .polyline(pts).close()
         .extrude(thick / 2, both=True)
     )
 
@@ -58,8 +62,10 @@ def make_yoke() -> cq.Workplane:
             .circle(P.yoke_pivot_eye_diameter / 2)
             .extrude(arm_t)
         )
-        bar_a = _bar((x, 0), (x, knee_z), arm_w, arm_t)        # vertical, clears cup
-        bar_b = _bar((x, knee_z), (0, hub_z), arm_w, arm_t)    # angle in to the hub
+        # Eye→knee stays full width (the load end); knee→hub tapers to the slimmer
+        # hub width — a "considered" wishbone, and material kept on the load path.
+        bar_a = _bar((x, 0), (x, knee_z), arm_w, arm_w, arm_t)              # full, clears cup
+        bar_b = _bar((x, knee_z), (0, hub_z), arm_w, P.yoke_arm_hub_width, arm_t)  # taper to hub
         arm = eye.union(bar_a).union(bar_b)
         yoke = arm if yoke is None else yoke.union(arm)
 

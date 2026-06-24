@@ -179,7 +179,9 @@ class Params:
     yoke_pivot_centres: float = 92.0      # ESTIMATE  pivot_centres (hole-to-hole);
                                           #   92 (was 88) for boss + insert + arm room.
                                           #   TODO: verify ±tilt clearance on a test print.
-    yoke_arm_width: float = 8.0           # ESTIMATE  arm_w
+    yoke_arm_width: float = 8.0           # ESTIMATE  arm_w (at the eye / load end)
+    yoke_arm_hub_width: float = 5.0       # ESTIMATE  arm_w at the hub end — styling taper
+                                          #   (slims toward the hub; >= structural floor)
     yoke_arm_thickness: float = 5.0       # ESTIMATE  arm_th
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
     yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)

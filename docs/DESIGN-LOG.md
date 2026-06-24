@@ -6,6 +6,30 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Form pass: tapered wishbone yoke
+
+Styled the fork-yoke from constant-width bars into a **tapered wishbone**: full
+width at the load-bearing eye, slimming toward the swivel hub. Build 6/6, gate
+PASS (0 hard / 1 soft).
+
+- **How (OCC-safe, no fillets).** Generalised `_bar` to taper width from end to
+  end via a trapezoid profile (`polyline`), not edge fillets/chamfers — the OCC
+  junction fillet still declines on this build (the standing cosmetic warn), so
+  styling that depends on it would be fragile. The eye→knee segment stays full
+  (`yoke_arm_width=8`, the load end); the knee→hub segment tapers to
+  `yoke_arm_hub_width=5`.
+- **Respects the structural floor + echoes the TopOpt hint.** Thinnest arm point
+  is now 5.0 mm (hub end) — still ≥ the 4 mm structural floor; the gate's
+  `yoke-arm-structural` check now takes the min of thickness/eye-width/hub-width.
+  Keeping material at the eye and relieving toward the hub matches the yoke
+  TopOpt spike's "material on the pivot→hub load path" reading.
+- The OCC junction-fillet warn is unchanged (cosmetic, deferred — not relied on).
+- Form pass remaining: the warm-orange **accent** (deferred — decided to leave the
+  grille open at 0.486 and tackle the accent as the logo's center dot later);
+  optional deeper yoke moves (eye/hub edge chamfers, thickness taper) if wanted.
+
+---
+
 ## 2026-06-24 — Form pass: rear grille echoes the makerphones mark
 
 Re-proportioned the rear grille from a uniform mesh into the **makerphones mark** —

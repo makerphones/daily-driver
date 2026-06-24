@@ -260,9 +260,9 @@ def main():
     # --- Yoke structural floor — load-bearing sections held to the 4 mm
     #     STRUCTURAL floor, not the 2 mm wall floor (Openmod's v1→Mk2 lesson:
     #     thin yoke sections snap). ---
-    yoke_arm_min = min(P.yoke_arm_thickness, P.yoke_arm_width)
+    yoke_arm_min = min(P.yoke_arm_thickness, P.yoke_arm_width, P.yoke_arm_hub_width)
     r.hard(yoke_arm_min >= MIN_YOKE_STRUCTURAL, "yoke-arm-structural",
-           f"arm min(t,w) {yoke_arm_min} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+           f"arm thinnest(t,w,hub) {yoke_arm_min} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
 
     eye_web = (P.yoke_pivot_eye_diameter - P.yoke_pivot_hole_diameter) / 2
     r.hard(eye_web >= MIN_YOKE_STRUCTURAL, "yoke-eye-web",
