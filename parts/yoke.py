@@ -91,6 +91,28 @@ def make_yoke() -> cq.Workplane:
     )
     yoke = yoke.cut(swivel)
 
+    # over-rotation STOP arc slot: a clearance pocket at radius pivot_stop_radius
+    # around each pivot, spanning ±pivot_stop_slot_halfangle from straight-up. The
+    # cup's stop pin rides it; the slot ENDS are the hard stop that bounds tilt
+    # just past the ±20° working range, protecting the M3 shoulder screw. Built
+    # from a fan of cylinders (this OCP build's revolve is unusable — see bow.py).
+    rp = P.pivot_stop_radius
+    slot_r = (P.pivot_stop_pin_diameter + 2 * P.pivot_stop_slot_clearance) / 2
+    half_a = P.pivot_stop_slot_halfangle
+    nseg = 25
+    for sign in (+1, -1):
+        x = sign * half
+        for k in range(nseg):
+            a = math.radians(-half_a + 2 * half_a * k / (nseg - 1))
+            seg = (
+                cq.Workplane("YZ")
+                .workplane(offset=x - (arm_t / 2 + 1))
+                .center(rp * math.sin(a), -rp * math.cos(a))  # radius rp, ±a from −Z (bottom)
+                .circle(slot_r)
+                .extrude(arm_t + 2)
+            )
+            yoke = yoke.cut(seg)
+
     # best-effort fillets at the knee/junctions (printability); warn, don't mask
     try:
         yoke = yoke.edges("|Y").fillet(1.0)

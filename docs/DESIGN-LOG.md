@@ -6,6 +6,41 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Pivot over-rotation hard stop (credit: Open-Omega)
+
+Added a physical hard stop to the yoke↔cup pivot so the cup can't be forced past
+its range and shear the M3 shoulder screw. The ±20° tilt *clearance* was already
+verified; this is the *stop*. Build 5/5, gate PASS (0/0) — now 15 hard checks.
+**Re-derived independently from Open-Omega's separate `cup rotation limiter`
+(CERN-OHL-P); nothing was copied** — different mechanism, our own geometry.
+
+- **Mechanism:** a small pin on each cup pivot boss (`pivot_stop_pins()` in
+  `cup.py`) rides an arc slot cut in the mating yoke eye (`yoke.py`); the slot
+  **ends** are the hard stop. Placed at the **bottom of the eye (−Z)**, clear of
+  the arm bar that joins at the top — a first attempt at the top (+Z) buried the
+  pin in the bar and fragmented the yoke into 13 solids. Slot built from a fan of
+  cylinders (this OCP build's `revolve` is unusable — see bow.py).
+- **Tuned empirically via the gate probe:** engagement angle ≈ `slot_halfangle +
+  deg(clearance/rp)`. Set `pivot_stop_slot_halfangle=22°` → **free through the
+  full ±20° working range (0.00 mm³ pin∩yoke), engages ≈ ±29°** (blocked well by
+  ±35°). ~9° margin past the working range; never interferes with normal tilt.
+- **Gate check `pivot-overrotation-stop`** (new): asserts the working ±tilt rides
+  free AND the stop engages before `STOP_OVER_ANGLE` (35°). Uses the shared
+  `pivot_stop_pins()` so it verifies exactly what ships; isolated to the pins so
+  the eye/boss bearing overlap doesn't pollute the reading.
+- **Side change (flagged):** bumped `yoke_pivot_eye_diameter` 11 → 12 so the slot
+  clears both the pivot bore and the eye rim without fragmenting (ESTIMATE). The
+  tilt-clearance baseline shifted 494 → 515 mm³ accordingly, still well within
+  the +20% bound.
+- **Scope (flagged):** primary purpose is protecting the pivot/screw. **Cable
+  routing isn't designed yet**, so cable protection is a *secondary* benefit to
+  revisit once routing exists. All stop dims are ESTIMATE; the engagement angle
+  is geometric and should be re-confirmed on a test print (and re-checked once the
+  pre-existing eye/boss bearing fit is cleaned up — it currently interferes by
+  design as a representative first pass).
+
+---
+
 ## 2026-06-24 — build.py emits a hardware BOM (BOM.md)
 
 `build.py` now writes `BOM.md` (new `bom.py`) on a full build — part of the open

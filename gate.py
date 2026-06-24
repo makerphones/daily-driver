@@ -27,7 +27,7 @@ from OCP.gp import gp_Pnt
 from OCP.TopAbs import TopAbs_IN, TopAbs_ON
 
 from params import P
-from parts.cup import make_cup
+from parts.cup import make_cup, pivot_stop_pins
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
@@ -41,6 +41,8 @@ OPEN_MIN = 0.30         # grille open-area band (acoustic + structural) ...
 OPEN_MAX = 0.50         # ... around the 0.40 target; outside = out of range
 MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
+STOP_OVER_ANGLE = 35.0  # deg — the over-rotation stop MUST block the cup by here
+STOP_EPS = 0.05         # mm³ — pin∩yoke above this = stop engaged (vs free in slot)
 
 
 class Report:
@@ -138,6 +140,32 @@ def _tilt_clearance(cup, yoke_origin):
     return vol(0.0), vol(P.pivot_tilt_degrees), vol(-P.pivot_tilt_degrees)
 
 
+def _stop_engagement(yoke_origin):
+    """Probe the over-rotation hard stop: (working_vol, over_vol, first_blocked_deg).
+
+    Rotates the cup's stop pins about the pivot axis and intersects them with the
+    slotted yoke. ~0 = pin riding free in the slot; a jump = the slot end (the hard
+    stop) has engaged. Isolated to the pins, so the messy eye/boss bearing overlap
+    doesn't pollute the reading.
+    """
+    pins = pivot_stop_pins()
+    yoke = yoke_origin.translate((0, 0, P.pivot_boss_z))
+    zc = P.pivot_boss_z
+
+    def vol(angle):
+        p = pins.rotate((0, 0, zc), (1, 0, zc), angle)
+        try:
+            return _solid_volume(p.intersect(yoke))
+        except Exception:  # noqa: BLE001
+            return 0.0
+
+    working = max(vol(P.pivot_tilt_degrees), vol(-P.pivot_tilt_degrees))
+    over = min(vol(STOP_OVER_ANGLE), vol(-STOP_OVER_ANGLE))
+    first_blocked = next((a for a in range(int(P.pivot_tilt_degrees), 91)
+                          if vol(a) > STOP_EPS), None)
+    return working, over, first_blocked
+
+
 def main():
     print("Daily Driver — printability gate\n")
     print("Building printed parts in-process (part [warn]s below are the")
@@ -210,6 +238,15 @@ def main():
     r.hard(worst <= base * (1 + MAX_TILT_EXTRA_FRAC), "pivot-tilt-clearance",
            f"cup∩yoke at ±{P.pivot_tilt_degrees:.0f}° = {worst:.0f} mm³ vs 0° "
            f"{base:.0f} mm³ (<= +{int(MAX_TILT_EXTRA_FRAC*100)}%)")
+
+    # 6e. Over-rotation HARD STOP: the working ±tilt range must ride free, and the
+    #     stop must engage before STOP_OVER_ANGLE so the cup can't be forced over
+    #     and shear the M3 shoulder screw. (Re-derived from Open-Omega's limiter.)
+    working, over, first_blocked = _stop_engagement(yoke)
+    r.hard(working < STOP_EPS and over > STOP_EPS, "pivot-overrotation-stop",
+           f"free through ±{P.pivot_tilt_degrees:.0f}° ({working:.2f} mm³), "
+           f"blocked by ±{STOP_OVER_ANGLE:.0f}° ({over:.2f} mm³); "
+           f"engages ≈ ±{first_blocked}°")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2

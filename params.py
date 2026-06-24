@@ -93,6 +93,22 @@ class Params:
     shoulder_screw_head_diameter: float = 6.5      # ESTIMATE  head OD
     shoulder_screw_head_height: float = 3.0        # ESTIMATE  head height
 
+    # ---- Pivot over-rotation hard stop --------------------------------------
+    # A pin on each cup pivot boss rides an arc slot in the mating yoke eye; the
+    # slot ENDS are hard stops that bound cup tilt just past the ±20° working
+    # range, so the cup can't be forced over and shear the M3 shoulder screw.
+    # Primary purpose: protect the pivot/screw. Cable routing isn't designed yet,
+    # so cable protection is a SECONDARY benefit once routing exists (flagged).
+    # Re-derived from Open-Omega's separate "cup rotation limiter" (CERN-OHL-P) —
+    # nothing copied. The effective engagement angle is MEASURED by the gate.
+    # Stop lives at the BOTTOM of the eye (−Z), clear of the arm bar that joins at
+    # the top (+Z). Slot radius is set so it clears both the pivot bore and the eye
+    # rim (no fragmentation). Effective engagement ≈ halfangle − pin's angular half.
+    pivot_stop_slot_halfangle: float = 22.0  # ESTIMATE  arc-slot half-span; engages ~28° (past ±20°)
+    pivot_stop_radius: float = 3.6           # ESTIMATE  pin/slot radius from the pivot axis
+    pivot_stop_pin_diameter: float = 1.6     # ESTIMATE  stop-pin dia (rides the slot)
+    pivot_stop_slot_clearance: float = 0.4   # ESTIMATE  radial slip clearance, pin↔slot
+
     # ---- Baffle plate (front-mount) -----------------------------------------
     baffle_outer_diameter: float = 77.0   # ESTIMATE  baffle_od (drops into id 78)
     baffle_thickness: float = 6.0         # ESTIMATE  baffle_th — 6 (was 4) leaves a
@@ -136,7 +152,7 @@ class Params:
     yoke_arm_thickness: float = 5.0       # ESTIMATE  arm_th
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
     yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)
-    yoke_pivot_eye_diameter: float = 11.0  # ESTIMATE  pad around each pivot hole
+    yoke_pivot_eye_diameter: float = 12.0  # ESTIMATE  pad around pivot hole (12 hosts the stop slot)
     yoke_swivel_hub_diameter: float = 14.0  # ESTIMATE  swivel_hub_dia
     yoke_swivel_bore: float = 6.0         # ESTIMATE  swivel_bore (vertical pin)
     yoke_swivel_hub_height: float = 12.0  # ESTIMATE  hub height (along the pin)

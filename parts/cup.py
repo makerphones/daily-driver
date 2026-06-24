@@ -22,6 +22,30 @@ from params import P
 from parts import features
 
 
+def pivot_stop_pins() -> cq.Workplane:
+    """The two over-rotation stop pins, in the cup frame.
+
+    Shared by make_cup (unioned onto the cup) and gate.py (rotated to verify the
+    hard stop), so the gate checks the exact geometry that ships. Each pin sits on
+    a boss end-cap face, pivot_stop_radius below the pivot axis (−Z), and reaches
+    through the mating yoke eye's arc slot. Re-derived from Open-Omega's cup
+    rotation limiter (credited in DESIGN-LOG); nothing copied.
+    """
+    r_out_boss = P.pivot_boss_outer_radius
+    zc = P.pivot_boss_z
+    pins = None
+    for sign in (+1, -1):
+        pin = (
+            cq.Workplane("YZ")
+            .workplane(offset=sign * (r_out_boss - 2.0))
+            .center(0, zc - P.pivot_stop_radius)
+            .circle(P.pivot_stop_pin_diameter / 2)
+            .extrude(sign * (P.yoke_arm_thickness + 2.0))
+        )
+        pins = pin if pins is None else pins.union(pin)
+    return pins
+
+
 def make_cup() -> cq.Workplane:
     od = P.cup_outer_diameter
     total_h = P.cup_total_height
@@ -137,6 +161,15 @@ def make_cup() -> cq.Workplane:
             .extrude(-sign * P.insert_boss_depth)
         )
         cup = cup.cut(bore)
+
+    # 5b. Over-rotation STOP pin — a small pin on each boss end-cap face, offset
+    #     pivot_stop_radius straight up (+Z) from the pivot axis, protruding into
+    #     the mating yoke eye's arc slot (see yoke.py). The slot ends are the hard
+    #     stop; this pin is the follower. Re-derived from Open-Omega's cup rotation
+    #     limiter (credited in DESIGN-LOG); nothing copied. Placed at the BOTTOM
+    #     of the eye (−Z), clear of the arm bar that joins at the top. Geometry is
+    #     in pivot_stop_pins() so the gate verifies exactly what ships.
+    cup = cup.union(pivot_stop_pins())
 
     # 6. Best-effort comfort fillet on the outer wall (no-op on the current
     #    cylindrical form; warns rather than silently swallowing — see history).
