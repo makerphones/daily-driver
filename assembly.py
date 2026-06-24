@@ -56,6 +56,27 @@ def make_assembly() -> cq.Assembly:
     asm.add(yoke, name="yoke", color=cq.Color(0.36, 0.38, 0.42))      # charcoal
     asm.add(slider, name="slider", color=cq.Color(0.42, 0.44, 0.48))  # lighter charcoal
     asm.add(bow, name="bow_ref", color=cq.Color(0.75, 0.76, 0.78))    # brushed steel (REF)
+
+    # Pivot hardware (visualisation): the real M3 shoulder screw + heat-set insert
+    # at each of the cup's two pivot bosses (±X). Guarded — uses cq_warehouse's
+    # accurate insert if present, else the primitive envelope; never fails the build.
+    try:
+        from parts.hardware import make_shoulder_screw, make_heatset_insert
+        for sign in (+1, -1):
+            tag = "p" if sign > 0 else "m"
+            # +Z-axis parts laid along ±X. Insert seats at the boss outer face and
+            # runs inward; the screw points head-out, thread-in (into the insert).
+            insert = (make_heatset_insert()
+                      .rotate((0, 0, 0), (0, 1, 0), -90 * sign)
+                      .translate((sign * P.pivot_boss_outer_radius, 0, P.pivot_boss_z)))
+            screw = (make_shoulder_screw()
+                     .rotate((0, 0, 0), (0, 1, 0), 90 * sign)
+                     .translate((sign * (P.pivot_boss_outer_radius - P.yoke_arm_thickness),
+                                 0, P.pivot_boss_z)))
+            asm.add(insert, name=f"insert_{tag}", color=cq.Color(0.80, 0.68, 0.30))  # brass
+            asm.add(screw, name=f"screw_{tag}", color=cq.Color(0.55, 0.57, 0.60))    # steel
+    except Exception as e:  # noqa: BLE001 — viz only; never block the build
+        print(f"  [warn] assembly: pivot hardware skipped ({e}).")
     return asm
 
 

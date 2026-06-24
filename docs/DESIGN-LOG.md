@@ -6,6 +6,47 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Real pivot hardware + geometric fit checks (cq_warehouse)
+
+Replaced the placeholder pivot arithmetic with REAL fastener geometry and wired it
+into the gate, so the yoke↔cup pivot fit is validated against actual parts. Build
+5/5, gate PASS (0 hard / 0 soft) — now 14 hard checks (was 10).
+
+- **cq_warehouse — evaluated, partially adopted (flagged).** It's **git-only**
+  (not on PyPI), **dormant since 2023** (gumyr moved to build123d/bd_warehouse),
+  and has **NO `ShoulderScrew` class** (confirmed by introspection). But it
+  installs `--no-deps` and **imports + builds cleanly on our cadquery 2.7 / OCP
+  7.8 stack**, and `HeatSetNut("M3-0.5-Standard","McMaster-Carr")` measures
+  **OD 4.70 / length 5.70** — now the REF insert dims. Added to
+  `requirements-dev.txt` as an OPTIONAL visualisation dep (declares no runtime
+  deps, so it won't disturb the pinned cadquery). The shoulder screw is composed
+  from primitives instead (no library class).
+- **`parts/hardware.py`** — geometry source of truth is **pure-cadquery primitive
+  envelopes** (`shoulder_screw_envelope`, `heatset_insert_envelope`), always
+  available on core deps, so the gate + STL build never need cq_warehouse (CI stays
+  core-deps-only — verified the gate path doesn't import it). `make_heatset_insert`
+  uses the accurate cq_warehouse `HeatSetNut` for the ASSEMBLY VIZ when present,
+  else the primitive at the same envelope — so a clearance result never depends on
+  which path ran.
+- **`params.py`** — added the pivot-hardware block. Insert dims REF (verified);
+  shoulder-screw dims ESTIMATE / caliper-pending. **Clarified, not "fixed":**
+  `m3_insert_hole_diameter` (4.0) is the *correct undersized thermal-install bore*
+  for the 4.70 OD insert (the brass melts/knurls in) — not a mismatch. Wall checks
+  use the 4.70 INSTALLED OD (conservative).
+- **Gate — 4 new pivot checks, 2 of them geometric:** `pivot-shoulder-spans-eye`
+  (8≥5), `pivot-thread-engages-insert` (thread∩insert = 1.00, no bottoming),
+  `pivot-insert-wall` (3.65 mm around the 4.70 OD ≥ 1.0), and
+  **`pivot-tilt-clearance`** — rotating the cup through the full ±20° about the
+  pivot axis adds <1% to the 0° bearing overlap (497 vs 494 mm³). **This resolves
+  the open yoke `TODO (tilt clearance)` in-CAD**: the cup shell (≤42 mm) never
+  reaches the arms (at x=46) and the boss is coaxial with the tilt axis, so the
+  bearing is invariant. A test print should still confirm friction/feel, but
+  geometric collision is ruled out. Updated the yoke comment to match.
+- **`assembly.py`** — places the shoulder screw + heat-set insert at both pivot
+  bosses (viz), guarded so the build never fails on hardware.
+
+---
+
 ## 2026-06-24 — Filesystem MCP groundwork (chat-side read access)
 
 Config + docs only — **no geometry change**, build still 5/5, gate PASS (0/0).

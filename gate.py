@@ -31,6 +31,7 @@ from parts.cup import make_cup
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
+from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
 # ---- Thresholds (named + transparent; not new checks, just the limits) -------
 MIN_WALL = 2.0          # mm — FDM floor for any load-bearing wall (design wall 3)
@@ -38,6 +39,8 @@ MIN_BOSS_WALL = 1.0     # mm — material around a heat-set insert bore
 MIN_PIVOT_PROUD = 2.0   # mm — pivot boss must stand proud of the cup wall
 OPEN_MIN = 0.30         # grille open-area band (acoustic + structural) ...
 OPEN_MAX = 0.50         # ... around the 0.40 target; outside = out of range
+MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
+MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
 
 
 class Report:
@@ -91,6 +94,50 @@ def _grille_open_fraction(cup_wp, n=400):
     return 1 - mat / tot
 
 
+def _solid_volume(wp):
+    """Volume of a boolean result, 0 if it's empty (no overlap)."""
+    v = wp.val()
+    return v.Volume() if v is not None and v.Solids() else 0.0
+
+
+def _thread_engagement():
+    """Fraction of the shoulder-screw THREAD that sits inside the insert envelope.
+
+    Real geometry (parts/hardware.py): the screw datum z=0 is the shoulder↔thread
+    boundary, thread runs to -thread_length; the insert is seated z∈[-len, 0]. Only
+    the thread reaches z<=0, so screw∩insert == thread∩insert. ~1.0 = fully housed
+    (good grip, no bottoming past the insert).
+    """
+    screw = shoulder_screw_envelope()
+    insert = heatset_insert_envelope().translate((0, 0, -P.heatset_insert_length))
+    thread_vol = math.pi * (P.shoulder_screw_thread_diameter / 2) ** 2 \
+        * P.shoulder_screw_thread_length
+    try:
+        inter = _solid_volume(screw.intersect(insert))
+    except Exception:  # noqa: BLE001 — degenerate boolean → treat as no engagement
+        inter = 0.0
+    return inter / thread_vol if thread_vol else 0.0
+
+
+def _tilt_clearance(cup, yoke_origin):
+    """cup∩yoke volume at 0° and ±tilt_range, rotating the cup about the pivot axis.
+
+    The pivot axis is X through the cup mid-height (z=pivot_boss_z). Returns
+    (base, plus, minus). A real arm/body collision shows up as a large jump over
+    the 0° bearing overlap; the bearing itself is coaxial with the axis (invariant).
+    """
+    yoke = yoke_origin.translate((0, 0, P.pivot_boss_z))
+
+    def vol(angle):
+        c = cup.rotate((0, 0, P.pivot_boss_z), (1, 0, P.pivot_boss_z), angle)
+        try:
+            return _solid_volume(c.intersect(yoke))
+        except Exception:  # noqa: BLE001
+            return 0.0
+
+    return vol(0.0), vol(P.pivot_tilt_degrees), vol(-P.pivot_tilt_degrees)
+
+
 def main():
     print("Daily Driver — printability gate\n")
     print("Building printed parts in-process (part [warn]s below are the")
@@ -133,6 +180,36 @@ def main():
     # 6. Pivot boss spans deep enough to fully house the heat-set insert.
     r.hard(P.pivot_boss_through_span >= P.insert_boss_depth, "pivot-insert-depth",
            f"span {P.pivot_boss_through_span} mm >= insert {P.insert_boss_depth} mm")
+
+    # --- Pivot HARDWARE FIT — validated against the real M3 shoulder screw +
+    #     heat-set insert (parts/hardware.py), not a placeholder. ---
+
+    # 6a. Shoulder must span the yoke eye so the eye pivots on the SMOOTH shoulder,
+    #     not the thread.
+    r.hard(P.shoulder_screw_shoulder_length >= P.yoke_arm_thickness,
+           "pivot-shoulder-spans-eye",
+           f"shoulder {P.shoulder_screw_shoulder_length} mm >= eye {P.yoke_arm_thickness} mm")
+
+    # 6b. Thread fully engages the insert and doesn't bottom out past it
+    #     (geometric: thread solid ∩ insert envelope).
+    engage = _thread_engagement()
+    r.hard(engage >= MIN_THREAD_ENGAGE, "pivot-thread-engages-insert",
+           f"thread inside insert {engage:.2f} >= {MIN_THREAD_ENGAGE} (no bottoming)")
+
+    # 6c. Material around the INSTALLED insert OD (4.70, cq_warehouse-verified) in
+    #     the pivot boss — the conservative case vs the undersized install bore.
+    pivot_insert_wall = (P.pivot_boss_diameter - P.heatset_insert_diameter) / 2
+    r.hard(pivot_insert_wall >= MIN_BOSS_WALL, "pivot-insert-wall",
+           f"wall around insert {pivot_insert_wall:.2f} mm >= {MIN_BOSS_WALL} mm")
+
+    # 6d. ±tilt clearance IN-CAD (was an open test-print TODO in yoke.py): rotate
+    #     the cup through the full ±tilt_range about the pivot axis and confirm it
+    #     doesn't bite into the yoke beyond the bearing overlap it has at 0°.
+    base, plus, minus = _tilt_clearance(cup, yoke)
+    worst = max(plus, minus)
+    r.hard(worst <= base * (1 + MAX_TILT_EXTRA_FRAC), "pivot-tilt-clearance",
+           f"cup∩yoke at ±{P.pivot_tilt_degrees:.0f}° = {worst:.0f} mm³ vs 0° "
+           f"{base:.0f} mm³ (<= +{int(MAX_TILT_EXTRA_FRAC*100)}%)")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2

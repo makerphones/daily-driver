@@ -74,6 +74,25 @@ class Params:
     insert_boss_diameter: float = 7.0     # ESTIMATE  generic insert-boss OD
     insert_boss_depth: float = 6.0        # ESTIMATE  insert/bore depth
 
+    # ---- Pivot hardware: M3 shoulder screw + heat-set insert ----------------
+    # Real fastener geometry for the yoke↔cup pivot, so the gate validates fit
+    # against actual parts (see parts/hardware.py + the pivot gate checks).
+    # Insert dims are REF, VERIFIED against cq_warehouse 0.8.0 HeatSetNut
+    # "M3-0.5-Standard" / "McMaster-Carr" (measured OD 4.70, length 5.70).
+    # NOTE: m3_insert_hole_diameter (4.0) is the UNDERSIZED thermal-install bore for
+    # this 4.70 OD insert — correct by design (the brass melts/knurls into it), not
+    # a mismatch. Boss-wall checks use the 4.70 INSTALLED OD (conservative).
+    heatset_insert_diameter: float = 4.70   # REF  M3 insert installed OD (verified)
+    heatset_insert_length: float = 5.70     # REF  M3 insert length (verified)
+    # cq_warehouse has NO ShoulderScrew class, so the screw is composed from
+    # primitives; these are ESTIMATE / caliper-pending (measure the part you buy).
+    shoulder_screw_thread_diameter: float = 3.0    # M3 thread major dia
+    shoulder_screw_shoulder_diameter: float = 4.0  # ESTIMATE  smooth shoulder OD (≈4 on M3)
+    shoulder_screw_shoulder_length: float = 8.0    # ESTIMATE  bearing length the eye rides
+    shoulder_screw_thread_length: float = 5.0      # ESTIMATE  thread into insert (<= insert len)
+    shoulder_screw_head_diameter: float = 6.5      # ESTIMATE  head OD
+    shoulder_screw_head_height: float = 3.0        # ESTIMATE  head height
+
     # ---- Baffle plate (front-mount) -----------------------------------------
     baffle_outer_diameter: float = 77.0   # ESTIMATE  baffle_od (drops into id 78)
     baffle_thickness: float = 6.0         # ESTIMATE  baffle_th — 6 (was 4) leaves a

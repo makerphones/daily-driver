@@ -15,3 +15,13 @@ ocp_vscode==3.4.0
 # the OCP viewer problems. RENDER-ONLY: build.py imports render behind a guard and
 # the gate/CI never need it. NOT in requirements.txt (keeps the core build pure).
 matplotlib>=3.8
+
+# OPTIONAL accurate fastener geometry (parts/hardware.py): the heat-set insert in
+# the assembly visualisation. The gate + STL build use pure-cadquery primitive
+# envelopes, so this is NOT required for any check — it only sharpens the picture,
+# and hardware.py falls back to the primitive if it's absent or won't import.
+# cq_warehouse is git-only (not on PyPI), dormant since 2023, and has NO
+# ShoulderScrew class (so the screw is composed from primitives). Verified: 0.8.0
+# imports + builds HeatSetNut on this cadquery 2.7 / OCP 7.8 stack, and it declares
+# no runtime deps, so this line installs WITHOUT touching the pinned cadquery.
+cq_warehouse @ git+https://github.com/gumyr/cq_warehouse.git
