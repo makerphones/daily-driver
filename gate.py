@@ -85,8 +85,8 @@ def _grille_open_fraction(cup_wp, n=400):
         cls.Perform(gp_Pnt(x, y, z), 1e-7)
         return cls.State() in (TopAbs_IN, TopAbs_ON)
 
-    zone_r = P.grille_outer_ring_radius + P.grille_member_width / 2
-    zmid = P.wall_thickness / 2
+    zone_r = P.grille_outer_ring_radius + P.grille_outer_ring_width / 2
+    zmid = P.cup_back_thickness / 2
     step = 2 * zone_r / n
     mat = tot = 0
     for ix in range(n):
@@ -198,9 +198,11 @@ def main():
     r.hard(P.wall_thickness >= MIN_WALL, "wall-thickness",
            f"wall {P.wall_thickness} mm >= {MIN_WALL} mm floor")
 
-    # 3. Grille members >= printability floor.
-    r.hard(P.grille_member_width >= P.grille_member_min_width, "grille-member-width",
-           f"member {P.grille_member_width} mm >= {P.grille_member_min_width} mm floor")
+    # 3. Grille members >= printability floor (thinnest of ring/ring/spoke).
+    grille_min_member = min(P.grille_outer_ring_width, P.grille_inner_ring_width,
+                            P.grille_spoke_width)
+    r.hard(grille_min_member >= P.grille_member_min_width, "grille-member-width",
+           f"thinnest member {grille_min_member} mm >= {P.grille_member_min_width} mm floor")
 
     # 4. Grille open area within range (measured from geometry).
     of = _grille_open_fraction(cup)

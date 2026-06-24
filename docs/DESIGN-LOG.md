@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Form pass: rear grille echoes the makerphones mark
+
+Re-proportioned the rear grille from a uniform mesh into the **makerphones mark** —
+a center DOT + two concentric rings with the **outer ring ~2× the inner's weight**,
+plus thin structural spokes (the mark has none; they're the minimum to hold the
+rings). Re-derived from the live logo (`src/components/illustration/DriverMark.astro`
+/ `favicon.svg`): 64-grid outer r24/stroke5, inner r13.5/stroke2.5, dot r4.2 —
+scaled into the grille zone. Build 6/6, gate PASS.
+
+- **Per-element widths** replace the single `grille_member_width`:
+  `grille_outer_ring_width=6`, `grille_inner_ring_width=3` (the 2:1 mark ratio),
+  `grille_spoke_width=2` (×6, thin), `grille_hub_diameter` 16→10 (the dot),
+  rings at r17/r30 (logo radii). Gate updated: zone radius + the member-width
+  floor now use the per-element widths (thinnest member 2.0 ≥ 2.0).
+- **FLAGGED — brief-vs-spec tension on open area (do not silently resolve).** The
+  industrial-design brief wants the vent "**as open as possible**"; the spec/gate
+  target **~40% open (cap 0.50)** for controlled venting. A logo-faithful thin
+  grille is inherently open (~0.60 → over the cap). I leaned the rings heavier to
+  **land at open 0.486 — passes, near the open end** (honoring "as open as
+  possible" within the current ceiling). **Open decision for the human:** raise
+  the gate's 0.50 cap for a more-open, more-logo-faithful signature look (thinner
+  rings), or hold the 40% acoustic target. Resolve by ear/REW + taste, not silently.
+- Still open in the form pass: the warm-orange **accent ring** (geometry vs.
+  finish — the logo's dot is *the* accent, so the grille hub is the natural place)
+  and **yoke styling**.
+
+---
+
 ## 2026-06-24 — Form pass: chamfered cup back (direction "A")
 
 First real form-pass move on the cup — turning the bare cylinder into a

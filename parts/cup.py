@@ -76,18 +76,21 @@ def make_cup() -> cq.Workplane:
     #    P.grille_outer_ring_radius (its own value now). Built as an annular
     #    CUTTER (zone disc minus kept members), cut from the closed back. Cut
     #    BEFORE the bosses so nothing slices a boss.
-    w = P.grille_member_width
     r_out = P.grille_outer_ring_radius
     hub_r = P.grille_hub_diameter / 2
+    # (radius, width) per ring — the OUTER ring is the heavier one (echoes the mark).
     if P.grille_ring_count <= 1:
-        ring_radii = [r_out]
+        ring_specs = [(r_out, P.grille_outer_ring_width)]
     elif P.grille_ring_count == 2:
-        ring_radii = [P.grille_inner_ring_radius, r_out]
-    else:  # fill remaining rings evenly between inner and outer
+        ring_specs = [(P.grille_inner_ring_radius, P.grille_inner_ring_width),
+                      (r_out, P.grille_outer_ring_width)]
+    else:  # fill rings evenly; only the outermost gets the heavy width
         r_lo = P.grille_inner_ring_radius
         n = P.grille_ring_count
-        ring_radii = [r_lo + (r_out - r_lo) * k / (n - 1) for k in range(n)]
-    zone_r = r_out + w / 2  # outer edge of the outer ring = grille zone radius
+        ring_specs = [(r_lo + (r_out - r_lo) * k / (n - 1),
+                       P.grille_outer_ring_width if k == n - 1 else P.grille_inner_ring_width)
+                      for k in range(n)]
+    zone_r = r_out + P.grille_outer_ring_width / 2  # outer edge of the outer ring = zone
 
     z0 = -1.0
     cut_h = P.cup_back_thickness + 2.0          # pierce the full (thicker) back band
@@ -96,24 +99,24 @@ def make_cup() -> cq.Workplane:
         return cq.Workplane("XY").workplane(offset=z0).circle(radius).extrude(cut_h)
 
     zone = _disc(zone_r)
-    keep = _disc(hub_r)  # center hub
-    for rc in ring_radii:  # concentric rings (annuli of width w)
+    keep = _disc(hub_r)  # center DOT
+    for rc, rw in ring_specs:  # concentric rings (annuli of per-ring width)
         ring = (
             cq.Workplane("XY")
             .workplane(offset=z0)
-            .circle(rc + w / 2)
-            .circle(max(rc - w / 2, 0.01))
+            .circle(rc + rw / 2)
+            .circle(max(rc - rw / 2, 0.01))
             .extrude(cut_h)
         )
         keep = keep.union(ring)
-    for i in range(P.grille_spoke_count):  # radial spokes
+    for i in range(P.grille_spoke_count):  # thin radial spokes (structural only)
         ang = i * 360.0 / P.grille_spoke_count
         spoke = (
             cq.Workplane("XY")
             .workplane(offset=z0)
             .transformed(rotate=(0, 0, ang))
             .center(zone_r / 2, 0)
-            .rect(zone_r, w)
+            .rect(zone_r, P.grille_spoke_width)
             .extrude(cut_h)
         )
         keep = keep.union(spoke)

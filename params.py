@@ -42,16 +42,21 @@ class Params:
     # Remaining material = center hub + concentric rings + radial spokes; the
     # gaps open to the driver. The outer ring is now its OWN radius (no longer
     # pinned to the boss circle) — bosses moved out to the perimeter wall.
-    grille_hub_diameter: float = 16.0     # ESTIMATE  hub_dia — center disc
-    grille_ring_count: int = 2            # ESTIMATE  ring_count
-    grille_inner_ring_radius: float = 24.0  # ESTIMATE  inner_ring_r
-    grille_outer_ring_radius: float = 32.0  # ESTIMATE  outer_ring_r (decoupled)
-    grille_spoke_count: int = 8           # ESTIMATE  spoke_count
-    # member_w: spec suggested 3.0, but with these ring radii (inner 24 / outer 32)
-    # 3.0 yields ~0.51 open. Sized UP to 4.0 to hit grille_target_open_fraction
-    # (0.40, measured 0.40) while staying well above the 2 mm floor. Per the
-    # standing rule, member width is tuned to the open-area target, not fixed.
-    grille_member_width: float = 4.0      # ESTIMATE  member_w (tuned to 0.40 open)
+    # Grille echoes the makerphones mark (src DriverMark.astro): a center DOT + two
+    # concentric rings, the OUTER ring ~2× the inner's weight. Spokes aren't in the
+    # mark — they're the structural minimum to hold the rings (no fragile webs), so
+    # they're thin and few. Radii/widths re-derived from the logo's 64-grid
+    # proportions (outer r24/stroke5, inner r13.5/stroke2.5, dot r4.2) scaled into
+    # the grille zone; member widths tuned to keep open area ~0.40 (gate-measured)
+    # with every member ≥ the 2 mm print floor.
+    grille_hub_diameter: float = 10.0     # ESTIMATE  the center DOT (logo dome dot)
+    grille_ring_count: int = 2            # ESTIMATE  two concentric rings (the mark)
+    grille_inner_ring_radius: float = 17.0  # ESTIMATE  inner ring (logo 13.5/24 of outer)
+    grille_outer_ring_radius: float = 30.0  # ESTIMATE  outer ring (rim left for the chamfered back)
+    grille_outer_ring_width: float = 6.0  # ESTIMATE  outer ring weight (the heavier ring)
+    grille_inner_ring_width: float = 3.0  # ESTIMATE  inner ring weight (~½ outer, per the mark)
+    grille_spoke_count: int = 6           # ESTIMATE  structural spokes (the mark has none)
+    grille_spoke_width: float = 2.0       # ESTIMATE  thin spokes — rings/dot read, not spokes
     grille_member_min_width: float = 2.0  # HARD FLOOR — FDM printability minimum
     grille_target_open_fraction: float = 0.40  # ESTIMATE  target_open (~40%)
 
