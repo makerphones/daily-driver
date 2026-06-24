@@ -6,6 +6,26 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Accent dot in the assembly; head-orientation rework deferred (flagged)
+
+- **Orange dot live.** The assembly now places the warm-orange `grille_dot` at
+  both grille centres (and the retentioned headband pad is now in use). 20 children.
+- **FLAGGED, NOT rushed — the cup orientation / head kinematics / bow↔slider
+  connection is a frame re-derivation, deferred to a focused pass.** Why it's not
+  a quick pose tweak: (1) the pivot/tilt axis runs along the **same axis the two
+  ears are separated on** (the bow spans it), so a cup pivoting about it can never
+  face its pad toward the other ear — the inter-ear axis and the pivot axis must be
+  *separated*, i.e. a different head frame; (2) the slider's bow channel and the
+  bow's plane only coincide in the current (pads-up) frame, so re-orienting the
+  cups breaks the slider↔bow seating — which IS the "headband doesn't connect to
+  the slider" symptom. Doing it right means re-deriving the head frame + the
+  cup↔yoke base clocking (arch ⟂ pad) + the slider/bow planes, **and re-clocking
+  the over-rotation stop pin/slot 90°** to match the new rest pose (a real
+  follow-up — the stop is currently calibrated to the pads-up rest). Planned as
+  the next dedicated, render-verified pass. Build 8/8, gate PASS.
+
+---
+
 ## 2026-06-24 — Orange accent dot + headband pad retention
 
 - **Orange accent dot** (`parts/grille_dot.py`): the makerphones mark's dot is its

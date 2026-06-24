@@ -25,6 +25,7 @@ from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.bow import make_bow
 from parts.headband_pad import make_headband_pad
+from parts.grille_dot import make_grille_dot
 
 
 def make_assembly() -> cq.Assembly:
@@ -66,8 +67,11 @@ def make_assembly() -> cq.Assembly:
 
     # Per-ear parts: RIGHT as-posed, LEFT mirrored across the apex plane (true
     # mirror image — correct chirality for the opposite ear).
+    # grille_dot: the warm-orange accent cap at the cup's grille center.
+    grille_dot = make_grille_dot()
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
-                           ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C)):
+                           ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C),
+                           ("grille_dot", grille_dot, ORANGE)):
         asm.add(solid, name=f"{nm}_R", color=col)
         asm.add(solid.mirror("YZ", (mx, 0, 0)), name=f"{nm}_L", color=col)
 
