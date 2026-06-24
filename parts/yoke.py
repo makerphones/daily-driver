@@ -62,11 +62,28 @@ def make_yoke() -> cq.Workplane:
             .circle(P.yoke_pivot_eye_diameter / 2)
             .extrude(arm_t)
         )
-        # Eye→knee stays full width (the load end); knee→hub tapers to the slimmer
-        # hub width — a "considered" wishbone, and material kept on the load path.
-        bar_a = _bar((x, 0), (x, knee_z), arm_w, arm_w, arm_t)              # full, clears cup
-        bar_b = _bar((x, knee_z), (0, hub_z), arm_w, P.yoke_arm_hub_width, arm_t)  # taper to hub
-        arm = eye.union(bar_a).union(bar_b)
+        # Smooth curved arm (replaces the angular knee): go straight up the cup
+        # side to clear it, then a COSINE-EASED sweep in to the hub. The ease has a
+        # vertical tangent at the knee, matching the straight part → C1-continuous
+        # (no visible corner). Width tapers eye→hub along the path. Built from short
+        # tapered segments (robust; OCC sweep/fillet are unreliable on this build).
+        cpts = [(x, 0.0), (x, knee_z)]
+        n_up = 12
+        for i in range(1, n_up + 1):
+            u = i / n_up
+            cpts.append((x * math.cos(math.pi / 2 * u),          # |x|: arm_w → 0 (to hub)
+                         knee_z + (hub_z - knee_z) * u))
+        seg = [math.hypot(cpts[j + 1][0] - cpts[j][0], cpts[j + 1][1] - cpts[j][1])
+               for j in range(len(cpts) - 1)]
+        total = sum(seg)
+        arm = eye
+        acc = 0.0
+        for j in range(len(cpts) - 1):
+            s0, s1 = acc / total, (acc + seg[j]) / total
+            acc += seg[j]
+            w0 = arm_w + (P.yoke_arm_hub_width - arm_w) * s0
+            w1 = arm_w + (P.yoke_arm_hub_width - arm_w) * s1
+            arm = arm.union(_bar(cpts[j], cpts[j + 1], w0, w1, arm_t))
         yoke = arm if yoke is None else yoke.union(arm)
 
     # swivel hub at the top (axis Z), bore for the vertical slider pin

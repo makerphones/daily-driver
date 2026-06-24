@@ -6,6 +6,24 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-24 — Yoke: smooth curved arms (de-blocked)
+
+Replaced the yoke's angular straight-bar-with-knee arms with a **smooth curve**:
+straight up the cup side to clear it, then a **cosine-eased sweep into the hub**.
+The ease has a vertical tangent at the knee, matching the straight part, so it's
+C1-continuous — no visible corner. Build 6/6, gate PASS.
+
+- Geometry note: the cup forces the arm outward until it clears the top (~18 mm
+  above the pivot), then the arm must reach the centered hub — so the inward
+  travel is unavoidably in the upper span. The ease makes that read as a graceful
+  arch instead of a hard knee (the "blocky/angular" the human flagged).
+- Built from short tapered segments (12 up the ease), width still tapering
+  eye→hub — robust, since OCC sweep/fillet are unreliable here (the standing
+  junction-fillet warn is unchanged). Cup tilt clearance re-verified (512 vs
+  512 mm³) and the over-rotation stop still engages ≈±29°.
+
+---
+
 ## 2026-06-24 — Grille support lattice (stable, not brittle)
 
 The thin logo-grille spokes were weak/pokeable. Added a **fine concentric support
