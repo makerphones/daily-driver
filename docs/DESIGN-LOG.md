@@ -6,10 +6,13 @@ just the result. Newest entries at the top.
 
 ---
 
-## 2026-06-25 — Product #1 reaches print-prototype readiness + pipeline tooling
+## 2026-06-25 — Pipeline/process docs + DRAFT print guide (design NOT print-ready)
 
-Geometry unchanged; this is the wrap of tooling/process so #1 can be printed as a
-measurement jig and #2 starts from structure.
+Correction: an earlier draft of this entry called #1 "print-prototype ready" — it
+is NOT. The parts build + pass the printability linter, but the design still needs
+real work (measurements, fit, acoustics, the soft yoke, the headband pad, mechanism
+detail, + the maker's tweak list). Geometry unchanged here; this is the wrap of
+tooling/process. The print guide is a forward reference, clearly marked not-ready.
 - **`docs/print-guide.md`** — per-part orientation/supports/material, baseline
   settings, and the first-prototype order (baffle-first against a real driver →
   measure the pad mount → set cup OD → dry-fit → bow). The parts are gate-clean;

@@ -1,10 +1,15 @@
-# Print guide — Daily Driver (first-prototype)
+# Print guide — Daily Driver (DRAFT — NOT print-ready)
 
-The parts build 8/8 and pass the gate (0 HARD), so they're geometrically printable.
-This is the how-to-print layer: orientation, supports, material, and the order to
-print so the **first set is a measurement jig**, not a finished product — several
-dimensions are still `ESTIMATE`/`TBD` pending the Tier-1 measurements
-(`measurement-priorities.md`).
+> ⚠️ **The Daily Driver is not ready to print or assemble.** The parts *build*
+> (8/8) and pass the *printability* linter (0 HARD), but that's a low bar — the
+> DESIGN still needs significant work before a print-and-assemble: measurements,
+> fit, acoustics, mechanism detail, the soft yoke, the headband pad, and the
+> tweaks the maker is carrying (see "What's still open" below + the DESIGN-LOG).
+> This file is a **forward reference** for when it gets there, not a green light.
+
+When the design IS ready, this is the how-to-print layer — orientation, supports,
+material, and order. Even the earliest useful step (a baffle to check a driver) is
+gated on settling more than is settled today.
 
 > STLs export to `output/` (gitignored) via `python build.py`; they ship to builders
 > through tagged GitHub Releases, not the tree. STEP is exported alongside for
@@ -59,8 +64,23 @@ driver in it** before committing to the rest. It's flat and fast, and it validat
 - [ ] Note every real measurement back into `params.py` (overwrites the ESTIMATE),
       then **rebuild → gate → DESIGN-LOG → commit → push**.
 
-## What's still TBD before a "final" (not prototype) print
+## What's still open (why this isn't print-ready)
 
-From the DESIGN-LOG: the earpad mount Ø (→ cup OD), the bow geometry (→ ear spacing),
-the driver OD, and the lip extension/thickness. The first prototype exists to nail
-these — see `measurement-priorities.md` for which block printing vs which can wait.
+A design in progress, not a finished product. Known work before a real
+print-and-assemble — and the maker is carrying more:
+
+- **Measurements** — pad mount Ø (→ cup OD), bow geometry (→ fit), driver OD: all
+  still `ESTIMATE`/`TBD`.
+- **Earpad lip** — extension/thickness provisional (5 mm reaches ⌀100 = pad foam);
+  resize once the real pad groove is measured.
+- **Fit** — worn ear spacing / clamp / tilt unverified on a head.
+- **Acoustics** — driver choice (40 vs 50), damping, vent open-area: nothing tuned
+  or measured.
+- **Yoke** — stays a flat bracket; the soft round version waits on the build123d port.
+- **Headband pad** — explicitly a rough draft.
+- **Mechanism detail** — slider bolt-on + bow end-tab hole specs need calipers + a
+  real hardware fit.
+- **Flagged gate SOFT** — the over-rotation stop slot thins the eye web (0.7 mm).
+- **…and the maker's tweak list** — the items that prompted this note.
+
+See `measurement-priorities.md` for the measurement order once we're closer.
