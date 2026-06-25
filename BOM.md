@@ -11,7 +11,7 @@ project rule: never present a guessed price as confirmed).
 | Component | Qty | Source | Est. price | Flag |
 |---|---|---|---|---|
 | 40 mm dynamic driver, 32 Ω | 2 | Parts Express / Madisound | $8–18 | ESTIMATE |
-| Brainwavz HM5 velour ear pads | 1 pair | Brainwavz | $20–25 | ESTIMATE |
+| Dekoni Universal 100 mm ear pads (Beyer-type) | 1 pair | Dekoni Audio | $30–45 | ESTIMATE |
 | Beyerdynamic Metal Head Bow (or DIY 1095 spring steel) | 1 | north-america.beyerdynamic.com | ~$11 | REF |
 | M3 shoulder screw — yoke↔cup pivot (shoulder ⌀4 mm) | 4 | McMaster-Carr / hardware | ~$1.50 ea (~$6) | ESTIMATE |
 | M3 button/socket-head screw, ~6–10 mm — baffle | 8 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |

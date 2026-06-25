@@ -157,14 +157,13 @@ def make_cup() -> cq.Workplane:
     )
 
     # 5. Yoke pivot bosses — two external bosses at 0/180 on the cup side walls,
-    #    at mid-height, each a radial cylinder spanning THROUGH the wall (from an
-    #    inner lug to an outer seat) so it fully houses an M3 heat-set insert
-    #    bored from the outside. The fork's shoulder screw threads into it.
-    #    TODO: yoke_pivot_centres (88) is only ~2 mm proud of cup_od per side, so
-    #    the inner end is a small lug protruding into the cavity — fine here,
-    #    revisit the boss form when the real fork is measured.
-    r_out_boss = P.pivot_boss_outer_radius              # 44
-    r_in_boss = r_out_boss - P.pivot_boss_through_span  # 35
+    #    at mid-height, each a radial cylinder spanning the wall to an outer seat so
+    #    it fully houses an M3 heat-set insert bored from the outside. The fork's
+    #    shoulder screw threads into it. With the pad-driven 90 mm cup the wall is
+    #    6 mm, so the boss (span 9) is ~4 mm proud and its inner end now stops IN the
+    #    wall — no lug into the cavity (the old thin-wall lug is gone).
+    r_out_boss = P.pivot_boss_outer_radius              # 49 (yoke_pivot_centres/2)
+    r_in_boss = r_out_boss - P.pivot_boss_through_span  # 40 — inside the 6 mm wall
     span = P.pivot_boss_through_span
     zc = P.pivot_boss_z
     for sign in (+1, -1):

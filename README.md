@@ -59,7 +59,7 @@ spec is in [`docs/design-spec.md`](docs/design-spec.md).
 | Component | Source | Est. cost |
 |---|---|---|
 | 2× 40 mm driver, 32 Ω | Parts Express / Madisound | $8–18 |
-| 1× Brainwavz HM5 velour pads | Brainwavz | $20–25 |
+| 1× Dekoni Universal 100 mm pads (Beyer-type) | Dekoni Audio | $30–45 |
 | 1× spring steel arc (laser-cut, formed) | SendCutSend + form | $8–15 |
 | 8× M3 heat-set inserts | hardware / online | $1 |
 | 8× M3×8 mm button-head screws | hardware / online | $1 |

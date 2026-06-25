@@ -6,6 +6,33 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Switch to Dekoni 100 mm pad; cup OD → 90 (pad-driven)
+
+The maker chose the **Dekoni Audio Universal 100 mm** (Beyer-type) earpad as the
+target. Its outer foam is ⌀100 and the ear opening is ⌀60 (the 60 is the EAR hole,
+not the cup mount); the pad's skirt wraps a cup edge smaller than 100 — estimated
+**~90 mm** (exact TBD, maker will measure the pad's mounting lip). Build 8/8, gate
+PASS (0 HARD / 1 SOFT). Verified by a 2-agent adversarial pass.
+
+- **Cup OD decoupled + set to 90.** `cup_outer_diameter` is now a DIRECT,
+  pad-driven field (was a derived `id + 2·wall` = 84). The acoustic cavity
+  (`cup_interior_diameter`) is **kept at 78** on purpose — this is a pad/mounting
+  change, not an acoustic one — so the wall falls out at `(90−78)/2 = 6 mm`: a
+  roomier pad seat that also fully houses the pivot bosses. Added a derived
+  `cup_wall_thickness` helper; `wall_thickness` (3) is now just the min-wall floor.
+- **Pivot bosses cascade wider.** `yoke_pivot_centres` 92 → **98** so the boss
+  outer face stays ~4 mm proud of the wider 90 cup (`pivot_boss_outer_radius` 46 →
+  49). Bonus: with the 6 mm wall the boss inner end now stops *in* the wall
+  (r_in 40 vs cavity r 39) — the old thin-wall lug into the cavity is gone.
+- **Gate +1 HARD** (`cup-wall`: the pad-driven wall must clear the floor). Pivot
+  kinematics unchanged at the new span — tilt clearance 523 vs 523, over-rotation
+  stop still engages ≈±29°, all yoke webs structural.
+
+**OPEN:** measure the Dekoni pad's actual cup-mount opening and set
+`cup_outer_diameter` to it (the lip + pivot proud + everything regenerate).
+
+---
+
 ## 2026-06-25 — Earpad retaining lip → cup rim (DT770-style); baffle de-lipped
 
 The maker chose the DT770 approach (from a peeled-back-pad photo): the earpad slips

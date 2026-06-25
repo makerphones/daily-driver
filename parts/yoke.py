@@ -142,7 +142,7 @@ def make_yoke() -> cq.Workplane:
     except Exception as e:  # noqa: BLE001
         print(f"  [warn] yoke: junction fillet skipped ({e}).")
 
-    # Tilt clearance: with yoke_pivot_centres=92 the arms sit ~4 mm proud of the
+    # Tilt clearance: with yoke_pivot_centres=98 the arms sit ~4 mm proud of the
     # cup wall at Y=0. VERIFIED IN-CAD by gate.py (pivot-tilt-clearance): rotating
     # the cup through the full ±tilt_range about the pivot axis adds <1% to the 0°
     # cup∩yoke bearing overlap — the cup shell never reaches the arms (the boss is

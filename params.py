@@ -26,11 +26,18 @@ from dataclasses import dataclass
 @dataclass(frozen=True)
 class Params:
     # ---- Cup shell -----------------------------------------------------------
-    cup_interior_diameter: float = 78.0   # ESTIMATE  cup_id — acoustic void dia
+    cup_interior_diameter: float = 78.0   # ESTIMATE  cup_id — acoustic void dia (ear cavity)
     cup_depth: float = 30.0               # ESTIMATE  interior depth (driver→back)
-    wall_thickness: float = 3.0           # ESTIMATE  wall — 3 mm min shell
+    wall_thickness: float = 3.0           # ESTIMATE  min shell wall (floor). NB the cup's
+                                          #   own wall is thicker now — see cup_outer_diameter.
     wall_thickness_structural: float = 4.0  # ESTIMATE  at bosses / structural pts
-    # cup_od = 84 is derived (cup_outer_diameter property = id + 2*wall).
+    # cup_outer_diameter is a DIRECT, pad-driven dim now (was id+2*wall=84): the
+    # earpad mounts OVER the cup's outer rim, so the OD is set to the pad's
+    # cup-mount opening, not derived from the wall. TARGET PAD: Dekoni Universal
+    # 100 mm (Beyer-type) — outer foam ⌀100, ear opening ⌀60; the cup-mount opening
+    # is ~90 (TBD — measure the pad's mounting lip). The wall then falls out as
+    # (od−id)/2 = 6 mm: a roomy pad seat that also fully houses the pivot bosses.
+    cup_outer_diameter: float = 90.0      # ESTIMATE  pad-mount OD (Dekoni ~90; exact TBD)
     # ---- Form pass: chamfered back (direction "A", 2026-06-24) ----------------
     # The closed (grille) back is thickened past the side wall so a 45° outer
     # bevel reads without thinning the 3 mm side wall (the bevel lives entirely in
@@ -88,9 +95,10 @@ class Params:
     # an M3 heat-set bore (radial, outward-facing) for the fork shoulder-screw.
     pivot_boss_count: int = 2             # ESTIMATE  count (0/180)
     pivot_boss_diameter: float = 12.0     # ESTIMATE  external boss OD
-    # yoke_pivot_centres=92 puts the boss outer face ~4 mm proud of cup_od (84)
-    # per side — room for the boss + insert + fork-arm seat. The boss still spans
-    # THROUGH the wall (inside lug + outside seat) to fully house a 6 mm insert.
+    # yoke_pivot_centres=98 puts the boss outer face ~4 mm proud of cup_od (90)
+    # per side — room for the boss + insert + fork-arm seat. The boss spans the
+    # 6 mm wall + 4 mm proud (9 mm total); with the thicker wall its inner end now
+    # stops IN the wall (no lug into the cavity) while still housing the insert.
     pivot_boss_through_span: float = 9.0  # ESTIMATE  radial length across the wall
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
@@ -145,11 +153,9 @@ class Params:
     # derived helpers), so the baffle aperture/guard/vents stay coherent when the
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
-    # Earpad retaining lip — now a raised ring at the CUP's outer rim (DT770-style),
-    # NOT on the baffle. Its OD = cup_outer_diameter (the lip IS the cup's outer
-    # edge extended forward), so the lip sizes with the cup; to fit a given pad,
-    # set the cup OD (via cup_interior_diameter) to the pad's mounting opening.
-    # TARGET PAD: Brainwavz — exact opening TBD (measure the pad; may shrink the cup).
+    # Earpad retaining lip — a raised ring at the CUP's outer rim (DT770-style),
+    # NOT on the baffle. Its OD = cup_outer_diameter, so to fit a given pad set the
+    # cup OD to the pad's cup-mount opening (Dekoni Universal 100 mm → ~90, TBD).
     pad_lip_height: float = 3.5           # ESTIMATE  lip proud of the front rim (~Beyer's ~3 mm)
     pad_lip_wall: float = 2.5             # ESTIMATE  lip wall thickness (the pad slips OVER it)
     pad_lip_leadin: float = 0.8           # ESTIMATE  top chamfer so the pad slides on
@@ -194,9 +200,9 @@ class Params:
     adapter_seat_thickness: float = 2.0     # ESTIMATE  front seat floor the driver rests on
 
     # ---- Fork / yoke ---------------------------------------------------------
-    yoke_pivot_centres: float = 92.0      # ESTIMATE  pivot_centres (hole-to-hole);
-                                          #   92 (was 88) for boss + insert + arm room.
-                                          #   TODO: verify ±tilt clearance on a test print.
+    yoke_pivot_centres: float = 98.0      # ESTIMATE  pivot_centres (hole-to-hole);
+                                          #   98 (was 92) so the boss stays ~4 mm proud of
+                                          #   the wider 90 mm cup. TODO: verify ±tilt on a print.
     yoke_arm_width: float = 8.0           # ESTIMATE  arm_w (at the eye / load end)
     yoke_arm_hub_width: float = 5.0       # ESTIMATE  arm_w at the hub end — styling taper
                                           #   (slims toward the hub; >= structural floor)
@@ -288,8 +294,10 @@ class Params:
         return self.adapter_target_driver_od - 2 * self.driver_seat_ledge
 
     @property
-    def cup_outer_diameter(self) -> float:        # cup_od = 84
-        return self.cup_interior_diameter + 2 * self.wall_thickness
+    def cup_wall_thickness(self) -> float:
+        # the cup's ACTUAL radial wall = (od − id)/2; thicker than wall_thickness
+        # because the OD is pad-driven (gives the pad seat + houses the pivot bosses).
+        return (self.cup_outer_diameter - self.cup_interior_diameter) / 2
 
     @property
     def cup_total_height(self) -> float:

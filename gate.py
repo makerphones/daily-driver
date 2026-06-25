@@ -206,6 +206,11 @@ def main():
     r.hard(P.wall_thickness >= MIN_WALL, "wall-thickness",
            f"wall {P.wall_thickness} mm >= {MIN_WALL} mm floor")
 
+    # 2b. The cup's actual (pad-driven) wall must clear the floor too — it's the
+    #     pad seat AND the pivot-boss housing, so it can't go below the min wall.
+    r.hard(P.cup_wall_thickness >= MIN_WALL, "cup-wall",
+           f"cup wall {P.cup_wall_thickness:.1f} mm (= (od−id)/2) >= {MIN_WALL} mm floor")
+
     # 3. Grille members >= printability floor (thinnest of ring/ring/spoke).
     grille_min_member = min(P.grille_outer_ring_width, P.grille_inner_ring_width,
                             P.grille_spoke_width)

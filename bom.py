@@ -33,8 +33,8 @@ def bom_rows():
         # item, qty, source, price, flag
         ("40 mm dynamic driver, 32 Ω", f"{EARS}",
          "Parts Express / Madisound", "$8–18", "ESTIMATE"),
-        ("Brainwavz HM5 velour ear pads", "1 pair",
-         "Brainwavz", "$20–25", "ESTIMATE"),
+        ("Dekoni Universal 100 mm ear pads (Beyer-type)", "1 pair",
+         "Dekoni Audio", "$30–45", "ESTIMATE"),
         ("Beyerdynamic Metal Head Bow (or DIY 1095 spring steel)", "1",
          "north-america.beyerdynamic.com", "~$11", "REF"),
         (f"M3 shoulder screw — yoke↔cup pivot (shoulder ⌀{P.shoulder_screw_shoulder_diameter:.0f} mm)",
