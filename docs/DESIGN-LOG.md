@@ -6,6 +6,26 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Product #1 reaches print-prototype readiness + pipeline tooling
+
+Geometry unchanged; this is the wrap of tooling/process so #1 can be printed as a
+measurement jig and #2 starts from structure.
+- **`docs/print-guide.md`** — per-part orientation/supports/material, baseline
+  settings, and the first-prototype order (baffle-first against a real driver →
+  measure the pad mount → set cup OD → dry-fit → bow). The parts are gate-clean;
+  the first set exists to nail the Tier-1 unknowns.
+- **`docs/decision-tree.md`** — the order to lock choices (inputs → cup → mechanism
+  → chain → style).
+- **`docs/measurement-priorities.md`** — Tier 1 (blocks first print) vs Tier 2.
+- **`docs/starting-a-new-product.md`** — the product template (fork this repo;
+  reuse-vs-reset param map + the cross-cutting checklist).
+- **build123d eval** (in `cadquery-build-notes.md`) — it builds the round-tube yoke
+  OCC fragments; a planned port is the path to the soft yoke.
+- A public **/request intake form** went up on makerphones.com (backend-free,
+  unlinked) + the `/headphone-intake` skill for here.
+
+---
+
 ## 2026-06-25 — Pipeline docs: build-notes + new-build intake (process, not geometry)
 
 Captured the program-level process so product #2+ start from structure, not a blank
