@@ -199,25 +199,26 @@ def make_cup() -> cq.Workplane:
     #    step 2b (the form pass "set the outer profile"), so the old no-op outer-
     #    wall fillet — which only ever warned on the bare cylinder — is retired.
 
-    # 7. Earpad RETAINING LIP (DT770-style) — a raised ring at the cup's front
-    #    OUTER rim that the earpad slips over, so pad retention lives on the
-    #    structural cup, not the baffle. The lip is the outer wall continued
-    #    forward: outer radius = cup od/2, wall = pad_lip_wall inward, standing
-    #    pad_lip_height proud of the front rim. A lead-in chamfer on the top outer
-    #    edge eases the pad on; the pad seats on the rim/baffle face inside the lip.
-    lip_or = od / 2
-    lip_ir = lip_or - P.pad_lip_wall
-    lip = (
+    # 7. Earpad RETAINING FLANGE (DT770-style) — a thin brim at the cup's front
+    #    OUTER edge that extends the perimeter OUTWARD (radially), so the earpad's
+    #    skirt wraps over it and hooks BEHIND it. It sticks OUT toward the perimeter,
+    #    NOT up toward the head, so the baffle stays flush (not recessed). The brim
+    #    sits at the front edge (top flush with the rim); below it the wall steps
+    #    back in, giving the pad skirt an undercut to grip. A lead-in chamfer on the
+    #    outer-front corner eases the pad over.
+    flange_ir = od / 2 - 1.0                          # overlap the wall → solid union
+    flange_or = od / 2 + P.pad_lip_extension          # brim sticks OUT to here
+    flange = (
         cq.Workplane("XY")
-        .workplane(offset=total_h)
-        .circle(lip_or).circle(lip_ir)
-        .extrude(P.pad_lip_height)
+        .workplane(offset=total_h - P.pad_lip_thickness)
+        .circle(flange_or).circle(flange_ir)
+        .extrude(P.pad_lip_thickness)
     )
     try:
-        lip = lip.edges(">Z").chamfer(P.pad_lip_leadin)
-    except Exception as e:  # noqa: BLE001 — report, don't mask; the lip still stands
-        print(f"  [warn] cup: pad-lip lead-in chamfer skipped ({e}).")
-    cup = cup.union(lip)
+        flange = flange.edges(">Z").chamfer(P.pad_lip_leadin)
+    except Exception as e:  # noqa: BLE001 — report, don't mask; the flange still stands
+        print(f"  [warn] cup: pad-flange lead-in chamfer skipped ({e}).")
+    cup = cup.union(flange)
 
     return cup
 

@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Earpad lip: radial FLANGE (corrected direction)
+
+The cup lip was extruding the wrong way — an axial wall ringing the baffle's
+perimeter (toward the head), which made the baffle look recessed. Corrected per the
+maker: the lip is now a radial **flange** at the cup's front OUTER edge that extends
+the perimeter OUTWARD (the DT770 "extension of the circumference"), so the pad's
+skirt wraps over it and hooks BEHIND. The brim sticks out (to ~r 49), the wall steps
+back behind it (the pad's grip undercut), and the **baffle sits flush** (not
+recessed) — confirmed by a y=0 cross-section. Build 8/8, gate 0 HARD / 1 SOFT.
+
+- Params: replaced `pad_lip_height`/`pad_lip_wall` with `pad_lip_extension` (3 mm,
+  radial) + `pad_lip_thickness` (4 mm, axial); kept `pad_lip_leadin`.
+- Gate: swapped `pad-lip-wall`/`pad-lip-clears-baffle` for `pad-flange-extension`
+  /`pad-flange-thickness` (both printable).
+
+**OPEN:** exact flange size TBD — measure the Dekoni pad's mounting skirt/groove.
+
+---
+
 ## 2026-06-25 — Wraparound yoke (follows the cup, oval, more top clearance)
 
 Restyled the yoke from a straight wishbone to a bracket that **wraps the round

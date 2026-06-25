@@ -341,13 +341,12 @@ def main():
     r.hard(boss_wall >= MIN_BOSS_WALL, "boss-bore-wall",
            f"wall around insert {boss_wall:.1f} mm >= {MIN_BOSS_WALL} mm")
 
-    # 9. Earpad retaining lip on the CUP rim — printable wall, and its inner bore
-    #    must clear the baffle so the baffle still seats inside the lip.
-    r.hard(P.pad_lip_wall >= MIN_WALL, "pad-lip-wall",
-           f"lip wall {P.pad_lip_wall} mm >= {MIN_WALL} mm")
-    lip_ir = P.cup_outer_diameter / 2 - P.pad_lip_wall
-    r.hard(lip_ir >= P.baffle_outer_diameter / 2, "pad-lip-clears-baffle",
-           f"lip inner r {lip_ir:.1f} mm >= baffle r {P.baffle_outer_diameter / 2:.1f} mm")
+    # 9. Earpad retaining FLANGE at the cup's front outer edge — printable in both
+    #    the radial (extension) and axial (thickness) directions.
+    r.hard(P.pad_lip_extension >= MIN_WALL, "pad-flange-extension",
+           f"flange sticks out {P.pad_lip_extension} mm >= {MIN_WALL} mm")
+    r.hard(P.pad_lip_thickness >= MIN_WALL, "pad-flange-thickness",
+           f"flange thickness {P.pad_lip_thickness} mm >= {MIN_WALL} mm")
 
     print("\n— SOFT checks (warn, do not fail) —")
 

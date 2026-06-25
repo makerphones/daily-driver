@@ -153,12 +153,14 @@ class Params:
     # derived helpers), so the baffle aperture/guard/vents stay coherent when the
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
-    # Earpad retaining lip — a raised ring at the CUP's outer rim (DT770-style),
-    # NOT on the baffle. Its OD = cup_outer_diameter, so to fit a given pad set the
-    # cup OD to the pad's cup-mount opening (Dekoni Universal 100 mm → ~90, TBD).
-    pad_lip_height: float = 3.5           # ESTIMATE  lip proud of the front rim (~Beyer's ~3 mm)
-    pad_lip_wall: float = 2.5             # ESTIMATE  lip wall thickness (the pad slips OVER it)
-    pad_lip_leadin: float = 0.8           # ESTIMATE  top chamfer so the pad slides on
+    # Earpad retaining FLANGE — a thin brim at the CUP's front OUTER edge that
+    # extends the perimeter OUTWARD (DT770-style "extension of the circumference"),
+    # so the earpad's skirt wraps over it and hooks behind. It sticks OUT radially,
+    # NOT up toward the head, so the baffle stays flush (not recessed). Exact size is
+    # TBD — measure the Dekoni pad's mounting skirt/groove.
+    pad_lip_extension: float = 3.0        # ESTIMATE  how far the flange sticks OUT (radial)
+    pad_lip_thickness: float = 4.0        # ESTIMATE  flange thickness (axial)
+    pad_lip_leadin: float = 0.8           # ESTIMATE  chamfer on the outer-front edge (eases the pad)
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance
     baffle_counterbore_depth: float = 2.5     # ESTIMATE  head sinks below front
     baffle_vent_count: int = 6            # ESTIMATE  small controlled-vent holes
