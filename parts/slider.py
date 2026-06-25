@@ -2,15 +2,17 @@
 # SPDX-License-Identifier: MIT
 
 """
-Slider — rides the bow, carries the fork (v0.3 engineering pass).
+Slider — BOLTS to the bow end tab, carries the fork (v0.3 engineering pass).
 
-A clamp block with a vertical channel that rides the bow (height adjust), a
-vertical swivel bore at the bottom that mates the fork's swivel hub (the swivel
-joint), and an M3 grub-screw boss on the back that presses a friction pad onto
-the bow to set the height.
+The band's end tab fastens to the slider's INSIDE (head-side, -Y) face with two
+M3 screws (into heat-set inserts), matching the bow's two holes per end — a
+positive bolt-on, not the old friction clamp-ride. A shallow seat pocket on the
+-Y face registers the tab; a vertical swivel bore at the bottom mates the fork's
+swivel hub. The two mount bores sit ABOVE the swivel bore (and the pair straddles
+the centre across X) so they stay clear of it.
 
-Frame: block centred on the origin. The bow channel is on the -Y face (head
-side); the grub boss on the +Y face (back). All dimensions ESTIMATES (params.py).
+Frame: block centred on the origin. Tab seat + mount bores on the -Y face; swivel
+bore at the bottom. All dimensions ESTIMATES (params.py).
 """
 
 import cadquery as cq
@@ -18,48 +20,47 @@ from params import P
 
 
 def make_slider() -> cq.Workplane:
-    w = P.slider_block_width      # X — wide enough to wall the 33 mm bow channel
+    w = P.slider_block_width      # X — hosts the 33 mm tab + the across-width bores
     d = P.slider_block_depth      # Y
     h = P.slider_block_height     # Z
 
     slider = cq.Workplane("XY").box(w, d, h)
 
-    # Vertical bow channel on the -Y face: bow runs vertically (Z) for height
-    # adjust. Width = slider_bow_channel_width (X), depth = channel_depth (Y).
-    ch_w = P.slider_bow_channel_width
-    ch_d = P.slider_bow_channel_depth
-    channel = (
+    # Tab seat on the -Y (inside / head-side) face: a shallow pocket the band's end
+    # tab registers into. (Was a sliding channel; the band now BOLTS here — it does
+    # not ride.) Width = slider_tab_seat_width (X), shallow depth (Y), full Z.
+    seat_w = P.slider_tab_seat_width
+    seat_d = P.slider_tab_seat_depth
+    floor_y = -d / 2 + seat_d                    # +Y face of the pocket (tab seats here)
+    seat = (
         cq.Workplane("XY")
-        .workplane(offset=0)
-        .center(0, -d / 2 + ch_d / 2)          # sit against the -Y face
-        .box(ch_w, ch_d + 0.2, h + 2, centered=(True, True, True))
+        .center(0, -d / 2 + seat_d / 2)          # sit against the -Y face
+        .box(seat_w, seat_d + 0.2, h + 2, centered=(True, True, True))
     )
-    slider = slider.cut(channel)
+    slider = slider.cut(seat)
 
-    # Swivel bore at the bottom (axis Z) — takes the fork swivel-hub pin.
+    # Two M3 mount bores through the seat floor (axis +Y) — the band end tab bolts
+    # to this inside face with two screws (heat-set inserts in the slider), spaced
+    # at the band's end-hole pitch ACROSS the width and set high so they clear the
+    # swivel bore below. Screws enter from the inside (head side).
+    bore_r = P.m3_insert_hole_diameter / 2
+    s = P.bow_endtab_hole_spacing / 2            # half-pitch across width (X)
+    mount_z = P.slider_mount_bore_z              # above the swivel bore
+    for x in (+s, -s):
+        bore = cq.Solid.makeCylinder(
+            bore_r, P.insert_boss_depth,
+            cq.Vector(x, floor_y, mount_z), cq.Vector(0, 1, 0))
+        slider = slider.cut(cq.Workplane(obj=bore))
+
+    # Swivel bore at the bottom (axis Z) — takes the fork swivel-hub pin. Fixed
+    # depth (hosts the hub) so it stays below the mount bores.
     swivel = (
         cq.Workplane("XY")
         .workplane(offset=-h / 2 - 1)
         .circle(P.slider_swivel_bore / 2)
-        .extrude(h * 0.75)                      # up from the bottom, not through
+        .extrude(P.yoke_swivel_hub_height + 1)   # up from the bottom, not through
     )
     slider = slider.cut(swivel)
-
-    # M3 grub-screw boss on the +Y face, set high enough to clear the swivel bore
-    # below. The grub threads in and presses a friction pad onto the bow. Built
-    # with explicit Y-axis cylinders (named-plane normals are easy to get wrong).
-    grub_z = h / 2 - 6.0                         # ESTIMATE: upper third, clears swivel
-    boss_len = 4.0
-    boss = cq.Solid.makeCylinder(
-        3.5, boss_len, cq.Vector(0, d / 2, grub_z), cq.Vector(0, 1, 0)
-    )
-    slider = slider.union(cq.Workplane(obj=boss))
-    grub_len = d / 2 + boss_len + ch_d + 0.5     # through boss + block into channel
-    grub = cq.Solid.makeCylinder(
-        P.slider_grub_hole_diameter / 2, grub_len,
-        cq.Vector(0, d / 2 + boss_len, grub_z), cq.Vector(0, -1, 0)
-    )
-    slider = slider.cut(cq.Workplane(obj=grub))
 
     return slider
 

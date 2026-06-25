@@ -303,12 +303,27 @@ def main():
     # The slider rides the measured 33 mm band: its channel must clear the strap
     # width and the block must wall the channel. (The bow's end mounting holes
     # raise a ride-vs-bolt-on mechanism question — flagged in DESIGN-LOG.)
-    r.hard(P.slider_bow_channel_width >= P.bow_width + 0.5, "slider-channel-fits-bow",
-           f"channel {P.slider_bow_channel_width} mm >= bow {P.bow_width} + 0.5 clr")
-    r.hard(P.slider_block_width >= P.slider_bow_channel_width + 2 * MIN_WALL,
-           "slider-channel-walls",
-           f"block {P.slider_block_width} mm >= channel {P.slider_bow_channel_width} "
+    r.hard(P.slider_tab_seat_width >= P.bow_width + 0.5, "slider-seat-fits-bow",
+           f"seat {P.slider_tab_seat_width} mm >= bow {P.bow_width} + 0.5 clr")
+    r.hard(P.slider_block_width >= P.slider_tab_seat_width + 2 * MIN_WALL,
+           "slider-seat-walls",
+           f"block {P.slider_block_width} mm >= seat {P.slider_tab_seat_width} "
            f"+ 2×{MIN_WALL} wall")
+
+    # Slider bolt-on geometry: the two tab-mount bores must clear the swivel bore
+    # below, sit within the block, and the across-width pair must fit the tab seat.
+    swivel_top = -P.slider_block_height / 2 + P.yoke_swivel_hub_height
+    bore_r = P.m3_insert_hole_diameter / 2
+    r.hard(P.slider_mount_bore_z - bore_r > swivel_top, "slider-mount-clears-swivel",
+           f"mount z {P.slider_mount_bore_z} (−r) above swivel top {swivel_top:.1f} mm")
+    r.hard(P.slider_mount_bore_z + bore_r + MIN_BOSS_WALL <= P.slider_block_height / 2,
+           "slider-mount-in-block",
+           f"mount z {P.slider_mount_bore_z} +r+{MIN_BOSS_WALL} cap within block half-height "
+           f"{P.slider_block_height / 2:.1f} mm")
+    r.hard(P.bow_endtab_hole_spacing + P.m3_insert_hole_diameter <= P.slider_tab_seat_width,
+           "slider-mount-bores-in-seat",
+           f"pitch {P.bow_endtab_hole_spacing} + bore {P.m3_insert_hole_diameter} "
+           f"<= seat {P.slider_tab_seat_width} mm")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2

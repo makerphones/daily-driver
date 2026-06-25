@@ -205,18 +205,18 @@ class Params:
     yoke_swivel_hub_height: float = 12.0  # ESTIMATE  hub height (along the pin)
     pivot_tilt_degrees: float = 20.0      # ESTIMATE  tilt_range (±)
 
-    # ---- Slider (rides the bow) ---------------------------------------------
-    # NOTE: the measured bow is 33 mm wide, so the block + channel grew to ride it
-    # (were 22/17 for a 16 mm bow). The bow's end MOUNTING HOLES raise an open
-    # mechanism question — telescoping clamp-ride (this part) vs bolt-on at the end
-    # tabs — flagged in DESIGN-LOG, not resolved here.
-    slider_block_width: float = 42.0      # ESTIMATE  block w (X) — walls the 33 mm bow channel
+    # ---- Slider (BOLTS to the bow end tab) ----------------------------------
+    # MECHANISM (decided): the band's end tab bolts to the slider's inside (-Y)
+    # face with two M3 screws (the bow's 2 holes/end), not a friction clamp-ride.
+    # The block + tab seat are sized for the measured 33 mm band (were 22/17 for a
+    # 16 mm bow). The 2 mount bores sit above the swivel bore and straddle X.
+    slider_block_width: float = 42.0      # ESTIMATE  block w (X) — hosts the 33 mm tab + bores
     slider_block_height: float = 26.0     # ESTIMATE  block h (Z)
     slider_block_depth: float = 16.0      # ESTIMATE  block d (Y)
-    slider_bow_channel_width: float = 34.0  # ESTIMATE  bow_channel_w (measured bow 33 + 1 clr)
-    slider_bow_channel_depth: float = 2.0   # ESTIMATE  bow_channel_d
+    slider_tab_seat_width: float = 34.0   # ESTIMATE  tab-seat width (measured bow 33 + 1 clr)
+    slider_tab_seat_depth: float = 2.0    # ESTIMATE  tab-seat depth (registers the tab)
     slider_swivel_bore: float = 6.0       # ESTIMATE  mates the fork swivel hub
-    slider_grub_hole_diameter: float = 2.5  # ESTIMATE  M3 grub tap (friction)
+    slider_mount_bore_z: float = 9.0      # ESTIMATE  height of the 2 tab-mount bores (clears swivel; ≥2 mm top cap)
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first
@@ -235,9 +235,15 @@ class Params:
     bow_worn_radius: float = 78.0         # ESTIMATE  flexed-on-head radius; sets ear spacing
                                           #   (~156 mm cups). The band springs open from the
                                           #   63.5 at-rest; developed length is conserved.
-    bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia
+    bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia (M3 clr)
     bow_endtab_hole_spacing: float = 14.0  # ESTIMATE/REF  along-band pitch of the 2 end holes
     bow_endtab_width: float = 33.0        # ESTIMATE/REF  end-tab width (= strap width)
+    # X-truss cutout (the maker's reference band): two outer rails braced by
+    # crossing diagonal struts over the central span; solid end tabs carry the holes.
+    bow_endtab_length: float = 28.0       # ESTIMATE  solid end-tab arc length (holds the 2 holes)
+    bow_rail_width: float = 4.0           # ESTIMATE  outer rail width (Y) flanking the truss
+    bow_strut_width: float = 3.5          # ESTIMATE  X-brace diagonal strut width
+    bow_truss_bays: int = 6               # ESTIMATE  number of X cells along the central span
     # bow_arc_degrees / bow_worn_arc_degrees are DERIVED (helpers below): both
     # conserve bow_developed_length, so the relaxed and flexed bands are one strap.
 

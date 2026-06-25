@@ -6,6 +6,39 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Headband X-truss + bolt-on slider (mechanism decided)
+
+The maker settled the band styling AND the attachment mechanism. Build 8/8, gate
+PASS (0 HARD / 1 SOFT). Verified by a 3-agent adversarial pass (geometry /
+faithfulness / consistency) — no blockers.
+
+- **Bow X-truss.** The reference band's central span is now an **X-truss** — two
+  outer rails (`bow_rail_width` 4) braced by crossing diagonal struts
+  (`bow_strut_width` 3.5) over `bow_truss_bays` (6) cells — replacing the solid
+  strap, matching the maker's fabricated reference band. Solid end tabs
+  (`bow_endtab_length` 28) are left to carry the holes. Cut per-bay via radial
+  polygon prisms (`_radial_cutter`): four void triangles leave the X; the band
+  stays one valid solid.
+- **Two holes per end, across the width.** The band bolts to the slider with two
+  M3 screws per end. The pair sits side-by-side **across** the tab width (pitch
+  `bow_endtab_hole_spacing` 14) so it resists tab twist *and* the slider's two
+  bores clear its central swivel bore.
+- **Slider → BOLT-ON.** Reworked from the friction clamp-ride to a positive
+  bolt-on: the band end tab fastens to the slider's **inside** (−Y, head-side)
+  face via two heat-set-insert bores at `slider_mount_bore_z` (above the swivel).
+  The grub-screw boss + `slider_grub_hole_diameter` were removed. A shallow
+  tab-seat pocket registers the tab.
+- **Gate +3 HARD**: mount bores clear the swivel / fit within the block (≥2 mm
+  insert top cap) / the across-width pair fits the tab seat.
+- Post-verify polish: renamed the slider's `channel` → `tab_seat` (it's a bolt
+  seat now, not a slide) and lowered the mount bore for a ≥2 mm insert cap.
+
+This **resolves the ride-vs-bolt mechanism fork → bolt-on**. Still ESTIMATE: the
+hole dia/pitch + end-tab geometry (confirm against the real tab) and the worn
+radius / head-fit.
+
+---
+
 ## 2026-06-25 — Bow → MEASURED Beyer head bow + flexed worn pose
 
 **First real-world data into the design.** The maker measured the actual

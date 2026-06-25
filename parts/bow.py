@@ -44,6 +44,19 @@ def _arc_band(ri, ro, deg_half, y_width):
     )
 
 
+def _radial_cutter(profile, a_deg, R, depth=6.0):
+    """A polygonal prism that pierces the thin band. `profile` is (s, y) points in a
+    frame tangent to the arc at a_deg (s = along-arc, y = band width), extruded
+    ±depth radially so it fully cuts the band despite the arc's curvature.
+    """
+    a = math.radians(a_deg)
+    radial = (math.cos(a), 0.0, math.sin(a))
+    tang = (-math.sin(a), 0.0, math.cos(a))
+    origin = (R * math.cos(a), 0.0, R * math.sin(a))
+    plane = cq.Plane(origin=origin, xDir=tang, normal=radial)
+    return cq.Workplane(plane).polyline(profile).close().extrude(depth, both=True)
+
+
 def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     """Reference band. Defaults to the MEASURED at-rest geometry (params); the
     assembly passes the flexed (worn) radius/arc so the same strap can be posed
@@ -55,26 +68,47 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     half_arc = arc / 2
 
     # 1. Band: thin arc (thickness th, radial) × width (along Y), over the top.
-    #    A clean strap — the real band's relief/cutout styling (cf. the maker's
-    #    X-pattern band) is a separate pass and not modelled into the bought part.
-    band = _arc_band(R - th / 2, R + th / 2, half_arc, P.bow_width)
+    W = P.bow_width
+    band = _arc_band(R - th / 2, R + th / 2, half_arc, W)
 
-    # 2. End-tab MOUNTING HOLES — where the slider mechanism fastens. Two per end,
-    #    marching INBOARD from each tip along the band, centred across the width
-    #    (matches the measured Beyer end tab). Drilled radially through the band
-    #    thickness. Hole dia + along-band pitch are ESTIMATE; the count (2/end) +
-    #    along-band layout are inferred from the real part / the maker's reference
-    #    band — confirm all of it with a caliper read.
+    # 2. X-TRUSS cutout over the central span — two outer rails braced by crossing
+    #    diagonal struts (the maker's reference band): lightens the strap and gives
+    #    it the signature look while keeping a continuous load path. Solid end tabs
+    #    (bow_endtab_length) are left intact to carry the mounting holes. Each cell
+    #    cuts four void triangles (top/bottom/left/right), leaving an X of material.
+    a_start, a_end = 90 - half_arc, 90 + half_arc
+    tab_ang = math.degrees(P.bow_endtab_length / R)      # solid end-tab span
+    a_lo, a_hi = a_start + tab_ang, a_end - tab_ang
+    yin = W / 2 - P.bow_rail_width                        # rail inner edge (y)
+    n = P.bow_truss_bays
+    ang_bay = (a_hi - a_lo) / n
+    sw = P.bow_strut_width
+    for i in range(n):
+        a_c = a_lo + (i + 0.5) * ang_bay
+        hs = math.radians(ang_bay) * R / 2               # half bay arc-length (mm)
+        voids = [
+            [(-hs + sw, yin), (hs - sw, yin), (0.0, sw)],        # top
+            [(-hs + sw, -yin), (hs - sw, -yin), (0.0, -sw)],     # bottom
+            [(-hs, yin - sw), (-hs, -yin + sw), (-sw, 0.0)],     # left
+            [(hs, yin - sw), (hs, -yin + sw), (sw, 0.0)],        # right
+        ]
+        for v in voids:
+            band = band.cut(_radial_cutter(v, a_c, R))
+
+    # 3. End-tab MOUNTING HOLES — the band bolts to the slider's inside face with
+    #    two M3 screws per end. Two holes side-by-side ACROSS the tab width (the
+    #    pair resists the tab twisting, and the slider's two bores then clear its
+    #    central swivel bore), set in from each tip. Drilled radially through the
+    #    band thickness. Layout is ESTIMATE — confirm against the real tab.
     hole_r = P.bow_endtab_hole_diameter / 2
-    margin = math.degrees(6.0 / R)                       # first hole, in from the tip
-    pitch = math.degrees(P.bow_endtab_hole_spacing / R)  # along-band hole pitch
+    s = P.bow_endtab_hole_spacing / 2                    # half-pitch across width (y)
+    inset = math.degrees(10.0 / R)                       # holes set in from the tip
     for end_sign in (+1, -1):
-        a_tip = 90 + end_sign * half_arc                 # the band tip
-        for k in (0, 1):                                 # both holes land on the band
-            phi = math.radians(a_tip - end_sign * (margin + k * pitch))
-            radial = cq.Vector(math.cos(phi), 0, math.sin(phi))
-            base = cq.Vector(R * math.cos(phi), 0, R * math.sin(phi)) - radial * 2
-            drill = cq.Solid.makeCylinder(hole_r, 4.0, base, radial)
+        a = math.radians(90 + end_sign * (half_arc - inset))
+        radial = cq.Vector(math.cos(a), 0, math.sin(a))
+        base0 = cq.Vector(R * math.cos(a), 0, R * math.sin(a)) - radial * 2
+        for y in (+s, -s):
+            drill = cq.Solid.makeCylinder(hole_r, 4.0, base0 + cq.Vector(0, y, 0), radial)
             band = band.cut(cq.Workplane(obj=drill))
 
     return band
