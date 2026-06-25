@@ -44,7 +44,8 @@ class Params:
     # this back band). The acoustic air space behind the baffle is unchanged — only
     # the grille substrate gets deeper and the cup ~3 mm taller. See DESIGN-LOG.
     cup_back_thickness: float = 6.0       # ESTIMATE  closed-back depth (grille substrate)
-    cup_back_chamfer: float = 5.5         # ESTIMATE  ~45° back-outer bevel (< back thickness)
+    cup_back_round: float = 5.5           # soft-form ROUNDOVER radius on the back-outer edge
+                                          #   (was a 45° chamfer; a fillet is a softer transition)
 
     # ---- Rear vent grille (DECOUPLED from the baffle bosses, v0.3) -----------
     # Remaining material = center hub + concentric rings + radial spokes; the
@@ -158,9 +159,9 @@ class Params:
     # so the earpad's skirt wraps over it and hooks behind. It sticks OUT radially,
     # NOT up toward the head, so the baffle stays flush (not recessed). Exact size is
     # TBD — measure the Dekoni pad's mounting skirt/groove.
-    pad_lip_extension: float = 3.0        # ESTIMATE  how far the flange sticks OUT (radial)
-    pad_lip_thickness: float = 4.0        # ESTIMATE  flange thickness (axial)
-    pad_lip_leadin: float = 0.8           # ESTIMATE  chamfer on the outer-front edge (eases the pad)
+    pad_lip_extension: float = 5.0        # ESTIMATE  how far the flange sticks OUT (radial)
+    pad_lip_thickness: float = 2.0        # ESTIMATE  flange thickness (axial) — thin printed lip
+    pad_lip_round: float = 0.8            # soft-form roundover on the brim edges (eases the pad + feel)
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance
     baffle_counterbore_depth: float = 2.5     # ESTIMATE  head sinks below front
     baffle_vent_count: int = 6            # ESTIMATE  small controlled-vent holes
@@ -229,6 +230,7 @@ class Params:
     slider_tab_seat_depth: float = 2.0    # ESTIMATE  tab-seat depth (registers the tab)
     slider_swivel_bore: float = 6.0       # ESTIMATE  mates the fork swivel hub
     slider_mount_bore_z: float = 9.0      # ESTIMATE  height of the 2 tab-mount bores (clears swivel; ≥2 mm top cap)
+    slider_block_fillet: float = 2.5      # soft-form roundover on the block edges (hand feel)
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first

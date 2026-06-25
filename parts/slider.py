@@ -26,6 +26,14 @@ def make_slider() -> cq.Workplane:
 
     slider = cq.Workplane("XY").box(w, d, h)
 
+    # Soft-form pass: round ALL block edges into a hand-friendly form BEFORE cutting
+    # the pocket/bores — OCC on this build declines fillets once a part has pockets,
+    # so the roundover must go on the clean box first.
+    try:
+        slider = slider.edges().fillet(P.slider_block_fillet)
+    except Exception as e:  # noqa: BLE001 — report, don't mask; block still prints
+        print(f"  [warn] slider: block fillet skipped ({e}).")
+
     # Tab seat on the -Y (inside / head-side) face: a shallow pocket the band's end
     # tab registers into. (Was a sliding channel; the band now BOLTS here — it does
     # not ride.) Width = slider_tab_seat_width (X), shallow depth (Y), full Z.

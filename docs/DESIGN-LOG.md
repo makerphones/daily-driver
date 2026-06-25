@@ -6,6 +6,36 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Soft-form pass (cup + slider) + thinner lip; yoke hit a build wall
+
+Softening the design's hard 90° edges for a better in-hand feel — within what this
+OCC/CadQuery build allows. Key constraint discovered: **OCC here declines fillets
+on any part that already has pockets/bores cut**, so roundovers must go on CLEAN
+geometry *before* the cuts (this is also why the boss/yoke fillets have warned-and-
+skipped all along). Build 8/8, gate 0 HARD / 1 SOFT.
+
+- **Slider** — all block edges rounded (fillet on the clean box, before the seat +
+  bores are cut). A hand-friendly block instead of a hard prism.
+- **Cup back** — the 45° chamfer is now a ROUNDOVER (`cup_back_round`, fillet on the
+  clean blank). Softer transition.
+- **Cup brim** — the front flange edges are rounded (fillet on the clean disc before
+  the union), not chamfered.
+- **Lip refined** (maker feedback — it was a chunky stub): `pad_lip_thickness` 4 → 2
+  (a thin printed brim) and `pad_lip_extension` 3 → 5 (sticks out more). NOTE: at
+  5 mm the brim reaches ⌀100 = the pad's outer foam; the exact value is TBD on the
+  measured Dekoni pad (may shrink the cup instead).
+- **Yoke — NOT rounded (build limit, flagged).** Tried a round-section tube (cf. the
+  ddrum wire bracket) four ways — incremental union, batch `combine()`, per-arm
+  `combine()`, and a swept circle. Each built a clean single ARM, but every one
+  FRAGMENTED into invalid solids the moment the two arms were fused with the
+  eyes/hub and the bores were cut. This OCC build can't fuse/cut that geometry
+  reliably. **Reverted to the flat-bracket yoke** (robust, the approved wraparound
+  shape). Its wraparound curve is smooth but the cross-section edges stay square —
+  a future pass (a different kernel for this one part, or hand-finishing the print)
+  can soften it.
+
+---
+
 ## 2026-06-25 — Earpad lip: radial FLANGE (corrected direction)
 
 The cup lip was extruding the wrong way — an axial wall ringing the baffle's

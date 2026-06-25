@@ -66,11 +66,12 @@ def make_cup() -> cq.Workplane:
     )
     cup = cup.cut(void)
 
-    # 2b. Chamfered back (form pass direction "A"): a ~45° bevel on the back-outer
-    #     edge, confined to the back band so the 3 mm side wall (z ≥ back band) is
-    #     untouched and the grille zone (r ≤ 34) stays on a flat face. Done before
-    #     the grille while the bottom is still a clean disc (one outer edge).
-    cup = cup.edges("<Z").chamfer(P.cup_back_chamfer)
+    # 2b. Rounded back (soft-form pass): a ROUNDOVER on the back-outer edge (was a
+    #     ~45° chamfer — a fillet is a softer, hand-friendlier transition). Confined
+    #     to the back band so the side wall is untouched and the grille zone stays
+    #     on a flat face. Done HERE while the bottom is still a clean disc — OCC on
+    #     this build declines fillets once the grille/bosses/flange complicate it.
+    cup = cup.edges("<Z").fillet(P.cup_back_round)
 
     # 3. Rear vent grille — clean concentric-ring grille, DECOUPLED from the
     #    bosses. Remaining material = center hub + grille_ring_count rings +
@@ -204,8 +205,9 @@ def make_cup() -> cq.Workplane:
     #    skirt wraps over it and hooks BEHIND it. It sticks OUT toward the perimeter,
     #    NOT up toward the head, so the baffle stays flush (not recessed). The brim
     #    sits at the front edge (top flush with the rim); below it the wall steps
-    #    back in, giving the pad skirt an undercut to grip. A lead-in chamfer on the
-    #    outer-front corner eases the pad over.
+    #    back in, giving the pad skirt an undercut to grip. The brim edges are
+    #    ROUNDED (soft-form) so it eases the pad over and feels good in the hand —
+    #    done on the clean disc before the union (OCC won't fillet it after).
     flange_ir = od / 2 - 1.0                          # overlap the wall → solid union
     flange_or = od / 2 + P.pad_lip_extension          # brim sticks OUT to here
     flange = (
@@ -215,9 +217,9 @@ def make_cup() -> cq.Workplane:
         .extrude(P.pad_lip_thickness)
     )
     try:
-        flange = flange.edges(">Z").chamfer(P.pad_lip_leadin)
+        flange = flange.edges().fillet(P.pad_lip_round)   # round the whole brim
     except Exception as e:  # noqa: BLE001 — report, don't mask; the flange still stands
-        print(f"  [warn] cup: pad-flange lead-in chamfer skipped ({e}).")
+        print(f"  [warn] cup: pad-flange roundover skipped ({e}).")
     cup = cup.union(flange)
 
     return cup
