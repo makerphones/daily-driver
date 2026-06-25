@@ -18,9 +18,9 @@ from params import P
 
 
 def make_slider() -> cq.Workplane:
-    w = P.slider_block_width      # X (22)
-    d = P.slider_block_depth      # Y (16)
-    h = P.slider_block_height     # Z (26)
+    w = P.slider_block_width      # X — wide enough to wall the 33 mm bow channel
+    d = P.slider_block_depth      # Y
+    h = P.slider_block_height     # Z
 
     slider = cq.Workplane("XY").box(w, d, h)
 

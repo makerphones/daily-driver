@@ -13,9 +13,10 @@ from the printed-parts STL set).
 Every dimension is an ESTIMATE/REF (params.py) — TBD from the measured Beyer part.
 
 Built from EXTRUDED annular sectors (this OCP build's `revolve` is unusable):
-an arc band curving over the top (+Z) in the XZ plane, width along Y. A central
-relief slot and two end-tab hole pairs are modelled as interface markers (their
-exact form is TBD from the real part — see flags below).
+an arc band curving over the top (+Z) in the XZ plane, width along Y. Radius,
+developed length, and width are MEASURED off the real Beyer band; the arc derives
+from them (params helper). Two end-tab mounting holes per end model where the
+slider mechanism fastens (their exact dia/pitch are TBD from the real part).
 """
 
 import math
@@ -43,29 +44,36 @@ def _arc_band(ri, ro, deg_half, y_width):
     )
 
 
-def make_bow() -> cq.Workplane:
-    R = P.bow_radius
+def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
+    """Reference band. Defaults to the MEASURED at-rest geometry (params); the
+    assembly passes the flexed (worn) radius/arc so the same strap can be posed
+    opened-out on a head. Width + developed length are invariant under flex.
+    """
+    R = P.bow_radius if radius is None else radius
     th = P.bow_thickness
-    half_arc = P.bow_arc_degrees / 2
+    arc = P.bow_arc_degrees if arc_degrees is None else arc_degrees
+    half_arc = arc / 2
 
     # 1. Band: thin arc (thickness th, radial) × width (along Y), over the top.
+    #    A clean strap — the real band's relief/cutout styling (cf. the maker's
+    #    X-pattern band) is a separate pass and not modelled into the bought part.
     band = _arc_band(R - th / 2, R + th / 2, half_arc, P.bow_width)
 
-    # 2. Central relief slot — narrow (Y) full-depth cut over the central arc,
-    #    leaving two rails + solid end tabs. ESTIMATE form.
-    slot = _arc_band(R - th, R + th, half_arc - 30.0, 2.0)
-    band = band.cut(slot)
-
-    # 3. End-tab holes — 2 per end, drilled radially through the band thickness.
-    #    TODO: spacing/orientation is an ESTIMATE (endtab_hole_spacing across the
-    #    width); confirm the real Beyer end interface before relying on it.
-    s = P.bow_endtab_hole_spacing / 2
+    # 2. End-tab MOUNTING HOLES — where the slider mechanism fastens. Two per end,
+    #    marching INBOARD from each tip along the band, centred across the width
+    #    (matches the measured Beyer end tab). Drilled radially through the band
+    #    thickness. Hole dia + along-band pitch are ESTIMATE; the count (2/end) +
+    #    along-band layout are inferred from the real part / the maker's reference
+    #    band — confirm all of it with a caliper read.
     hole_r = P.bow_endtab_hole_diameter / 2
+    margin = math.degrees(6.0 / R)                       # first hole, in from the tip
+    pitch = math.degrees(P.bow_endtab_hole_spacing / R)  # along-band hole pitch
     for end_sign in (+1, -1):
-        phi = math.radians(90 + end_sign * (half_arc - 6.0))   # just inside each end
-        radial = cq.Vector(math.cos(phi), 0, math.sin(phi))
-        for y in (+s, -s):
-            base = cq.Vector(R * math.cos(phi), y, R * math.sin(phi)) - radial * 2
+        a_tip = 90 + end_sign * half_arc                 # the band tip
+        for k in (0, 1):                                 # both holes land on the band
+            phi = math.radians(a_tip - end_sign * (margin + k * pitch))
+            radial = cq.Vector(math.cos(phi), 0, math.sin(phi))
+            base = cq.Vector(R * math.cos(phi), 0, R * math.sin(phi)) - radial * 2
             drill = cq.Solid.makeCylinder(hole_r, 4.0, base, radial)
             band = band.cut(cq.Workplane(obj=drill))
 

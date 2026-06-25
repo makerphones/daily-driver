@@ -22,8 +22,11 @@ import cadquery as cq
 from params import P
 
 
-def make_headband_pad() -> cq.Workplane:
-    ro = P.bow_radius - P.bow_thickness / 2          # hug the bow's inner (concave) face
+def make_headband_pad(radius: float = None) -> cq.Workplane:
+    # Defaults to the at-rest bow radius; the assembly passes the flexed (worn)
+    # radius so the pad hugs the bow in the worn pose.
+    R = P.bow_radius if radius is None else radius
+    ro = R - P.bow_thickness / 2                     # hug the bow's inner (concave) face
     ri = ro - P.headband_pad_thickness
     half = P.headband_pad_arc_degrees / 2
     a0, am, a1 = 90 - half, 90, 90 + half

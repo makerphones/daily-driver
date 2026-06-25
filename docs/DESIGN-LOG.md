@@ -6,6 +6,44 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Bow → MEASURED Beyer head bow + flexed worn pose
+
+**First real-world data into the design.** The maker measured the actual
+Beyerdynamic metal head bow (rolled across a ruler + a top-down cross-section).
+Build 8/8, gate PASS (0 HARD / 1 SOFT).
+
+- **Measured geometry** (were ESTIMATE 81 / — / 16): relaxed band = 5 in circle
+  → **R 63.5**; rolls out to 9.3 in → **236.2 mm developed**; strap 1.3 in →
+  **33 mm** wide. All flagged MEASURED in params.
+- **At-rest arc now DERIVES** from R + developed length (θ = L/R = **213°**), so it
+  lands >180° — the ends sit past the half-circle, exactly as observed. The three
+  independent reads (dia, roll-out, ">half") are self-consistent.
+- **Spring-steel flex.** `make_bow(radius, arc_degrees)` now takes optional
+  overrides; the assembly poses the band **flexed** to `bow_worn_radius` (78,
+  ESTIMATE) → ~173° worn arc, **conserving developed length** (same physical
+  strap). Ear spacing falls out at **~156 mm** cup centres — keeps the proportions
+  we liked, vs the 122 mm the tight at-rest circle would otherwise force.
+- **End MOUNTING HOLES**: 2 per end, marching inboard from each tip (matches the
+  real end tab + the maker's reference band). Dia/pitch still ESTIMATE.
+- **Cascade.** The 33 mm band forced the slider to grow to ride it (block 22→42,
+  channel 17→34) and the crown pad wider (26→40). Removed the old placeholder
+  central relief slot — unverified geometry of a bought part; the band's
+  cutout styling (cf. the maker's X-pattern band) is a separate pass.
+- **Gate +4 HARD**: arc derives >180°; flex opens (R up / arc down) & conserves
+  length; slider channel clears the band; block walls the channel.
+
+**OPEN (flagged, not resolved):** the end mounting holes imply the bow may
+**bolt** to the slider/fork at its tabs rather than the slider clamp-**riding** a
+continuous band — a real mechanism fork to settle next. `bow_thickness` and the
+hole dia/pitch still need a caliper reading; the worn radius (head fit) is still
+ESTIMATE. One thing to watch when fitting on a real head: at `bow_worn_radius` 78
+the worn arc is **173.5°, just under 180°**, so the flexed band's widest point is
+at the cups rather than above them. If clamp-at-the-ears feel is weak, drop the
+worn radius to ≤ **75.2 mm** (= developed/π) to push the worn arc back past 180°
+so the ends pinch inward — at the cost of slightly tighter cup spacing (~150 mm).
+
+---
+
 ## 2026-06-24 — Re-clock the over-rotation stop to the worn rest + tighten head spacing
 
 Two follow-ups from the orientation rework. Build 8/8, gate PASS (stop unchanged

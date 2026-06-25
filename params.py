@@ -19,6 +19,7 @@ only for fit/clearance. `TODO` flags a real uncertainty that needs a decision or
 a measurement before it's trustworthy. Do not treat any ESTIMATE as confirmed.
 """
 
+import math
 from dataclasses import dataclass
 
 
@@ -205,28 +206,40 @@ class Params:
     pivot_tilt_degrees: float = 20.0      # ESTIMATE  tilt_range (±)
 
     # ---- Slider (rides the bow) ---------------------------------------------
-    slider_block_width: float = 22.0      # ESTIMATE  block w (X)
+    # NOTE: the measured bow is 33 mm wide, so the block + channel grew to ride it
+    # (were 22/17 for a 16 mm bow). The bow's end MOUNTING HOLES raise an open
+    # mechanism question — telescoping clamp-ride (this part) vs bolt-on at the end
+    # tabs — flagged in DESIGN-LOG, not resolved here.
+    slider_block_width: float = 42.0      # ESTIMATE  block w (X) — walls the 33 mm bow channel
     slider_block_height: float = 26.0     # ESTIMATE  block h (Z)
     slider_block_depth: float = 16.0      # ESTIMATE  block d (Y)
-    slider_bow_channel_width: float = 17.0  # ESTIMATE  bow_channel_w (bow ≈16 + clr)
+    slider_bow_channel_width: float = 34.0  # ESTIMATE  bow_channel_w (measured bow 33 + 1 clr)
     slider_bow_channel_depth: float = 2.0   # ESTIMATE  bow_channel_d
     slider_swivel_bore: float = 6.0       # ESTIMATE  mates the fork swivel hub
     slider_grub_hole_diameter: float = 2.5  # ESTIMATE  M3 grub tap (friction)
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
-    # Reference body for assembly + a DIY template. Dimensions are TBD from the
-    # measured Beyer part; these are placeholders so the slider channel and end
-    # interface have something to mate. NOT a printed part.
-    bow_radius: float = 81.0              # ESTIMATE/REF  bow_radius (arc); also sets the
-                                          #   ear spacing in the assembly (Xe = R·cos(end_a)),
-                                          #   so 81 → cups ~156 mm apart (a real head width).
-                                          #   Was 100 (cups ~193, too wide). TBD from the Beyer part.
-    bow_width: float = 16.0               # ESTIMATE/REF  bow_width
-    bow_thickness: float = 0.8            # ESTIMATE/REF  bow_th
-    bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  endtab_hole_dia
-    bow_endtab_hole_spacing: float = 14.0  # ESTIMATE/REF  endtab_hole_spacing
-    bow_endtab_width: float = 16.0        # ESTIMATE/REF  endtab_w
-    bow_arc_degrees: float = 150.0        # ESTIMATE  modelled arc span (reference)
+    # Reference body for assembly + a DIY template. NOT a printed part. The first
+    # three are MEASURED off the real Beyerdynamic metal head bow (2026-06-25):
+    # the relaxed band is a 5 in circle (→ R 63.5), it rolls out to 9.3 in
+    # (→ 236.2 mm developed), strap width 1.3 in (→ 33 mm). The at-rest arc DERIVES
+    # from R + developed length (helper below) and lands >180° — the ends sit past
+    # the half-circle, exactly as observed. It's spring steel: at rest it's this
+    # tight 5 in circle; on a head it flexes OPEN to bow_worn_radius (the assembly
+    # poses it flexed, conserving developed length). Thickness + the end-hole specs
+    # are still ESTIMATE/REF — no caliper reading yet.
+    bow_radius: float = 63.5              # MEASURED  relaxed/at-rest arc radius (5 in dia)
+    bow_developed_length: float = 236.2   # MEASURED  rolled-out band length (9.3 in)
+    bow_width: float = 33.0               # MEASURED  strap width (1.3 in, top-down)
+    bow_thickness: float = 0.8            # ESTIMATE/REF  bow_th (no caliper reading yet)
+    bow_worn_radius: float = 78.0         # ESTIMATE  flexed-on-head radius; sets ear spacing
+                                          #   (~156 mm cups). The band springs open from the
+                                          #   63.5 at-rest; developed length is conserved.
+    bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia
+    bow_endtab_hole_spacing: float = 14.0  # ESTIMATE/REF  along-band pitch of the 2 end holes
+    bow_endtab_width: float = 33.0        # ESTIMATE/REF  end-tab width (= strap width)
+    # bow_arc_degrees / bow_worn_arc_degrees are DERIVED (helpers below): both
+    # conserve bow_developed_length, so the relaxed and flexed bands are one strap.
 
     # ---- Headband pad (ROUGH DRAFT — crown cushion under the bow) -------------
     # Soft comfort pad (foam / printed TPU) hugging the bow's concave underside at
@@ -234,7 +247,7 @@ class Params:
     # ESTIMATE. One shared pad at the crown (not per-ear).
     headband_pad_arc_degrees: float = 80.0   # ESTIMATE  contact arc at the crown
     headband_pad_thickness: float = 8.0      # ESTIMATE  cushion depth (radial)
-    headband_pad_width: float = 26.0         # ESTIMATE  wider than the bow, for comfort
+    headband_pad_width: float = 40.0         # ESTIMATE  wider than the 33 mm bow, for comfort
     headband_pad_channel_depth: float = 3.0  # ESTIMATE  bow nests this deep; side rails grip it
 
     # ---- Mechanical primitives (convention; see parts/features.py) ----------
@@ -303,6 +316,25 @@ class Params:
     def pivot_boss_outer_radius(self) -> float:
         # external boss outer face seats the fork eye at pivot_centres/2
         return self.yoke_pivot_centres / 2
+
+    @property
+    def bow_arc_degrees(self) -> float:
+        # at-rest arc span — DERIVES from the measured radius + rolled-out length
+        # (θ = L / R). With 236.2 / 63.5 this lands ~213°, i.e. >180°: the ends sit
+        # past the half-circle, matching the observed relaxed band.
+        return math.degrees(self.bow_developed_length / self.bow_radius)
+
+    @property
+    def bow_worn_arc_degrees(self) -> float:
+        # flexed-on-head arc span — the SAME strap (same developed length) opened
+        # out to bow_worn_radius: θ = L / R_worn (~173° at R 78). < at-rest arc.
+        return math.degrees(self.bow_developed_length / self.bow_worn_radius)
+
+    @property
+    def ear_half_spacing(self) -> float:
+        # worn cup-centre half-spacing = where the flexed band's ends land
+        # (R_worn · sin(half-arc)). ~78 mm → cups ~156 mm apart.
+        return self.bow_worn_radius * math.sin(math.radians(self.bow_worn_arc_degrees / 2))
 
 
 # Importable singleton used by every part module.

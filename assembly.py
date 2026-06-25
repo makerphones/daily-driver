@@ -59,9 +59,10 @@ def make_assembly() -> cq.Assembly:
       • yoke-group T_yoke: eyes (yoke ±X) → ±Y, arch (yoke +Z) stays +Z (up);
                            pivot centre → (Xe, 0, 0)  (90° clocked about Y vs the cup).
     The two pivots coincide at (±Xe, 0, 0); the LEFT ear is the mirror across x=0.
-    The bow + crown pad are shared parts arcing between the two sliders; ear spacing
-    = the bow's own end span so the headband fits the cups. Bow dims + exact head
-    fit remain ESTIMATE (see params/bow).
+    The bow + crown pad are shared parts arcing between the two sliders, posed
+    FLEXED to the worn radius (bow_worn_radius); ear spacing = where the flexed
+    band's ends land (~156 mm). The bow's relaxed dims are MEASURED off the Beyer
+    part; the worn radius (head fit) is still ESTIMATE (see params/bow).
 
     FLAGGED: the over-rotation stop pin/slot are still clocked for the old pad-up
     rest pose, so they read ~90° off in this view — cosmetic here (the gate verifies
@@ -77,9 +78,13 @@ def make_assembly() -> cq.Assembly:
     PAD_C = cq.Color(0.13, 0.13, 0.15)   # near-black foam/velour
 
     pbz = P.pivot_boss_z
-    end_a = 90 - P.bow_arc_degrees / 2
-    Xe = P.bow_radius * math.cos(math.radians(end_a))      # ear half-spacing = bow end x
-    ez = P.bow_radius * math.sin(math.radians(end_a))
+    # Worn pose: the spring band flexes OPEN from its 63.5 mm at-rest circle to
+    # bow_worn_radius on a head (developed length conserved → ~173° arc — note the
+    # worn arc dips just under 180° while the measured at-rest arc is >180°). Ear
+    # spacing = where the flexed band's ends land (~78 mm → cups ~156 mm apart).
+    end_a = 90 - P.bow_worn_arc_degrees / 2
+    Xe = P.bow_worn_radius * math.cos(math.radians(end_a))  # ear half-spacing = bow end x
+    ez = P.bow_worn_radius * math.sin(math.radians(end_a))
 
     def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe,0,0)
         return (w.rotate((0, 0, 0), (0, 1, 0), -90)
@@ -102,8 +107,9 @@ def make_assembly() -> cq.Assembly:
 
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
     bow_xf = (0, 0, slider_z - ez)                         # ends land at (±Xe, 0, slider_z)
-    bow = make_bow().translate(bow_xf)
-    pad = make_headband_pad().translate(bow_xf)
+    bow = make_bow(radius=P.bow_worn_radius,
+                   arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
+    pad = make_headband_pad(radius=P.bow_worn_radius).translate(bow_xf)
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),

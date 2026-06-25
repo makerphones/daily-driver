@@ -288,6 +288,28 @@ def main():
     r.hard(adapter_seat >= MIN_WALL, "adapter-seat-ledge",
            f"seat ledge {adapter_seat:.1f} mm >= {MIN_WALL} mm")
 
+    # --- Bow (reference) + slider interface — measured Beyer band ------------
+    # The relaxed and flexed bands must be the SAME physical strap: both arcs
+    # derive from the one measured developed length, so this guards a future
+    # hardcode. At rest the ends sit past the half-circle (observed); flexed it
+    # opens out (larger R, smaller arc).
+    r.hard(180.0 < P.bow_arc_degrees < 270.0, "bow-arc-at-rest",
+           f"at-rest arc {P.bow_arc_degrees:.0f}° in (180, 270) — ends past the half-circle")
+    r.hard(P.bow_worn_radius > P.bow_radius and P.bow_worn_arc_degrees < P.bow_arc_degrees,
+           "bow-flex-opens",
+           f"{P.bow_radius:.0f} mm/{P.bow_arc_degrees:.0f}° at rest → "
+           f"{P.bow_worn_radius:.0f} mm/{P.bow_worn_arc_degrees:.0f}° worn (R up, arc down)")
+
+    # The slider rides the measured 33 mm band: its channel must clear the strap
+    # width and the block must wall the channel. (The bow's end mounting holes
+    # raise a ride-vs-bolt-on mechanism question — flagged in DESIGN-LOG.)
+    r.hard(P.slider_bow_channel_width >= P.bow_width + 0.5, "slider-channel-fits-bow",
+           f"channel {P.slider_bow_channel_width} mm >= bow {P.bow_width} + 0.5 clr")
+    r.hard(P.slider_block_width >= P.slider_bow_channel_width + 2 * MIN_WALL,
+           "slider-channel-walls",
+           f"block {P.slider_block_width} mm >= channel {P.slider_bow_channel_width} "
+           f"+ 2×{MIN_WALL} wall")
+
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
     inner_r = P.cup_interior_diameter / 2
