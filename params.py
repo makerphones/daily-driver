@@ -178,7 +178,9 @@ class Params:
     guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie spokes
 
     # ---- Driver (REFERENCE — candidate Peerless HPD-40N16) ------------------
-    driver_od: float = 42.0               # REF  outer frame dia
+    driver_od: float = 42.0               # REF  outer frame dia. 40 mm class LOCKED
+                                          #   (2026-06-25, not 50). 42 = generic 40 mm frame;
+                                          #   confirm against the chosen driver's measured frame.
     driver_diaphragm_diameter: float = 40.0  # REF  diaphragm — guard must clear
     driver_body_depth: float = 8.0        # REF  frame depth behind the baffle
     driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame

@@ -6,6 +6,17 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Driver LOCKED: 40 mm (closes the 40-vs-50 question)
+
+The maker locked the driver at the **40 mm class** (not 50). The design already
+models this — `driver_diaphragm_diameter` 40, `driver_od` (frame) 42 — so no geometry
+change; the open "40 vs 50" decision is now closed. The exact frame OD (`driver_od`,
+REF 42) still confirms against the chosen driver's measured frame; aperture / recess
+/ guard derive from it. The 50 mm worked example in the adapter-ring comment stays as
+an illustration of the parametric step-down, not a target.
+
+---
+
 ## 2026-06-25 — Pipeline/process docs + DRAFT print guide (design NOT print-ready)
 
 Correction: an earlier draft of this entry called #1 "print-prototype ready" — it
