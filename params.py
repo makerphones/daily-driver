@@ -145,8 +145,12 @@ class Params:
     # derived helpers), so the baffle aperture/guard/vents stay coherent when the
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
     driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
-    pad_lip_outer_diameter: float = 62.0  # ESTIMATE  pad_lip_od — Brainwavz HM5
-    pad_lip_height: float = 5.0           # ESTIMATE  pad_lip_h (raised, FRONT) — taller, clear lip
+    # Earpad retaining lip — now a raised ring at the CUP's outer rim (DT770-style),
+    # NOT on the baffle. Its OD = cup_outer_diameter (the lip IS the cup's outer
+    # edge extended forward), so the lip sizes with the cup; to fit a given pad,
+    # set the cup OD (via cup_interior_diameter) to the pad's mounting opening.
+    # TARGET PAD: Brainwavz — exact opening TBD (measure the pad; may shrink the cup).
+    pad_lip_height: float = 3.5           # ESTIMATE  lip proud of the front rim (~Beyer's ~3 mm)
     pad_lip_wall: float = 2.5             # ESTIMATE  lip wall thickness (the pad slips OVER it)
     pad_lip_leadin: float = 0.8           # ESTIMATE  top chamfer so the pad slides on
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance

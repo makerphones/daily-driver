@@ -199,6 +199,27 @@ def make_cup() -> cq.Workplane:
     # 6. Edge treatment: the back-outer comfort/print break is now the chamfer in
     #    step 2b (the form pass "set the outer profile"), so the old no-op outer-
     #    wall fillet — which only ever warned on the bare cylinder — is retired.
+
+    # 7. Earpad RETAINING LIP (DT770-style) — a raised ring at the cup's front
+    #    OUTER rim that the earpad slips over, so pad retention lives on the
+    #    structural cup, not the baffle. The lip is the outer wall continued
+    #    forward: outer radius = cup od/2, wall = pad_lip_wall inward, standing
+    #    pad_lip_height proud of the front rim. A lead-in chamfer on the top outer
+    #    edge eases the pad on; the pad seats on the rim/baffle face inside the lip.
+    lip_or = od / 2
+    lip_ir = lip_or - P.pad_lip_wall
+    lip = (
+        cq.Workplane("XY")
+        .workplane(offset=total_h)
+        .circle(lip_or).circle(lip_ir)
+        .extrude(P.pad_lip_height)
+    )
+    try:
+        lip = lip.edges(">Z").chamfer(P.pad_lip_leadin)
+    except Exception as e:  # noqa: BLE001 — report, don't mask; the lip still stands
+        print(f"  [warn] cup: pad-lip lead-in chamfer skipped ({e}).")
+    cup = cup.union(lip)
+
     return cup
 
 

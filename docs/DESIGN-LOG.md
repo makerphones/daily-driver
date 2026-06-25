@@ -6,6 +6,32 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Earpad retaining lip → cup rim (DT770-style); baffle de-lipped
+
+The maker chose the DT770 approach (from a peeled-back-pad photo): the earpad slips
+over a lip at the **cup's outer edge**, so retention lives on the structural cup,
+not the baffle. Cup-lip > baffle-lip = simpler/more elegant (their call). Build
+8/8, gate PASS (0 HARD / 1 SOFT). Verified by a 2-agent adversarial pass.
+
+- **Cup lip** (`cup.py` step 7): a raised ring at the cup's front OUTER rim — outer
+  radius = cup OD/2 (the lip is the outer wall continued forward), wall
+  `pad_lip_wall` 2.5 inward, standing `pad_lip_height` **3.5** proud of the rim
+  (≈ the Beyer's ~3 mm), with a lead-in chamfer. The pad seats on the rim / baffle
+  face inside the lip and its skirt wraps the lip.
+- **Baffle de-lipped** (`baffle.py`): removed the old 62 mm FRONT pad lip
+  (HM5-style central-ring mount); the baffle is now a clean driver-mount plate.
+  Vents re-homed to the ring between the aperture and the bolt circle.
+- **Params**: removed `pad_lip_outer_diameter` — the lip OD now = `cup_outer_diameter`,
+  so the lip sizes WITH the cup; `pad_lip_height` 5 → 3.5.
+- **Gate +2 HARD**: lip wall printable; lip inner bore clears the baffle (the baffle
+  still seats inside the lip).
+
+**OPEN:** the cup OD (currently 84) should match the **Brainwavz** pad's mounting
+opening — TBD, measure the pad; may shrink the cup. To resize, set the cup OD via
+`cup_interior_diameter` and the lip follows automatically.
+
+---
+
 ## 2026-06-25 — Headband X-truss + bolt-on slider (mechanism decided)
 
 The maker settled the band styling AND the attachment mechanism. Build 8/8, gate

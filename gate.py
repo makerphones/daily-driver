@@ -336,6 +336,14 @@ def main():
     r.hard(boss_wall >= MIN_BOSS_WALL, "boss-bore-wall",
            f"wall around insert {boss_wall:.1f} mm >= {MIN_BOSS_WALL} mm")
 
+    # 9. Earpad retaining lip on the CUP rim — printable wall, and its inner bore
+    #    must clear the baffle so the baffle still seats inside the lip.
+    r.hard(P.pad_lip_wall >= MIN_WALL, "pad-lip-wall",
+           f"lip wall {P.pad_lip_wall} mm >= {MIN_WALL} mm")
+    lip_ir = P.cup_outer_diameter / 2 - P.pad_lip_wall
+    r.hard(lip_ir >= P.baffle_outer_diameter / 2, "pad-lip-clears-baffle",
+           f"lip inner r {lip_ir:.1f} mm >= baffle r {P.baffle_outer_diameter / 2:.1f} mm")
+
     print("\n— SOFT checks (warn, do not fail) —")
 
     # Guard setback vs. the front lamina (held + warned in baffle.py when tight).
