@@ -67,3 +67,28 @@ def trial(name, fn):
 
 A part that builds as `1 solid, valid=True` is sound; `>1 solids` or `valid=False`
 means a boolean fragmented — back off to a simpler construction.
+
+## build123d evaluation (2026-06-25) — the path off these limits
+
+Spiked `build123d` 0.11 in an isolated venv to see if it dodges the limits above.
+It rides the **same OCCT kernel**, so it is not a magic wand — but it handles the
+geometry that fragments cadquery here:
+
+| Test (the cadquery pain points) | cadquery/OCC | build123d |
+|---|---|---|
+| Small fillet (r ≤ 0.8) after a pocket cut | ❌ any radius (`BRep_API`) | ✅ works |
+| Larger fillet (r ≥ 1.5) after a cut | ❌ | ❌ but errors clearly ("try a smaller value") |
+| `sweep` a circle along the wrap arc | ⚠️ mis-places the profile | ✅ clean, 1 solid |
+| **Full round-tube yoke** — 2 swept tubes + 2 eyes + hub fused, then a bore cut | ❌ **fragments to invalid solids** | ✅ **1 valid solid, 0.7 s** |
+
+**Verdict:** build123d builds the rounded yoke that this cadquery/OCC build can't,
+its `sweep` works, and its errors are actionable. It's the realistic path to (a) the
+**soft round-section yoke** and (b) fewer boolean surprises generally.
+
+**Recommendation — a planned port, not a mid-stream scramble.** `params.py` (the
+single source of truth) stays; the work is porting the part builders + `build.py`,
+`gate.py`, `assembly.py` from the cadquery API to build123d's. Do it as a dedicated
+effort (good moment: alongside the product-template/platform work, or sooner if the
+rounded yoke jumps the queue). Until then **product #1's yoke stays the flat
+bracket** — already shipped and gate-clean. Don't half-migrate one part into the
+cadquery pipeline; the APIs don't mix cleanly.
