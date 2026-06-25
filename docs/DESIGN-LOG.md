@@ -6,6 +6,21 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Pipeline docs: build-notes + new-build intake (process, not geometry)
+
+Captured the program-level process so product #2+ start from structure, not a blank
+page. No geometry change.
+- **`docs/cadquery-build-notes.md`** — the OCC kernel limits this build keeps hitting
+  (round before cut; revolve dead; sweep needs `moveTo`; big unions fragment). The
+  reference that explains why fillets skip and the yoke stays a flat bar.
+- **`docs/new-build-intake.md`** — the intake→brief→build→gate→log pipeline, the
+  9-block questionnaire, and a `BRIEF.md` template (grounded in the decisions that
+  actually drove this product).
+- **`/headphone-intake` skill** (in the project's `.claude/skills/`) — runs the
+  intake interactively and writes a brief.
+
+---
+
 ## 2026-06-25 — Soft-form pass (cup + slider) + thinner lip; yoke hit a build wall
 
 Softening the design's hard 90° edges for a better in-hand feel — within what this
