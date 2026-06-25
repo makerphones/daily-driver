@@ -16,7 +16,10 @@ guess chosen so the geometry builds and the interfaces line up — it is here to
 OVERWRITTEN by a measured value later, cleanly, because nothing downstream hard-
 codes it. `REF` marks a reference dimension of a bought part (driver, bow) used
 only for fit/clearance. `TODO` flags a real uncertainty that needs a decision or
-a measurement before it's trustworthy. Do not treat any ESTIMATE as confirmed.
+a measurement before it's trustworthy. `MEASURED` is a confirmed caliper reading.
+`SET` marks a dimension the maker has fixed by DESIGN DECISION — a target to build
+to (e.g. the overall cup size), distinct from a guess (ESTIMATE) or a measured part
+(MEASURED). Do not treat any ESTIMATE as confirmed.
 """
 
 import math
@@ -31,13 +34,17 @@ class Params:
     wall_thickness: float = 3.0           # ESTIMATE  min shell wall (floor). NB the cup's
                                           #   own wall is thicker now — see cup_outer_diameter.
     wall_thickness_structural: float = 4.0  # ESTIMATE  at bosses / structural pts
-    # cup_outer_diameter is a DIRECT, pad-driven dim now (was id+2*wall=84): the
-    # earpad mounts OVER the cup's outer rim, so the OD is set to the pad's
-    # cup-mount opening, not derived from the wall. TARGET PAD: Dekoni Universal
-    # 100 mm (Beyer-type) — outer foam ⌀100, ear opening ⌀60; the cup-mount opening
-    # is ~90 (TBD — measure the pad's mounting lip). The wall then falls out as
-    # (od−id)/2 = 6 mm: a roomy pad seat that also fully houses the pivot bosses.
-    cup_outer_diameter: float = 90.0      # ESTIMATE  pad-mount OD (Dekoni ~90; exact TBD)
+    # OVERALL OD is now the maker-set MASTER dimension: the cup measures 4 in
+    # (101.6 mm) across the very outside, INCLUDING the retaining lip (maker decision
+    # 2026-06-25). cup_outer_diameter below is the CUP-BODY OD — the dia the pad skirt
+    # grips, behind the lip — and BACK-SOLVES from that target:
+    #   cup_outer_diameter = 101.6 − 2·pad_lip_extension(5.08) = 91.44.
+    # The earpad mounts OVER this rim and hooks behind the lip. TARGET PAD: Dekoni
+    # Universal 100 mm (Beyer-type) — outer foam ⌀100, ear opening ⌀60; OPEN: confirm
+    # the pad's cup-mount opening actually grips ~91.4 when measured (was ESTIMATE 90).
+    # The wall falls out as (od−id)/2 = (91.44−78)/2 = 6.72 mm: a roomy pad seat that
+    # also fully houses the pivot bosses.
+    cup_outer_diameter: float = 91.44     # SET  cup-body OD = 4 in overall − 2× lip (back-solved)
     # ---- Form pass: chamfered back (direction "A", 2026-06-24) ----------------
     # The closed (grille) back is thickened past the side wall so a 45° outer
     # bevel reads without thinning the 3 mm side wall (the bevel lives entirely in
@@ -159,7 +166,8 @@ class Params:
     # so the earpad's skirt wraps over it and hooks behind. It sticks OUT radially,
     # NOT up toward the head, so the baffle stays flush (not recessed). Exact size is
     # TBD — measure the Dekoni pad's mounting skirt/groove.
-    pad_lip_extension: float = 5.0        # ESTIMATE  how far the flange sticks OUT (radial)
+    pad_lip_extension: float = 5.08       # SET  lip radial extension = 0.2 in (maker 2026-06-25);
+                                          #   cup_outer_diameter + 2× this = the 4 in overall OD
     pad_lip_thickness: float = 2.0        # ESTIMATE  flange thickness (axial) — thin printed lip
     pad_lip_round: float = 0.8            # soft-form roundover on the brim edges (eases the pad + feel)
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance

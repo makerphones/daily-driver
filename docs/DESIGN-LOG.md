@@ -6,6 +6,31 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Overall cup OD SET to 4 in (lip 0.2 in); cup body back-solved
+
+First real number from the maker's measurement/decision pass. The maker fixed the
+**overall cup size from the outside in**: the very outside diameter, INCLUDING the
+retaining lip, is **4 in (101.6 mm)**, and the lip itself sticks out **0.2 in
+(5.08 mm)** radially. Overall OD is now the master dimension; the cup body OD
+back-solves from it. Build 8/8, gate 0 HARD / 1 SOFT (unchanged yoke-stop-slot web).
+
+- **New tag `SET`** (added to the estimate policy): a dimension the maker fixed by
+  DESIGN DECISION — a target to build to — distinct from `ESTIMATE` (a guess) and
+  `MEASURED` (a caliper reading).
+- `pad_lip_extension` 5.0 → **5.08** (`SET`, = 0.2 in).
+- `cup_outer_diameter` (cup-BODY OD, the dia the pad skirt grips behind the lip)
+  90 → **91.44** (`SET`), back-solved: `101.6 − 2·5.08 = 91.44`. Verified the model
+  measures exactly 4.000 in across the outside.
+- **Cascade:** `cup_wall_thickness` 6.0 → **6.72 mm** (still well over the 3 mm
+  floor); pivot bosses now **3.28 mm proud**/side (was 4.0) — still proud enough to
+  house the M3 insert; gate's boss/wall/pivot checks all still PASS unchanged.
+- **OPEN (unchanged):** this is a *sizing decision*, not a pad measurement. Still
+  need the Dekoni pad's actual cup-mount skirt Ø to confirm it grips ~91.4 (the body
+  OD) — if it grips a different dia, the lip/overall split re-derives but the 4 in
+  target can hold by adjusting the lip.
+
+---
+
 ## 2026-06-25 — Driver LOCKED: 40 mm (closes the 40-vs-50 question)
 
 The maker locked the driver at the **40 mm class** (not 50). The design already
