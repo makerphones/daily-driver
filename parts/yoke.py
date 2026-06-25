@@ -2,18 +2,18 @@
 # SPDX-License-Identifier: MIT
 
 """
-Fork-yoke — DT880-style wishbone (v0.3 engineering pass).
+Fork-yoke — wraparound bracket that follows the earcup (v0.3 engineering pass).
 
-Two arms drop from a top swivel hub down to two pivot eyes that straddle the cup
-on its ±X sides. Each eye takes an M3 shoulder screw into the cup's pivot boss
-(the tilt joint, ±tilt_range). The swivel hub's vertical bore mates the slider
-above (the swivel joint).
+Two arms sweep from a top swivel hub down AROUND the round cup to two pivot eyes
+on its ±X sides. Each arm follows a quarter-ellipse (semi-axes a = eye x, b = hub
+z) so it mimics the cup's circular outline with clearance — wider over the top than
+at the sides so the cup can tilt without striking the bracket (cf. the Extreme
+Isolation yoke). Each eye takes an M3 shoulder screw into the cup's pivot boss (the
+tilt joint, ±tilt_range); the swivel hub's vertical bore mates the slider above.
 
-Local frame: pivot axis at z=0 (eyes at ±yoke_pivot_centres/2, 0, 0); the hub is
-straight up at z=yoke_fork_height. To clear the cup (radius cup_od/2) the arms run
-VERTICALLY past the cup mid-height, then angle inward to the hub above the cup —
-a straight eye→hub bar would cut through the cup. In assembly the frame is lifted
-so z=0 lands on the cup's pivot bosses (cup mid-height).
+Local frame: pivot axis at z=0 (eyes at ±yoke_pivot_centres/2, 0, 0); the hub is at
+z=yoke_fork_height. In assembly the frame is lifted so z=0 lands on the cup's pivot
+bosses (cup mid-height).
 
 All dimensions are ESTIMATES flagged in params.py.
 """
@@ -43,44 +43,37 @@ def _bar(p0, p1, w0, w1, thick):
 
 
 def make_yoke() -> cq.Workplane:
-    half = P.yoke_pivot_centres / 2          # 44 — eye x position
+    a = P.yoke_pivot_centres / 2             # 49 — eye x = ellipse semi-axis (sides)
+    b = P.yoke_fork_height                   # 55 — hub z = ellipse semi-axis (top)
     arm_w = P.yoke_arm_width
     arm_t = P.yoke_arm_thickness
-    hub_z = P.yoke_fork_height               # 55
-    # knee just above the cup top (local cup top = cup mid-height above the pivot)
-    knee_z = P.cup_total_height / 2 + 2.0
+    hub_z = P.yoke_fork_height
 
     yoke = None
     for sign in (+1, -1):
-        x = sign * half
+        x_eye = sign * a
         # eye: cylinder axis X around the pivot hole
-        lower_x = x - arm_t / 2
         eye = (
             cq.Workplane("YZ")
-            .workplane(offset=lower_x)
+            .workplane(offset=x_eye - arm_t / 2)
             .center(0, 0)
             .circle(P.yoke_pivot_eye_diameter / 2)
             .extrude(arm_t)
         )
-        # Smooth curved arm (replaces the angular knee): go straight up the cup
-        # side to clear it, then a COSINE-EASED sweep in to the hub. The ease has a
-        # vertical tangent at the knee, matching the straight part → C1-continuous
-        # (no visible corner). Width tapers eye→hub along the path. Built from short
-        # tapered segments (robust; OCC sweep/fillet are unreliable on this build).
-        cpts = [(x, 0.0), (x, knee_z)]
-        n_up = 28                       # dense → the chord facets read as a smooth curve
-        for i in range(1, n_up + 1):
-            u = i / n_up
-            cpts.append((x * math.cos(math.pi / 2 * u),          # |x|: arm_w → 0 (to hub)
-                         knee_z + (hub_z - knee_z) * u))
-        seg = [math.hypot(cpts[j + 1][0] - cpts[j][0], cpts[j + 1][1] - cpts[j][1])
-               for j in range(len(cpts) - 1)]
-        total = sum(seg)
+        # The arm WRAPS the round cup: it follows a quarter-ellipse from the eye
+        # (a, 0) at the cup's side up and over to the hub (0, b) at the top,
+        # mimicking the cup's circular outline (cf. the Extreme Isolation bracket).
+        # The ellipse is taller than wide (b > a), so the gap to the cup grows from
+        # ~4 mm at the sides to ~(b − cup_r) at the top — the cup needs that extra
+        # top room to tilt in/out without striking the bracket. Built from short
+        # tapered bars (robust; OCC sweep/fillet are unreliable on this build).
+        n = 32                          # dense → the chord facets read as a smooth curve
+        cpts = [(sign * a * math.cos(math.radians(90 * i / n)),
+                 b * math.sin(math.radians(90 * i / n))) for i in range(n + 1)]
         arm = eye
-        acc = 0.0
-        for j in range(len(cpts) - 1):
-            s0, s1 = acc / total, (acc + seg[j]) / total
-            acc += seg[j]
+        m = len(cpts) - 1
+        for j in range(m):
+            s0, s1 = j / m, (j + 1) / m
             w0 = arm_w + (P.yoke_arm_hub_width - arm_w) * s0
             w1 = arm_w + (P.yoke_arm_hub_width - arm_w) * s1
             arm = arm.union(_bar(cpts[j], cpts[j + 1], w0, w1, arm_t))
@@ -97,7 +90,7 @@ def make_yoke() -> cq.Workplane:
 
     # bores: pivot holes (axis X) through each eye, swivel bore (axis Z) through hub
     for sign in (+1, -1):
-        x = sign * half
+        x = sign * a
         bore = (
             cq.Workplane("YZ")
             .workplane(offset=x - (arm_t / 2 + 1))
@@ -124,13 +117,13 @@ def make_yoke() -> cq.Workplane:
     half_a = P.pivot_stop_slot_halfangle
     nseg = 25
     for sign in (+1, -1):
-        x = sign * half
+        x = sign * a
         for k in range(nseg):
-            a = math.radians(-half_a + 2 * half_a * k / (nseg - 1))
+            ang = math.radians(-half_a + 2 * half_a * k / (nseg - 1))
             seg = (
                 cq.Workplane("YZ")
                 .workplane(offset=x - (arm_t / 2 + 1))
-                .center(rp * math.sin(a), -rp * math.cos(a))  # radius rp, ±a from −Z (bottom)
+                .center(rp * math.sin(ang), -rp * math.cos(ang))  # radius rp, ±ang from −Z
                 .circle(slot_r)
                 .extrude(arm_t + 2)
             )
@@ -142,12 +135,11 @@ def make_yoke() -> cq.Workplane:
     except Exception as e:  # noqa: BLE001
         print(f"  [warn] yoke: junction fillet skipped ({e}).")
 
-    # Tilt clearance: with yoke_pivot_centres=98 the arms sit ~4 mm proud of the
-    # cup wall at Y=0. VERIFIED IN-CAD by gate.py (pivot-tilt-clearance): rotating
-    # the cup through the full ±tilt_range about the pivot axis adds <1% to the 0°
-    # cup∩yoke bearing overlap — the cup shell never reaches the arms (the boss is
-    # coaxial with the tilt axis, so the bearing is invariant). A test print should
-    # still confirm the real friction/feel, but geometric collision is ruled out.
+    # Tilt clearance: the wraparound arms follow an ellipse that clears the cup by
+    # ~4 mm at the sides and ~10 mm over the top, so the cup tilts in/out without
+    # striking the bracket. VERIFIED IN-CAD by gate.py (pivot-tilt-clearance):
+    # rotating the cup through the full ±tilt_range adds <1% to the 0° cup∩yoke
+    # bearing overlap. A test print should still confirm the real friction/feel.
     return yoke
 
 

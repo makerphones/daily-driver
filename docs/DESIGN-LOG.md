@@ -6,6 +6,29 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Wraparound yoke (follows the cup, oval, more top clearance)
+
+Restyled the yoke from a straight wishbone to a bracket that **wraps the round
+cup** (cf. the Extreme Isolation / ddrum headphones the maker referenced). Build
+8/8, gate PASS (0 HARD / 1 SOFT). Verified by a 2-agent adversarial pass.
+
+- **Elliptical wrap.** Each arm now follows a quarter-ellipse from the eye (a, 0)
+  at the cup's side up and over to the hub (0, b) at the top — semi-axes
+  a = `yoke_pivot_centres`/2 = 49, b = `yoke_fork_height` = 55. Because b > a it's
+  **oval, not round**: the gap to the cup grows from ~4 mm at the sides to ~10 mm
+  over the top — the extra top room the cup needs to tilt in/out without striking
+  the bracket (the maker's exact point). The arm only hugs the cup at the pivots
+  (the proud boss = the bearing); it clears the cup shell everywhere else.
+- **Beefier for print strength** (the maker flagged the Extreme Isolation plastic
+  thickness): `yoke_arm_thickness` 5 → 6, `yoke_arm_width` 8 → 9, hub width 5 → 6.
+- Fixed a latent bug uncovered by the rewrite: the stop-slot loop's angle variable
+  shadowed the new ellipse semi-axis `a` — renamed it `ang`.
+- Pivot kinematics intact: tilt-clearance delta ~1.7% (cup never reaches the arms
+  through ±20°), over-rotation stop still engages ≈±29°, all yoke webs structural
+  (≥6 mm). Eyes, M3 bores, swivel hub/bore, and stop arc slot unchanged.
+
+---
+
 ## 2026-06-25 — Switch to Dekoni 100 mm pad; cup OD → 90 (pad-driven)
 
 The maker chose the **Dekoni Audio Universal 100 mm** (Beyer-type) earpad as the

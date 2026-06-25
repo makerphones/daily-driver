@@ -203,10 +203,10 @@ class Params:
     yoke_pivot_centres: float = 98.0      # ESTIMATE  pivot_centres (hole-to-hole);
                                           #   98 (was 92) so the boss stays ~4 mm proud of
                                           #   the wider 90 mm cup. TODO: verify ±tilt on a print.
-    yoke_arm_width: float = 8.0           # ESTIMATE  arm_w (at the eye / load end)
-    yoke_arm_hub_width: float = 5.0       # ESTIMATE  arm_w at the hub end — styling taper
+    yoke_arm_width: float = 9.0           # ESTIMATE  arm_w (at the eye / load end)
+    yoke_arm_hub_width: float = 6.0       # ESTIMATE  arm_w at the hub end — gentle taper
                                           #   (slims toward the hub; >= structural floor)
-    yoke_arm_thickness: float = 5.0       # ESTIMATE  arm_th
+    yoke_arm_thickness: float = 6.0       # ESTIMATE  arm_th (beefier for print strength)
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
     yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)
     yoke_pivot_eye_diameter: float = 12.0  # ESTIMATE  pad around pivot hole (12 hosts the stop slot)
