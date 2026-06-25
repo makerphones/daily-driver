@@ -61,13 +61,13 @@ SLIDER  × 2              (printed) — height adjust + swivel; clamps the bow
         │  ← fork-yoke carried by the slider
 FORK-YOKE × 2            (printed) — DT880-style fork straddling the cup; ±20° tilt
         │  ← screw-pin pivot into the cup
-CUP × 2                  (printed) — shell + integral rear grille; perimeter-wall screw bosses
+CUP × 2                  (printed) — shell + integral rear grille; perimeter-wall screw bosses; earpad lip on the outer rim
         │  ← baffle front-mounts into the cup
-BAFFLE × 2               (printed) — front-mount plate; integral pad lip + driver guard
+BAFFLE × 2               (printed) — front-mount driver-mount plate; integral driver guard
         │
 DRIVER × 2               (bought) — ~40 mm dynamic, damped, with rear air space
         │
-PAD × 2                  (bought) — Brainwavz HM5 oval velour ~90 mm
+PAD × 2                  (bought) — Dekoni Universal 100 mm (Beyer-type); slips over the cup-rim lip
 ```
 
 Keeping each interface separate means any one part can be reprinted and iterated without touching
@@ -85,10 +85,10 @@ joints called out.
 | Head bow | **Bought** (Beyer Metal Head Bow) or DIY 1095 | width ~10 mm; arc + length **TBD from measured part** | Sourcing target; geometry from real part |
 | Slider ×2 | Printed | rides bow; height + swivel | Concept (CAD stub) — see [drawings/slider.svg](drawings/slider.svg) |
 | Fork-yoke ×2 | Printed | straddles cup; ±20° tilt; M3 screw-pin | Concept (CAD stub) — see [drawings/yoke.svg](drawings/yoke.svg) |
-| Cup ×2 | Printed | ID 78 · depth 30 · wall 3 · OD ~84 | First-pass geometry; grille authored — see [drawings/cup.svg](drawings/cup.svg) |
-| Baffle ×2 | Printed | OD ~77 · ~4 thick · lip ⌀62 · aperture ⌀35 · pocket ⌀42 | First-pass geometry — see [drawings/baffle.svg](drawings/baffle.svg) |
+| Cup ×2 | Printed | ID 78 · depth 30 · OD 90 (pad-driven) · wall 6; earpad lip on the rim | First-pass geometry; grille authored — see [drawings/cup.svg](drawings/cup.svg) |
+| Baffle ×2 | Printed | OD ~77 · ~4 thick · aperture ⌀35 · pocket ⌀42 (clean driver-mount, no pad lip) | First-pass geometry — see [drawings/baffle.svg](drawings/baffle.svg) |
 | Driver ×2 | Bought | ~40 mm dynamic, 32 Ω | Candidate: Peerless HPD-40N16 |
-| Pad ×2 | Bought | HM5 oval ~90 mm, inner ring ~60 mm | Pad target locked |
+| Pad ×2 | Bought | Dekoni Universal 100 mm (Beyer-type); outer foam ⌀100, ear opening ⌀60 | Pad target locked |
 | M3 heat-set inserts | Bought | M3 brass | Convention (`parts/features.py`) |
 | M3 screws (rim + pivot) | Bought | M3 — rim: socket/button; pivot: shoulder screw | Convention |
 | Damping pack | Bought | felt / foam / fiberfill | Tune by ear |
@@ -163,8 +163,14 @@ The **slider** clamps and **rides the bow** for height adjustment and provides t
 - **Perimeter-wall screw bosses** — the four M3 heat-set bosses for the baffle are **blended into
   the perimeter wall**, *not* free-standing posts in the field of the back. Front-mount, and
   **clocked off the pivot axis** so they don't collide with the fork pivots.
-- **Envelope** — interior **ID 78 mm × depth 30 mm**, **wall 3 mm** (4 mm at structural points),
-  **OD ~84 mm**. ~90 cc internal volume, parameterized.
+- **Earpad retaining lip on the outer rim** — a raised ring at the cup's front **outer** edge
+  (DT770-style); the earpad slips **over** it and its skirt wraps the lip. Retention lives on the
+  structural cup, *not* the baffle. The lip OD = the cup OD, so it sizes with the cup.
+- **Envelope** — interior **ID 78 mm × depth 30 mm**; **OD 90 mm** — a **pad-driven** outer
+  diameter set to the earpad's cup-mount opening, so the cup's actual wall falls out at **6 mm**
+  (`wall_thickness` 3 mm is now just the min-wall floor). The interior is unchanged at 78 mm —
+  this is a pad/mounting change, not an acoustic one — so the ~90 cc internal volume holds.
+  Parameterized; **OD ~90 mm is ESTIMATE/TBD** pending a caliper read of the Dekoni pad's mount.
 - **Symmetric** — identical left and right; L/R marked in the surface only.
 - **Print orientation** — open face down / grille flat, no supports.
 - **Material** — PLA+ for prototyping, PETG for durable/kit parts.
@@ -183,8 +189,9 @@ The **slider** clamps and **rides the bow** for height adjustment and provides t
   the front (see Interface 1).
 - **Aperture ⌀35 mm with an integral printed driver guard** — thin spokes / grid printed across
   the aperture to protect the driver, in the same logo-evocative language as the rear grille.
-- **Raised integral pad lip ⌀62 mm** — the pad mounts on a lip that's part of the baffle (moved
-  here from the cup in v0.2; the pad-lip-location open question is now resolved to the baffle).
+- **No pad lip on the baffle** — the earpad retaining lip now lives on the **cup's outer rim**
+  (DT770-style; see the Cup shell section); the baffle is a clean **driver-mount plate**. The
+  controlled vents are re-homed to the ring between the aperture and the bolt circle.
 - **Driver pocket ⌀42 mm on the back** — the driver frame seats into a pocket on the rear face;
   the aperture is the acoustic opening it fires through.
 - **4 M3 rim screws**, counterbored from the front, into the cup's perimeter-wall bosses (see
@@ -256,10 +263,14 @@ published measurement from another builder). Mount with damping and a rear air s
 
 ### Ear pads
 
-- Brainwavz HM5 velour, **~90 mm oval** (widely available; the design is built to this pad).
-- Friction-ring attachment — pushes over the **baffle's** pad lip.
-- Confirm the HM5 inner ring diameter with calipers before finalizing the lip OD (nominal ~60 mm;
-  lip OD target ~62 mm).
+- **Dekoni Audio Universal 100 mm** (Beyer-type) — outer foam **⌀100 mm**, ear opening **⌀60 mm**
+  (the ⌀60 is the *ear* hole, **not** the cup mount). The design is built to this pad. Price
+  **~$30–45 (ESTIMATE)**.
+- **Slips over the cup-rim lip** — the pad's skirt wraps a raised retaining ring at the cup's outer
+  front edge (DT770-style); the lip is part of the structural cup, not the baffle.
+- **Pad-mount = cup OD.** Set `cup_outer_diameter` to the Dekoni pad's actual cup-mount opening and
+  the cup-rim lip follows. Current value **90 mm is ESTIMATE/TBD** — measure the pad's mounting lip
+  with calipers before finalizing (don't confuse it with the ⌀100 foam OD or the ⌀60 ear hole).
 
 ### Head bow
 
@@ -304,7 +315,7 @@ cup_depth             = 30 mm
 wall_thickness        = 3 mm
 driver_od             = 42 mm     ← update when driver confirmed
 driver_aperture       = 35 mm     ← update when driver confirmed
-pad_lip_od            = 62 mm     ← on the baffle
+cup_outer_diameter    = 90 mm     ← pad-driven; earpad lip on the cup rim (Dekoni ~90, TBD)
 baffle_thickness      = 4 mm
 grille_ring_count     = 2
 grille_spoke_count    = 8
@@ -338,7 +349,7 @@ Mirrors the assembly sheet ([drawings/assembly.svg](drawings/assembly.svg)).
 | 1× Beyerdynamic Metal Head Bow | [beyerdynamic](https://north-america.beyerdynamic.com/p/metal-head-bow) | ~$11 |
 | — or DIY 1095 spring-steel bow (laser-cut, formed) | SendCutSend + form | $8–15 |
 | 2× ~40 mm driver, 32 Ω (candidate Peerless HPD-40N16) | Parts Express / Madisound | $8–25 |
-| 1× Brainwavz HM5 velour pads | Brainwavz | $20–25 |
+| 1× Dekoni Universal 100 mm pads (Beyer-type) | Dekoni Audio | $30–45 |
 | M3 heat-set inserts (baffle rim + pivots) | hardware/online | $1–2 |
 | M3 screws — rim (socket/button) + pivot (shoulder) | hardware/online | $1–2 |
 | Damping pack (foam + felt + fiberfill) | Parts Express | $3–5 |
@@ -378,11 +389,12 @@ tuned by ear and measurement once a driver is in.
   tilt) → cup → baffle → driver → pad. Each interface independently iterable.
 - **Screw-pin pivot** at the yoke↔cup joint (M3 shoulder screw into a heat-set insert) — supersedes
   the old 6 mm post interface.
-- **Front-mount baffle** with the pad lip and driver guard integral to the baffle; rim screws into
-  perimeter-wall cup bosses, hidden under the pad.
+- **Front-mount baffle** — a clean driver-mount plate with the driver guard integral to it (no pad
+  lip); rim screws into perimeter-wall cup bosses, hidden under the pad.
 - Driver seat parametric to `driver_od`; baffle aperture to `driver_aperture`; integral guard
   protects the driver.
-- Pad lip sized to the Brainwavz HM5 (~62 mm OD), on the baffle.
+- **Earpad retaining lip on the cup's outer rim** (DT770-style); pad-mount = cup OD (Dekoni
+  Universal 100 mm → ~90 mm, exact **TBD** — measure the pad's mounting lip).
 - Circumaural fit; Beyerdynamic Metal Head Bow drop-in (or DIY 1095 to the same geometry).
 - Standard 3.5 mm cable connector, dual entry.
 
@@ -397,9 +409,14 @@ tuned by ear and measurement once a driver is in.
 ---
 
 *v0.3 · 2026-06-14 · Direction locked to the DT880 family (around-ear; spring-steel bow + fork-yoke
-+ sliders). Resolved the pivot (screw-pin), the pad-lip and driver-guard location (baffle), the
-baffle mount (front-mount, hidden screws), the cup bosses (blended into the perimeter wall), and
-the bow sourcing (Beyer drop-in / DIY 1095). All dimensions first-pass pending measured parts.
-Geometry changes — clean grille, wall bosses, driver guard, real yoke/slider/bow — come in the
-next engineering pass. Open: bow geometry from the measured part, slider adjustment, production
-driver, venting balance.*
++ sliders). Resolved the pivot (screw-pin), the driver-guard location (baffle), the baffle mount
+(front-mount, hidden screws), the cup bosses (blended into the perimeter wall), and the bow sourcing
+(Beyer drop-in / DIY 1095). All dimensions first-pass pending measured parts. Geometry changes —
+clean grille, wall bosses, driver guard, real yoke/slider/bow — come in the next engineering pass.
+Open: bow geometry from the measured part, slider adjustment, production driver, venting balance.*
+
+*Update (2026-06-25) · Earpad target switched to the **Dekoni Universal 100 mm** (Beyer-type); the
+retaining lip moved from the baffle to the **cup's outer rim** (DT770-style), making the baffle a
+clean driver-mount plate; the cup OD is now a **pad-driven 90 mm** (interior held at 78 mm, wall
+6 mm). Cup OD is **ESTIMATE/TBD** pending a caliper read of the pad's cup-mount opening. See the
+DESIGN-LOG for the full reasoning.*
