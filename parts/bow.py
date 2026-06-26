@@ -71,22 +71,39 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     W = P.bow_width
     band = _arc_band(R - th / 2, R + th / 2, half_arc, W)
 
-    # 2. Central X cut-out — matches the real metal bow (maker's photo): the X cells
-    #    live in a CENTRAL region of developed length bow_pattern_length, NOT across
-    #    the whole band. Two outer rails are braced by crossing diagonal struts; the
-    #    rails run solid out to the solid end tabs (which carry the holes). Each cell
-    #    cuts four void triangles (top/bottom/left/right), leaving an X of material; n
-    #    cells share struts at the bay boundaries, giving the hourglass-chain look.
+    # 2. Open the band like the real metal bow (maker's photo): two outer RAILS run the
+    #    full length, the space BETWEEN them is HOLLOW, the solid END TABS carry the
+    #    holes, and a single central X braces the middle. So: (a) cut the between-rails
+    #    space fully open over the spans OUTSIDE the central X, then (b) cut the X's
+    #    four triangular voids in the centre, leaving the crossing struts.
     if P.bow_pattern_enabled:
-        half_pat = math.degrees((P.bow_pattern_length / 2) / R)  # central half-span (deg), length-based
-        a_lo, a_hi = 90 - half_pat, 90 + half_pat
-        yin = W / 2 - P.bow_rail_width                    # rail inner edge (y)
-        n = P.bow_pattern_bays
-        ang_bay = (a_hi - a_lo) / n
+        a_start, a_end = 90 - half_arc, 90 + half_arc
+        tab_ang = math.degrees(P.bow_endtab_length / R)          # solid end-tab span
+        yin = W / 2 - P.bow_rail_width                           # rail inner edge (y)
         sw = P.bow_strut_width
+        half_pat = math.degrees((P.bow_pattern_length / 2) / R)  # central X half-span (length-based)
+        x_lo, x_hi = 90 - half_pat, 90 + half_pat
+        btab_lo, btab_hi = a_start + tab_ang, a_end - tab_ang    # span between the end tabs
+
+        # (a) hollow between the rails over the open spans (X centre + tabs excluded),
+        #     cut in short segments so the straight cutter follows the arc.
+        for o_lo, o_hi in ((btab_lo, x_lo), (x_hi, btab_hi)):
+            if o_hi - o_lo < 0.5:
+                continue
+            nseg = max(1, int(math.ceil((o_hi - o_lo) / 7.0)))
+            dseg = (o_hi - o_lo) / nseg
+            for i in range(nseg):
+                a_c = o_lo + (i + 0.5) * dseg
+                hs = math.radians(dseg) * R / 2 + 0.3            # half segment + overlap
+                rect = [(-hs, yin), (hs, yin), (hs, -yin), (-hs, -yin)]
+                band = band.cut(_radial_cutter(rect, a_c, R))
+
+        # (b) central X bracing: n bays of four triangular voids leave crossing struts.
+        n = P.bow_pattern_bays
+        ang_bay = (x_hi - x_lo) / n
         for i in range(n):
-            a_c = a_lo + (i + 0.5) * ang_bay
-            hs = math.radians(ang_bay) * R / 2           # half bay arc-length (mm)
+            a_c = x_lo + (i + 0.5) * ang_bay
+            hs = math.radians(ang_bay) * R / 2                   # half bay arc-length (mm)
             voids = [
                 [(-hs + sw, yin), (hs - sw, yin), (0.0, sw)],        # top
                 [(-hs + sw, -yin), (hs - sw, -yin), (0.0, -sw)],     # bottom
