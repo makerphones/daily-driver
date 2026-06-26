@@ -58,29 +58,34 @@ class Params:
     # Remaining material = center hub + concentric rings + radial spokes; the
     # gaps open to the driver. The outer ring is now its OWN radius (no longer
     # pinned to the boss circle) — bosses moved out to the perimeter wall.
-    # Grille echoes the makerphones mark (src DriverMark.astro): a center DOT + two
-    # concentric rings, the OUTER ring ~2× the inner's weight. Spokes aren't in the
-    # mark — they're the structural minimum to hold the rings (no fragile webs), so
-    # they're thin and few. Radii/widths re-derived from the logo's 64-grid
-    # proportions (outer r24/stroke5, inner r13.5/stroke2.5, dot r4.2) scaled into
-    # the grille zone; member widths tuned to keep open area ~0.40 (gate-measured)
-    # with every member ≥ the 2 mm print floor.
+    # LOGO rings + dot echo the makerphones mark (src DriverMark.astro): a center DOT
+    # + two concentric rings, the OUTER ring ~2× the inner's weight. Radii/widths from
+    # the logo's 64-grid proportions (outer r24/stroke5, inner r13.5/stroke2.5, dot
+    # r4.2) scaled into the grille zone. As of Stage 1b these ride FLUSH on top of a
+    # structural triangular lattice (below) — they are decoration, not structure.
     grille_hub_diameter: float = 10.0     # ESTIMATE  the center DOT (logo dome dot)
-    grille_ring_count: int = 2            # ESTIMATE  two concentric rings (the mark)
+    grille_ring_count: int = 2            # ESTIMATE  two concentric LOGO rings (the mark)
     grille_inner_ring_radius: float = 17.0  # ESTIMATE  inner ring (logo 13.5/24 of outer)
     grille_outer_ring_radius: float = 30.0  # ESTIMATE  outer ring (rim left for the chamfered back)
     grille_outer_ring_width: float = 6.0  # ESTIMATE  outer ring weight (the heavier ring)
     grille_inner_ring_width: float = 3.0  # ESTIMATE  inner ring weight (~½ outer, per the mark)
-    grille_spoke_count: int = 10          # ESTIMATE  structural spokes (the mark has none)
-    grille_spoke_width: float = 2.5       # ESTIMATE  spokes — thickened for poke resistance
     grille_member_min_width: float = 2.0  # HARD FLOOR — FDM printability minimum
     grille_target_open_fraction: float = 0.40  # ESTIMATE  target_open (~40%)
-    # Supporting lattice — fine concentric rings braced across the spokes so no thin
-    # member has a long, pokeable span (stability > maximum openness, per the build's
-    # "stable not brittle" requirement). At the 2 mm print floor. The bold hero rings
-    # + dot still read as the mark on top of the finer support mesh.
-    grille_lattice_ring_count: int = 3    # ESTIMATE  fine support rings in the open zones
-    grille_lattice_member_width: float = 2.0  # ESTIMATE  lattice member width (= floor)
+    # Structural LATTICE (Stage 1b) — the grille is now a rigid TRIANGULAR ×3 mesh:
+    # three opposing bar layers at 0/60/120° that carry the protection + stiffness,
+    # with the logo rings + dot (above) riding FLUSH on top (single colour, co-planar,
+    # same material). This INVERTS the old logo-as-structure grille (which read as
+    # fragile yet bulky at once): the mesh is the structure; the logo is decoration,
+    # so it can be bold without being load-bearing and prints self-supporting (built
+    # face-down). Member 2.2 / pitch 11.5 are the settings the maker dialed in on the
+    # interactive pattern explorer ("landed behind the logo nicely").
+    grille_lattice_member_width: float = 2.2  # SET  triangular lattice bar width (explorer)
+    # Explorer value was 11.5, but against the real BOLD logo (the rings alone cover
+    # ~45% of the zone) that gave only 0.274 open — below the 0.30 floor. Opened to 16
+    # → ~0.385 gate-measured (near the 0.40 target), keeping the bold logo. Denser mesh
+    # later is possible by thinning the logo rings to free up open area (maker's call).
+    grille_lattice_pitch: float = 16.0        # SET  bar pitch (tuned to the open-area floor)
+    grille_lattice_angles: tuple = (0.0, 60.0, 120.0)  # 3 opposing layers (triangular)
     grille_open_min: float = 0.30         # gate band lower bound (see gate.py OPEN_MIN)
     # Orange ACCENT dot — a press-in cap at the grille center (the mark's only
     # accent, printed in the warm orange). Seats on the grille hub, stands proud

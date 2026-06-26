@@ -73,32 +73,15 @@ def make_cup() -> cq.Workplane:
     #     this build declines fillets once the grille/bosses/flange complicate it.
     cup = cup.edges("<Z").fillet(P.cup_back_round)
 
-    # 3. Rear vent grille — clean concentric-ring grille, DECOUPLED from the
-    #    bosses. Remaining material = center hub + grille_ring_count rings +
-    #    grille_spoke_count spokes; gaps open to the driver. Outer ring sits at
-    #    P.grille_outer_ring_radius (its own value now). Built as an annular
-    #    CUTTER (zone disc minus kept members), cut from the closed back. Cut
-    #    BEFORE the bosses so nothing slices a boss.
+    # 3. Rear STRUCTURAL GRILLE (Stage 1b) — a rigid TRIANGULAR ×3 lattice (three
+    #    opposing bar layers at 0/60/120°) that carries the protection + stiffness,
+    #    with the LOGO rings + dot riding FLUSH on top (single colour, co-planar). This
+    #    inverts the old logo-as-structure grille: the mesh is the structure, the logo
+    #    is decoration. Built as a "keep" union of solid members; the COMPLEMENT
+    #    (zone disc − keep) is cut from the closed back so the members stay and the
+    #    gaps open to the driver. Cut BEFORE the bosses so nothing slices a boss.
     r_out = P.grille_outer_ring_radius
     hub_r = P.grille_hub_diameter / 2
-    # (radius, width) per ring — the OUTER ring is the heavier one (echoes the mark).
-    if P.grille_ring_count <= 1:
-        ring_specs = [(r_out, P.grille_outer_ring_width)]
-    elif P.grille_ring_count == 2:
-        ring_specs = [(P.grille_inner_ring_radius, P.grille_inner_ring_width),
-                      (r_out, P.grille_outer_ring_width)]
-    else:  # fill rings evenly; only the outermost gets the heavy width
-        r_lo = P.grille_inner_ring_radius
-        n = P.grille_ring_count
-        ring_specs = [(r_lo + (r_out - r_lo) * k / (n - 1),
-                       P.grille_outer_ring_width if k == n - 1 else P.grille_inner_ring_width)
-                      for k in range(n)]
-    # Fine support-lattice rings distributed across the open zone — braces the
-    # spokes so no thin member spans far enough to be poked in.
-    n_lat = P.grille_lattice_ring_count
-    for k in range(1, n_lat + 1):
-        rr = hub_r + (r_out - hub_r) * k / (n_lat + 1)
-        ring_specs.append((rr, P.grille_lattice_member_width))
     zone_r = r_out + P.grille_outer_ring_width / 2  # outer edge of the outer ring = zone
 
     z0 = -1.0
@@ -107,28 +90,32 @@ def make_cup() -> cq.Workplane:
     def _disc(radius):
         return cq.Workplane("XY").workplane(offset=z0).circle(radius).extrude(cut_h)
 
+    def _ring(rc, rw):
+        return (cq.Workplane("XY").workplane(offset=z0)
+                .circle(rc + rw / 2).circle(max(rc - rw / 2, 0.01)).extrude(cut_h))
+
     zone = _disc(zone_r)
-    keep = _disc(hub_r)  # center DOT
-    for rc, rw in ring_specs:  # concentric rings (annuli of per-ring width)
-        ring = (
-            cq.Workplane("XY")
-            .workplane(offset=z0)
-            .circle(rc + rw / 2)
-            .circle(max(rc - rw / 2, 0.01))
-            .extrude(cut_h)
-        )
-        keep = keep.union(ring)
-    for i in range(P.grille_spoke_count):  # thin radial spokes (structural only)
-        ang = i * 360.0 / P.grille_spoke_count
-        spoke = (
-            cq.Workplane("XY")
-            .workplane(offset=z0)
-            .transformed(rotate=(0, 0, ang))
-            .center(zone_r / 2, 0)
-            .rect(zone_r, P.grille_spoke_width)
-            .extrude(cut_h)
-        )
-        keep = keep.union(spoke)
+
+    # Structural triangular lattice FIRST (the mesh behind the logo). Parallel bars of
+    # grille_lattice_member_width at grille_lattice_pitch, centred on the hub, in three
+    # opposing layers. Bars run past the zone; the complement-cut trims them to the disc.
+    mw = P.grille_lattice_member_width
+    pitch = P.grille_lattice_pitch
+    nbar = int(math.ceil(zone_r / pitch)) + 1
+    keep = None
+    for a in P.grille_lattice_angles:
+        for k in range(-nbar, nbar + 1):
+            bar = (cq.Workplane("XY").workplane(offset=z0)
+                   .transformed(rotate=(0, 0, a))
+                   .center(0, k * pitch)
+                   .rect(2 * zone_r + pitch, mw)
+                   .extrude(cut_h))
+            keep = bar if keep is None else keep.union(bar)
+
+    # LOGO on top — two concentric rings + the centre dot, flush in the same plane.
+    keep = keep.union(_ring(P.grille_inner_ring_radius, P.grille_inner_ring_width))
+    keep = keep.union(_ring(r_out, P.grille_outer_ring_width))
+    keep = keep.union(_disc(hub_r))             # centre dot (logo)
 
     cup = cup.cut(zone.cut(keep))
 

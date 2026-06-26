@@ -213,9 +213,9 @@ def main():
     r.hard(P.cup_wall_thickness >= MIN_WALL, "cup-wall",
            f"cup wall {P.cup_wall_thickness:.1f} mm (= (od−id)/2) >= {MIN_WALL} mm floor")
 
-    # 3. Grille members >= printability floor (thinnest of ring/ring/spoke).
+    # 3. Grille members >= printability floor (thinnest of the lattice bar + logo rings).
     grille_min_member = min(P.grille_outer_ring_width, P.grille_inner_ring_width,
-                            P.grille_spoke_width)
+                            P.grille_lattice_member_width)
     r.hard(grille_min_member >= P.grille_member_min_width, "grille-member-width",
            f"thinnest member {grille_min_member} mm >= {P.grille_member_min_width} mm floor")
 

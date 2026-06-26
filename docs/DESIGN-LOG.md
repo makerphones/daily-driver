@@ -6,6 +6,56 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Stage 1b: structural lattice grille; pivot/seal eval → mid-split confirmed
+
+Two outcomes this session: the new grille, and the architecture decision that settles
+whether to keep the mid-split or go hybrid-D. Build 9/9, gate 0 HARD / 1 SOFT.
+
+**Grille (Stage 1b) — triangular ×3 lattice, flush logo.** Replaced the old
+"logo-as-structure" grille (fragile yet bulky at once) with a rigid TRIANGULAR ×3
+mesh (three opposing bar layers at 0/60/120°) carrying the protection + stiffness,
+and the LOGO rings + dot riding FLUSH on top (single colour, co-planar — the maker
+will paint/sticker/leave-black). The mesh prints self-supporting (cup builds
+grille-face-down). New params `grille_lattice_member_width=2.2`, `grille_lattice_pitch`,
+`grille_lattice_angles=(0,60,120)`; retired the spoke/support-ring params; gate's
+`grille-member-width` now measures the lattice bar + logo rings.
+- **Pitch opened 11.5 → 16.** The maker's explorer settings (member 2.2 / pitch 11.5)
+  gave only **0.274 open** against the real BOLD logo (the rings alone cover ~45% of
+  the zone) — below the 0.30 floor. Pitch 16 → **0.385** (near the 0.40 target, in
+  band), bold logo preserved. Denser mesh later is possible by thinning the logo rings.
+
+**Pivot / seal eval — DECISION: keep the MID-SPLIT, no ribs.** A 4-lens adversarial
+workflow (kinematics, seal/acoustics, real-headphone prior art, this-design fit)
+answered the maker's questions:
+- **Ideal pivot:** collinear pins, 180° opposed, axis through the cup centre, kept
+  FREE/low-friction so the cup self-seats — the design already has this. Axis height
+  ideally near the pad plane (z36); current z24 is 12 mm behind, but raising it is
+  only **second-order** (friction lock-in, contact smear, donning — NOT a static
+  moment: a free hinge self-seats to zero net moment regardless of depth).
+- **Exactly-opposing pins: YES, keep them.** Crux distinction the maker asked for —
+  pin COLLINEARITY is a BEARING requirement (clean revolute, no binding/insert-saw),
+  NOT a seal lever. Don't cant/stagger/offset the pins (over-constrains, kills
+  self-seating). The seal lever is the CLAMP RESULTANT vs the pad centroid.
+- **Bottom seal is won in the SHARED clamp path**, identical for both architectures:
+  clamp-resultant position + magnitude (primary), pad compliance at the bottom, a
+  small ~2° toe-in, and free tilt+swivel joints. The vertical swivel equalizes
+  FRONT-vs-BACK, not top-vs-bottom (there is no roll DOF).
+- **Hybrid-D gives NO first-order seal advantage** (all 4 lenses converge). Its only
+  seal-relevant freedom — advancing the axis forward to the pad plane, which the
+  mid-split can't reach (capped at `pivot_boss_z=24` by `parting_z+lap ≤ 24`) — is
+  second-order and pad-absorbed. Not worth the ribs + fatigue on a seal-forgiving
+  OPEN back. **Reserve hybrid-D** as a documented upgrade path only if a test print
+  shows real pad cocking, or for a NON-seal reason (boss packaging, cable routing).
+- **Seal levers to apply later** (architecture-independent, when we tune fit): bias
+  the clamp resultant toward the bottom-front of the centroid; ~2° rest toe-in; keep
+  the shoulder-screw + swivel back-driving freely (slip fit, no preload); a softer/
+  taller bottom pad segment; do NOT offset the axis high or break collinearity.
+- **Open (test-print items):** confirm the printed joints self-seat (low friction);
+  measure the compressed-pad skin-contact centroid; pressure-map whether the 12 mm
+  axis setback actually cocks the pad before spending any pivot-height work.
+
+---
+
 ## 2026-06-25 — Modular earcup: split into FRONT FRAME + REAR MODULE (Stage 1)
 
 The earcup is now a two-part interchangeable design (maker goal: swap the grille,
