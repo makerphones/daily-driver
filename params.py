@@ -286,10 +286,22 @@ class Params:
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
     yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)
     yoke_pivot_eye_diameter: float = 12.0  # ESTIMATE  pad around pivot hole (12 hosts the stop slot)
-    yoke_swivel_hub_diameter: float = 14.0  # ESTIMATE  swivel_hub_dia
-    yoke_swivel_bore: float = 6.0         # ESTIMATE  swivel_bore (vertical pin)
-    yoke_swivel_hub_height: float = 12.0  # ESTIMATE  hub height (along the pin)
     pivot_tilt_degrees: float = 20.0      # ESTIMATE  tilt_range (±)
+
+    # ---- Yoke↔slider vertical adjustment (Grado HP1000-style: post + thumbscrew) -
+    # The yoke carries a round vertical POST that slides up/down in the slider block
+    # for HEIGHT (head-size) adjustment, locked by a side THUMBSCREW pressing the post
+    # — no detent, like Joe Grado's HP1/HP1000. The round post in a round bore also
+    # lets the cup SWIVEL (fore-aft seal conform) when the screw is loose; tightening
+    # locks both height + swivel by friction. (Replaces the old fixed swivel hub/bore;
+    # Beyer's friction-clip in the block is the alternative, noted in the LOG.)
+    yoke_post_diameter: float = 8.0       # SET  round adjustment post OD (slide + swivel)
+    yoke_post_length: float = 34.0        # SET  post length above the arm junction (travel + grip)
+    slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
+    slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
+    slider_thumbscrew_diameter: float = 4.0      # SET  M4 thumbscrew (bigger for hand grip)
+    slider_thumbscrew_insert_hole: float = 5.6   # SET  M4 brass heat-set bore (the lock)
+    slider_thumbscrew_boss: float = 9.0   # SET  boss OD on the +Y face hosting the insert
 
     # ---- Slider (BOLTS to the bow end tab) ----------------------------------
     # MECHANISM (decided): the band's end tab bolts to the slider's inside (-Y)
@@ -297,12 +309,12 @@ class Params:
     # The block + tab seat are sized for the measured 33 mm band (were 22/17 for a
     # 16 mm bow). The 2 mount bores sit above the swivel bore and straddle X.
     slider_block_width: float = 42.0      # ESTIMATE  block w (X) — hosts the 33 mm tab + bores
-    slider_block_height: float = 26.0     # ESTIMATE  block h (Z)
-    slider_block_depth: float = 16.0      # ESTIMATE  block d (Y)
+    slider_block_height: float = 26.0     # ESTIMATE  block h (Z) — the post slides through this
+    slider_block_depth: float = 18.0      # SET  block d (Y) — 16→18 for the central post bore
+                                          #   wall (post bore ↔ bow-tab seat) to clear the floor
     slider_tab_seat_width: float = 34.0   # ESTIMATE  tab-seat width (measured bow 33 + 1 clr)
     slider_tab_seat_depth: float = 2.0    # ESTIMATE  tab-seat depth (registers the tab)
-    slider_swivel_bore: float = 6.0       # ESTIMATE  mates the fork swivel hub
-    slider_mount_bore_z: float = 9.0      # ESTIMATE  height of the 2 tab-mount bores (clears swivel; ≥2 mm top cap)
+    slider_mount_bore_z: float = 9.0      # ESTIMATE  height of the 2 tab-mount bores (off-centre, clears the central post bore)
     slider_block_fillet: float = 2.5      # soft-form roundover on the block edges (hand feel)
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------

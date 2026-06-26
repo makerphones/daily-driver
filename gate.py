@@ -285,9 +285,12 @@ def main():
     r.hard(eye_web >= MIN_YOKE_STRUCTURAL, "yoke-eye-web",
            f"eye bearing web {eye_web:.1f} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
 
-    hub_wall = (P.yoke_swivel_hub_diameter - P.yoke_swivel_bore) / 2
-    r.hard(hub_wall >= MIN_YOKE_STRUCTURAL, "yoke-hub-wall",
-           f"swivel-hub wall {hub_wall:.1f} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+    r.hard(P.yoke_post_diameter >= MIN_YOKE_STRUCTURAL, "yoke-post-structural",
+           f"adjustment post Ø{P.yoke_post_diameter} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
+    post_bore_wall = (P.slider_block_depth / 2 - P.slider_tab_seat_depth) \
+        - (P.yoke_post_diameter + P.slider_post_clearance) / 2
+    r.hard(post_bore_wall >= MIN_WALL, "slider-postbore-wall",
+           f"slider wall (post bore↔tab seat) {post_bore_wall:.1f} mm >= {MIN_WALL} mm")
 
     # --- Step-down adapter ring (accessory) — printable walls. ---
     adapter_wall = (P.adapter_host_diameter - P.adapter_target_driver_od) / 2
@@ -321,10 +324,11 @@ def main():
 
     # Slider bolt-on geometry: the two tab-mount bores must clear the swivel bore
     # below, sit within the block, and the across-width pair must fit the tab seat.
-    swivel_top = -P.slider_block_height / 2 + P.yoke_swivel_hub_height
     bore_r = P.m3_insert_hole_diameter / 2
-    r.hard(P.slider_mount_bore_z - bore_r > swivel_top, "slider-mount-clears-swivel",
-           f"mount z {P.slider_mount_bore_z} (−r) above swivel top {swivel_top:.1f} mm")
+    post_bore_r = (P.yoke_post_diameter + P.slider_post_clearance) / 2
+    mount_x = P.bow_endtab_hole_spacing / 2
+    r.hard(mount_x - bore_r >= post_bore_r, "slider-mount-clears-postbore",
+           f"mount bore x{mount_x:.0f}−r{bore_r:.1f} clears central post bore r{post_bore_r:.1f}")
     r.hard(P.slider_mount_bore_z + bore_r + MIN_BOSS_WALL <= P.slider_block_height / 2,
            "slider-mount-in-block",
            f"mount z {P.slider_mount_bore_z} +r+{MIN_BOSS_WALL} cap within block half-height "

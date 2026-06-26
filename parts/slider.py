@@ -60,15 +60,31 @@ def make_slider() -> cq.Workplane:
             cq.Vector(x, floor_y, mount_z), cq.Vector(0, 1, 0))
         slider = slider.cut(cq.Workplane(obj=bore))
 
-    # Swivel bore at the bottom (axis Z) — takes the fork swivel-hub pin. Fixed
-    # depth (hosts the hub) so it stays below the mount bores.
-    swivel = (
-        cq.Workplane("XY")
-        .workplane(offset=-h / 2 - 1)
-        .circle(P.slider_swivel_bore / 2)
-        .extrude(P.yoke_swivel_hub_height + 1)   # up from the bottom, not through
+    # Vertical POST bore (axis Z, centre) — the yoke's round adjustment post slides
+    # THROUGH this for height (head-size) adjustment, so it runs the full block.
+    post_bore_d = P.yoke_post_diameter + P.slider_post_clearance
+    post_bore = (
+        cq.Workplane("XY").workplane(offset=-h / 2 - 1)
+        .circle(post_bore_d / 2).extrude(h + 2)
     )
-    slider = slider.cut(swivel)
+    slider = slider.cut(post_bore)
+
+    # THUMBSCREW lock (Grado HP1000-style) — a boss on the +Y (outer) face with an M4
+    # heat-set bore; the thumbscrew threads in and its tip presses the post (friction
+    # lock, no detent). A clearance hole carries the screw shaft to the post bore.
+    ts_z, boss_h = 0.0, 4.0
+    boss = cq.Solid.makeCylinder(
+        P.slider_thumbscrew_boss / 2, boss_h,
+        cq.Vector(0, d / 2, ts_z), cq.Vector(0, 1, 0))
+    slider = slider.union(cq.Workplane(obj=boss))
+    ins = cq.Solid.makeCylinder(
+        P.slider_thumbscrew_insert_hole / 2, P.insert_boss_depth,
+        cq.Vector(0, d / 2 + boss_h, ts_z), cq.Vector(0, -1, 0))
+    slider = slider.cut(cq.Workplane(obj=ins))
+    clr = cq.Solid.makeCylinder(
+        P.slider_thumbscrew_diameter / 2 + 0.2, d / 2 + boss_h,   # to the post bore centre, not through
+        cq.Vector(0, d / 2 + boss_h, ts_z), cq.Vector(0, -1, 0))
+    slider = slider.cut(cq.Workplane(obj=clr))
 
     return slider
 

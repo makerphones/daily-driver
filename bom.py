@@ -25,9 +25,12 @@ EARS = 2
 def bom_rows():
     """Structured BOM rows. Counts come from params (× EARS) where the design
     fixes them; everything else is a flagged sourcing estimate."""
-    baffle_screws = P.baffle_screw_count * EARS          # M3 into the cup baffle bosses
+    baffle_screws = P.baffle_screw_count * EARS          # M3, baffle → frame bosses
+    clamp_screws = P.driver_clamp_count * EARS           # M3, driver clamp ring → baffle back
     pivot_screws = P.pivot_boss_count * EARS             # M3 shoulder screws (the tilt joint)
-    inserts = (P.baffle_screw_count + P.pivot_boss_count) * EARS  # one heat-set insert per screw
+    thumbscrews = EARS                                   # M4 thumbscrew, slider height lock (1/side)
+    m3_inserts = (P.baffle_screw_count + P.driver_clamp_count + P.pivot_boss_count) * EARS
+    m4_inserts = EARS                                    # one per slider, for the thumbscrew
 
     return [
         # item, qty, source, price, flag
@@ -39,17 +42,23 @@ def bom_rows():
          "north-america.beyerdynamic.com", "~$11", "REF"),
         (f"M3 shoulder screw — yoke↔cup pivot (shoulder ⌀{P.shoulder_screw_shoulder_diameter:.0f} mm)",
          f"{pivot_screws}", "McMaster-Carr / hardware", "~$1.50 ea (~$6)", "ESTIMATE"),
-        (f"M3 button/socket-head screw, ~{int(P.baffle_thickness)}–10 mm — baffle",
+        (f"M3 socket-head screw, ~{int(P.baffle_thickness)}–10 mm — baffle → frame",
          f"{baffle_screws}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
+        ("M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle",
+         f"{clamp_screws}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
+        ("M4 thumbscrew — slider height lock (Grado-style)",
+         f"{thumbscrews}", "McMaster-Carr / Amazon", "~$1.50 ea", "ESTIMATE"),
         (f"M3 brass heat-set insert (⌀{P.heatset_insert_diameter:.1f} OD × {P.heatset_insert_length:.1f})",
-         f"{inserts}", "McMaster-Carr / Amazon", "~$3–4 (set)", "ESTIMATE"),
+         f"{m3_inserts}", "McMaster-Carr / Amazon", "~$4–5 (set)", "ESTIMATE"),
+        ("M4 brass heat-set insert — slider thumbscrew",
+         f"{m4_inserts}", "McMaster-Carr / Amazon", "~$1 (set)", "ESTIMATE"),
         ("Foam gasket tape (driver seal)", "small roll",
          "hardware", "~$1", "ESTIMATE"),
         ("Damping pack (felt + open-cell foam + fiberfill)", "1",
          "Parts Express", "$3–5", "ESTIMATE"),
         ("Cable + Y-split + 3.5 mm TRS plug", "1",
          "online", "$8–15", "ESTIMATE"),
-        ("Printed parts (2× frame, module, baffle, yoke, slider per side)", "1 set",
+        ("Printed parts (2× frame, module, baffle, yoke, slider, driver clamp per side)", "1 set",
          "own printer or print service", "$3–25", "ESTIMATE"),
     ]
 

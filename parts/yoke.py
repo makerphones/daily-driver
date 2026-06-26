@@ -79,16 +79,23 @@ def make_yoke() -> cq.Workplane:
             arm = arm.union(_bar(cpts[j], cpts[j + 1], w0, w1, arm_t))
         yoke = arm if yoke is None else yoke.union(arm)
 
-    # swivel hub at the top (axis Z), bore for the vertical slider pin
+    # Junction hub + vertical adjustment POST (replaces the fixed swivel hub). The
+    # arms tie into a short junction hub at the apex; a round POST rises from it and
+    # SLIDES in the slider for height (head-size) adjustment, locked by the slider
+    # thumbscrew (Grado HP1000-style). Round → the cup also swivels when unlocked.
+    hub_d = P.yoke_post_diameter + 4.0          # short junction hub, wider than the post
     hub = (
-        cq.Workplane("XY")
-        .workplane(offset=hub_z - P.yoke_swivel_hub_height / 2)
-        .circle(P.yoke_swivel_hub_diameter / 2)
-        .extrude(P.yoke_swivel_hub_height)
+        cq.Workplane("XY").workplane(offset=hub_z - 4)
+        .circle(hub_d / 2).extrude(8)
     )
-    yoke = yoke.union(hub)
+    post = (
+        cq.Workplane("XY").workplane(offset=hub_z - 4)
+        .circle(P.yoke_post_diameter / 2).extrude(8 + P.yoke_post_length)
+    )
+    yoke = yoke.union(hub).union(post)
 
-    # bores: pivot holes (axis X) through each eye, swivel bore (axis Z) through hub
+    # bores: pivot holes (axis X) through each eye. (The adjustment post is SOLID —
+    # no bore; it slides in the slider and the slider thumbscrew locks it.)
     for sign in (+1, -1):
         x = sign * a
         bore = (
@@ -99,13 +106,6 @@ def make_yoke() -> cq.Workplane:
             .extrude(arm_t + 2)
         )
         yoke = yoke.cut(bore)
-    swivel = (
-        cq.Workplane("XY")
-        .workplane(offset=hub_z - P.yoke_swivel_hub_height / 2 - 1)
-        .circle(P.yoke_swivel_bore / 2)
-        .extrude(P.yoke_swivel_hub_height + 2)
-    )
-    yoke = yoke.cut(swivel)
 
     # over-rotation STOP arc slot: a clearance pocket at radius pivot_stop_radius
     # around each pivot, spanning ±pivot_stop_slot_halfangle from straight-up. The

@@ -14,12 +14,15 @@ project rule: never present a guessed price as confirmed).
 | Dekoni Universal 100 mm ear pads (Beyer-type) | 1 pair | Dekoni Audio | $30–45 | ESTIMATE |
 | Beyerdynamic Metal Head Bow (or DIY 1095 spring steel) | 1 | north-america.beyerdynamic.com | ~$11 | REF |
 | M3 shoulder screw — yoke↔cup pivot (shoulder ⌀4 mm) | 4 | McMaster-Carr / hardware | ~$1.50 ea (~$6) | ESTIMATE |
-| M3 button/socket-head screw, ~6–10 mm — baffle | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
-| M3 brass heat-set insert (⌀4.7 OD × 5.7) | 10 | McMaster-Carr / Amazon | ~$3–4 (set) | ESTIMATE |
+| M3 socket-head screw, ~6–10 mm — baffle → frame | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
+| M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
+| M4 thumbscrew — slider height lock (Grado-style) | 2 | McMaster-Carr / Amazon | ~$1.50 ea | ESTIMATE |
+| M3 brass heat-set insert (⌀4.7 OD × 5.7) | 16 | McMaster-Carr / Amazon | ~$4–5 (set) | ESTIMATE |
+| M4 brass heat-set insert — slider thumbscrew | 2 | McMaster-Carr / Amazon | ~$1 (set) | ESTIMATE |
 | Foam gasket tape (driver seal) | small roll | hardware | ~$1 | ESTIMATE |
 | Damping pack (felt + open-cell foam + fiberfill) | 1 | Parts Express | $3–5 | ESTIMATE |
 | Cable + Y-split + 3.5 mm TRS plug | 1 | online | $8–15 | ESTIMATE |
-| Printed parts (2× frame, module, baffle, yoke, slider per side) | 1 set | own printer or print service | $3–25 | ESTIMATE |
+| Printed parts (2× frame, module, baffle, yoke, slider, driver clamp per side) | 1 set | own printer or print service | $3–25 | ESTIMATE |
 
 Own-printer builds land near the low end (filament only); print-service
 sourcing near the high end. The driver is still parametric/unlocked

@@ -6,6 +6,50 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Driver clamp ring, buttressed bosses, Grado-style yoke height adjust
+
+A batch of maker-driven mechanical changes (3 committed checkpoints). Build 10/10,
+gate 0 HARD / 1 SOFT throughout.
+
+**Driver clamp ring (new part, `driver_clamp`).** The maker wants the driver held by
+a 3-ear clamp ring (their exhaust-flange-style prototype) instead of just dropping it
+in. `make_driver_clamp` is a 3-ear ring with a raised inner LIP that presses the
+driver's mounting flange and an open centre clearing the magnet; it bolts to 3 M3
+heat-set inserts on the baffle BACK (small bosses at bcd 60 / r30), independent of
+the baffle→frame mount. The bolt circle sits BETWEEN the vents (r26) and the frame
+holes (r35), and the 3 clamp bosses (0/120/240) interleave with the 6 vents (offset
+30°) → 21° clear. Gate: manifold + bcd-band + clears-vents + catches-flange. It's an
+ACCESSORY (printed, gallery-shown; not posed in the assembly since the driver itself
+is a bought part not modelled). Driver-fit dims are driver-pending.
+
+**Baffle screws 4 → 3.** Lighter, a stable 3-point plane, matches the 3-fold clamp.
+(The maker counted "6 holes" — those are the 6 acoustic VENTS; the mount screws were 4.)
+
+**Frame baffle-bosses buttressed.** The maker flagged the bare boss columns as
+snap-off fragile. They're now built as a column + a wider base FLARE that merges into
+the cup wall over a much wider arc than the thin lens, built solid THEN bored
+(round-before-cut — a base fillet here makes an invalid solid). `baffle_boss_diameter`
+10 → 12 (deeper embedment + thicker bore wall). Reach (col 41 / flare 42.5) clears the
+female-thread valley.
+
+**Yoke height adjustment — Grado HP1000-style post + thumbscrew (`#4`).** Replaced the
+fixed swivel hub/bore with a real vertical SIZE adjustment: the yoke carries a round
+POST (Ø8) that SLIDES through the slider block, locked by an M4 THUMBSCREW pressing
+the post (friction, no detent — like Joe Grado's HP1/HP1000; Beyer's friction-clip in
+the block is the noted alternative). The round post in the round bore also lets the
+cup SWIVEL (fore-aft seal conform) when the screw is loose; tightening locks both
+height + swivel. `slider_block_depth` 16 → 18 so the central post bore keeps a ≥2 mm
+wall to the bow-tab seat. Gate: `yoke-post-structural`, `slider-postbore-wall` (2.8),
+`slider-mount-clears-postbore`; the old swivel-hub checks retired. BOM gains the clamp
+screws + the M4 thumbscrew/insert.
+- **Trade-off logged:** a single round post + side thumbscrew locks height AND swivel
+  together; if a free-in-use swivel proves worth it, add a separate swivel joint below
+  the slide (or a height-only key). Set-and-lock is the HP1000 norm and fine for now.
+- **Not verified:** the post slide fit (0.4 mm) + the thumbscrew grip want a print;
+  the clamp's exact lip/standoff is driver-measured-pending.
+
+---
+
 ## 2026-06-26 — Stage 2: single-start coarse thread on the joint (twist-lock)
 
 The frame↔module joint now carries a real printable THREAD (was a plain slip

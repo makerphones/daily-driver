@@ -5,7 +5,7 @@
 Assembly — one side of the Daily Driver in its correct relationship (v0.3).
 
 Chain: frame + module (the split earcup) → baffle (front-mounted) → fork-yoke
-(pivoted to the frame) → slider (on the fork swivel hub) → bow (REFERENCE body).
+(pivoted to the frame) → slider (rides the fork's adjustment post) → bow (REFERENCE body).
 The frame/module/baffle/yoke/slider poses
 are the real kinematic chain; the bow is posed representatively so one end sits in
 the slider channel and the arc sweeps over toward the other (mirror) side — the
@@ -106,7 +106,9 @@ def make_assembly() -> cq.Assembly:
     module = T_cup(make_module())
     baffle = T_cup(make_baffle().translate((0, 0, P.baffle_seat_z)))
     yoke = T_yoke(make_yoke())
-    slider_z = P.yoke_fork_height + P.yoke_swivel_hub_height / 2 - 5.0 + P.slider_block_height / 2
+    # Slider rides the yoke post at a mid head-size position (the post slides through
+    # it; the thumbscrew locks the height).
+    slider_z = P.yoke_fork_height + P.yoke_post_length - P.slider_block_height / 2 - 6.0
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
 
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
