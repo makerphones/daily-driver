@@ -98,6 +98,19 @@ def build(names):
                 tag = "" if name in PRINTED else "  (ACCESSORY — not in the assembly)"
                 print(f"  [ok]   {name}.stl + {name}.step{tag}")
                 _render_part(stl_path, name)
+                # Per-part GLB for the website parts gallery's 3D view (a COMMITTED
+                # artifact in docs/models/, served from Pages alongside the assembly
+                # GLB). A neutral mid-grey so the geometry reads in the viewer's
+                # neutral environment (the dark charcoal was hard to see). Best-effort.
+                try:
+                    os.makedirs(MODELS, exist_ok=True)
+                    part_asm = cq.Assembly(model, name=name,
+                                           color=cq.Color(0.62, 0.64, 0.67))
+                    part_asm.export(os.path.join(MODELS, f"{name}.glb"),
+                                    exportType="GLTF", tolerance=0.05, angularTolerance=0.1)
+                    print(f"           ↳ {MODELS}/{name}.glb (web part viewer)")
+                except Exception as e:  # noqa: BLE001 — never fail the build on a GLB
+                    print(f"           ↳ [warn] GLB skipped for {name}: {e}")
             else:
                 print(f"  [ok]   {name}.step  (REFERENCE — not printed)")
             ok.append(name)

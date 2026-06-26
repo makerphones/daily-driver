@@ -6,6 +6,19 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Per-part GLBs for the website's 3D parts gallery
+
+`build.py` now exports a per-part GLB to `docs/models/<part>.glb` (committed,
+Pages-served) for every printed + accessory part, alongside the existing assembly
+GLB — so the makerphones website's parts gallery can show each part in 3D (not just
+the static render poster), letting the maker spin/inspect individual geometry. A
+neutral mid-grey colour so parts read in the viewer's neutral environment (the dark
+charcoal was hard to see). No geometry change; build 9/9. (Paired with website-side
+viewer upgrades: brighter lighting, a bigger explode, a fullscreen button, and the
+per-part 3D cards — those live in the makerphones repo, not here.)
+
+---
+
 ## 2026-06-25 — Bottom-seal homework: asymmetric pins vs asymmetric pads
 
 The maker asked us to do the homework on the IDEAL yoke↔cup pivot placement —
