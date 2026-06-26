@@ -121,55 +121,6 @@ class Params:
     # stops IN the wall (no lug into the cavity) while still housing the insert.
     pivot_boss_through_span: float = 9.0  # ESTIMATE  radial length across the wall
 
-    # ---- Modular split: permanent FRONT FRAME + removable REAR MODULE --------
-    # Architecture "D / forward split, NO ribs" (maker decision 2026-06-25, after a
-    # 5-lens adversarial eval). The cup is built WHOLE as a reference shell
-    # (cup.make_cup) and SPLIT at parting_z into two PRINTED parts:
-    #   • make_frame  — front: baffle seat, pad lip, the YOKE PIVOTS (forward, on the
-    #                   frame), and the joint socket. The permanent structural frame;
-    #                   the hinge load path lives here, intact.
-    #   • make_module — rear: the cavity + grille; swaps for damping / open↔sealed.
-    # GEOMETRY CONSTRAINT (why the split is mid, not behind the baffle): with no ribs
-    # the Ø12 pivot boss must sit on the frame, and pivot(12) + lap + baffle-boss(6)
-    # must fit between parting_z and the 36 mm rim → parting_z + lap ≤ 24. So the
-    # most-forward no-rib parting is ~18 (a clean MID split ≈ architecture B). A truly
-    # forward parting (module owns most of the cavity) needs the hybrid-D ribs to move
-    # the pivot off the frame — the documented upgrade path. See DESIGN-LOG 2026-06-25.
-    # JOINT = a telescoping SHIPLAP: the frame's outer wall sleeves DOWN over the
-    # module's inner spigot (continuous 91.44 OD, no external collar). The spigot top
-    # bottoms on the frame wall (the seat). The coarse single-start THREAD + axial
-    # O-ring GASKET are deferred to Stage 2/3 — Stage 1 is a simple slip register.
-    parting_z: float = 18.0               # SET  split height z (mid; max-forward w/o ribs)
-    joint_register_lap: float = 6.0       # ESTIMATE  lap / thread engagement length (axial)
-    # joint_interface_radius is the THREAD MAJOR radius (crest) AND the plain-register
-    # interface. Ø86 (r43), pitch 3 is the wall-budget sweet spot for the 6.7 mm wall:
-    # male core (root−cavity) ≈ 2.4 mm and frame outer wall (body−female valley) ≈ 2.4
-    # mm both clear the 2 mm floor, and the female crest (~41.7) clears the baffle
-    # bosses (reach r40). (Ø84/pitch4 from the eval collapsed the male core to ~0.8 mm
-    # in THIS shiplap; coarser-but-shallower pitch 3 at Ø86 fixes it — see DESIGN-LOG.)
-    joint_interface_radius: float = 43.0  # SET  thread major radius (Ø86) = lap interface
-    joint_register_clearance: float = 0.35  # SET  radial thread/slip clearance (FDM)
-    # Stage 2: a single-start coarse thread on the lap faces (cq_warehouse IsoThread —
-    # module = external/male, frame = internal/female). Import-guarded: if cq_warehouse
-    # is absent or a thread won't build, the joint DEGRADES to the plain slip register
-    # (still one valid solid). The gate's frame/module manifold checks are the go/no-go.
-    joint_thread: bool = True             # SET  thread the lap (else plain slip register)
-    joint_thread_pitch: float = 3.0       # SET  coarse single-start pitch (FDM-printable)
-    # Stage 3: hard bottoming SHOULDER + axial O-ring SEAL. The seal SQUEEZE is set by
-    # GEOMETRY, not thread torque: a local COLLAR bulges both parts at the joint band
-    # (OD <= 101.6 lip) to make a seal face OUTBOARD of the thread; the O-ring GROOVE is
-    # on the MODULE's up-facing flange (printed floor-up = the only FDM-airtight face),
-    # and the frame collar bottoms plastic-to-plastic on the lands either side of it,
-    # capping the squeeze. The spigot top is held ~joint_seat_clearance short of the
-    # socket ceiling so the z=parting SHOULDER is the hard stop. The OPEN (lattice)
-    # module just omits the O-ring; the SEALED module fits it. (Eval Stage 3.)
-    joint_collar_diameter: float = 98.0   # SET  collar OD at the joint band (<= 101.6 lip)
-    joint_oring_cross_section: float = 2.62  # SET  AS568 dash-2xx O-ring cord dia
-    joint_seal_mean_diameter: float = 92.0  # SET  O-ring mean seal Ø (groove centre, outboard of thread)
-    joint_groove_depth: float = 2.1       # SET  groove depth at bottomed (~20% squeeze)
-    joint_groove_width: float = 3.3       # SET  groove width (<= 85% fill, no hydraulic lock)
-    joint_seat_clearance: float = 0.3     # SET  spigot-top↔socket-ceiling gap so the shoulder bottoms
-
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore
     m3_clearance_hole: float = 3.4        # M3 free-fit through-hole (standard)
@@ -425,23 +376,19 @@ class Params:
 
     @property
     def baffle_boss_floor_z(self) -> float:
-        # baffle bosses are FRAME-only now: they floor at the top of the joint lap
-        # band (parting_z + lap) so the lap socket never cuts them, and run up to the
-        # baffle underside. (Was the interior back floor, which the split would sever.)
-        return self.parting_z + self.joint_register_lap
+        # one-piece cup: bosses stand on the interior back floor (solid) and run up to
+        # the baffle underside — a full-height buttressed column tied to the floor + wall.
+        return self.cup_interior_floor_z
 
     @property
     def baffle_boss_height(self) -> float:
-        # boss columns run from the joint-lap top up to the baffle underside
+        # boss columns run from the interior back floor up to the baffle underside
         return self.baffle_seat_z - self.baffle_boss_floor_z
 
     @property
     def pivot_boss_z(self) -> float:
-        # FORWARD pivot (on the frame, no ribs): the boss bottom sits at the parting
-        # plane, so its centre is parting_z + the boss radius. The boss spans
-        # parting_z .. parting_z+diameter, attached to the frame's intact outer wall
-        # (the shiplap removes only the INNER wall over the lap). (Was mid-height.)
-        return self.parting_z + self.pivot_boss_diameter / 2
+        # yoke pivot bosses sit at cup mid-height (balanced clamp; one-piece cup).
+        return self.cup_total_height / 2
 
     @property
     def pivot_boss_outer_radius(self) -> float:

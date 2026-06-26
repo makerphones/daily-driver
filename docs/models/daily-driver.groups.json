@@ -4,10 +4,8 @@
       "id": "earcup",
       "label": "Earcup",
       "nodes": [
-        "frame_R",
-        "frame_L",
-        "module_R",
-        "module_L",
+        "cup_R",
+        "cup_L",
         "baffle_R",
         "baffle_L"
       ]

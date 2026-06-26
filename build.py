@@ -27,7 +27,7 @@ import json
 import shutil
 import cadquery as cq
 
-from parts.cup import make_frame, make_module
+from parts.cup import make_cup
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
@@ -45,12 +45,10 @@ try:
 except Exception:  # noqa: BLE001 — ImportError or backend issue → skip rendering
     _HAVE_RENDER = False
 
-# Printed parts → STL + STEP. The earcup is now the modular split: a permanent
-# FRONT FRAME (baffle seat, pad lip, yoke pivots, joint socket) + a removable REAR
-# MODULE (cavity + grille). Both derive from cup.make_cup (the reference shell).
+# Printed parts → STL + STEP. The earcup is a one-piece cup (integral lattice
+# grille + buttressed baffle bosses + the yoke pivots + the pad lip).
 PRINTED = {
-    "frame": make_frame,
-    "module": make_module,
+    "cup": make_cup,
     "baffle": make_baffle,
     "yoke": make_yoke,
     "slider": make_slider,

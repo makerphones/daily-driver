@@ -22,7 +22,7 @@ project rule: never present a guessed price as confirmed).
 | Foam gasket tape (driver seal) | small roll | hardware | ~$1 | ESTIMATE |
 | Damping pack (felt + open-cell foam + fiberfill) | 1 | Parts Express | $3–5 | ESTIMATE |
 | Cable + Y-split + 3.5 mm TRS plug | 1 | online | $8–15 | ESTIMATE |
-| Printed parts (2× frame, module, baffle, yoke, slider, driver clamp per side) | 1 set | own printer or print service | $3–25 | ESTIMATE |
+| Printed parts (2× cup, baffle, yoke, slider, driver clamp per side) | 1 set | own printer or print service | $3–25 | ESTIMATE |
 
 Own-printer builds land near the low end (filament only); print-service
 sourcing near the high end. The driver is still parametric/unlocked

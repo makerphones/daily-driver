@@ -27,7 +27,7 @@ from OCP.gp import gp_Pnt
 from OCP.TopAbs import TopAbs_IN, TopAbs_ON
 
 from params import P
-from parts.cup import make_cup, make_frame, make_module, pivot_stop_pins
+from parts.cup import make_cup, pivot_stop_pins
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
@@ -182,9 +182,7 @@ def main():
     print("Building printed parts in-process (part [warn]s below are the")
     print("deferred-cosmetic SOFT warnings; they do not fail the gate)…\n")
 
-    cup = make_cup()              # reference shell (grille/pivot/wall checks run on it)
-    frame = make_frame()          # printed: permanent front frame
-    module = make_module()        # printed: removable rear module
+    cup = make_cup()
     baffle = make_baffle()
     yoke = make_yoke()
     slider = make_slider()
@@ -192,7 +190,7 @@ def main():
     headband_pad = make_headband_pad()
     grille_dot = make_grille_dot()
     driver_clamp = make_driver_clamp()
-    parts = {"frame": frame, "module": module, "baffle": baffle, "yoke": yoke,
+    parts = {"cup": cup, "baffle": baffle, "yoke": yoke,
              "slider": slider, "driver_clamp": driver_clamp, "adapter_ring": adapter,
              "headband_pad": headband_pad, "grille_dot": grille_dot}
 
@@ -356,72 +354,10 @@ def main():
     r.hard(P.pad_lip_thickness >= MIN_WALL, "pad-flange-thickness",
            f"flange thickness {P.pad_lip_thickness} mm >= {MIN_WALL} mm")
 
-    # --- Modular split: frame ↔ module shiplap joint -------------------------
-    # The manifold pass above already proved frame + module each build as one valid
-    # solid (the real buildability gate for the split). These guard the dimensions
-    # that keep the joint sound: the lap relief clears the baffle bosses, both lap
-    # walls stay printable, a bottoming seat exists, and the forward pivot lands on
-    # the frame, clear of the joint band. (Coarse thread + axial gasket = Stage 2/3.)
-    boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
-    relief_inner = P.joint_interface_radius - P.joint_register_clearance
-    r.hard(relief_inner >= boss_reach, "joint-clears-baffle-bosses",
-           f"lap relief inner {relief_inner:.2f} mm >= boss reach {boss_reach:.1f} mm")
-
-    frame_joint_wall = P.cup_outer_diameter / 2 - (P.joint_interface_radius + P.joint_register_clearance)
-    r.hard(frame_joint_wall >= MIN_WALL, "joint-frame-wall",
-           f"frame outer wall over lap {frame_joint_wall:.2f} mm >= {MIN_WALL} mm")
-
-    # Module spigot structural CORE — when threaded, the solid backbone is the core
-    # below the thread root (the ridges are intermittent), thinner than the crest
-    # envelope, so check root−cavity (conservative ISO truncated depth ≈ 0.6·pitch).
-    thread_depth = 0.6 * P.joint_thread_pitch if P.joint_thread else 0.0
-    module_core = (P.joint_interface_radius - thread_depth) - P.cup_interior_diameter / 2
-    r.hard(module_core >= MIN_WALL, "joint-module-spigot-wall",
-           f"module spigot {'core@root' if P.joint_thread else 'wall'} {module_core:.2f} mm "
-           f">= {MIN_WALL} mm")
-
-    # Female crest must clear the baffle bosses (radial), beyond the z-separation.
-    female_crest = (P.joint_interface_radius + P.joint_register_clearance) - thread_depth
-    r.hard((not P.joint_thread) or female_crest >= boss_reach, "joint-female-clears-bosses",
-           f"female crest {female_crest:.2f} mm >= boss reach {boss_reach:.1f} mm")
-
-    seat_land = P.cup_outer_diameter / 2 - P.joint_interface_radius   # module shoulder outside the spigot
-    r.hard(seat_land > 0, "joint-seat-land",
-           f"bottoming shoulder {seat_land:.2f} mm (frame bottoms on the module wall top)")
-
-    # --- Stage 3: axial O-ring seal + bottoming shoulder (squeeze set by GEOMETRY) -
-    cs = P.joint_oring_cross_section
-    squeeze = (cs - P.joint_groove_depth) / cs
-    r.hard(0.12 <= squeeze <= 0.25, "joint-gasket-squeeze",
-           f"O-ring squeeze {squeeze*100:.0f}% in [12,25] (groove {P.joint_groove_depth} / CS {cs})")
-    fill = (math.pi * (cs / 2) ** 2) / (P.joint_groove_depth * P.joint_groove_width)
-    r.hard(fill <= 0.85, "joint-groove-fill",
-           f"groove fill {fill*100:.0f}% <= 85% (no hydraulic lock)")
-    sr = P.joint_seal_mean_diameter / 2
-    out_land = P.joint_collar_diameter / 2 - (sr + P.joint_groove_width / 2)
-    in_land = (sr - P.joint_groove_width / 2) - (P.joint_interface_radius + P.joint_register_clearance)
-    r.hard(min(out_land, in_land) >= 0.8, "joint-shoulder-lands",
-           f"bottoming lands in {in_land:.1f} / out {out_land:.1f} mm >= 0.8 (hard stop both sides of the groove)")
-    overall = 2 * (P.cup_outer_diameter / 2 + P.pad_lip_extension)
-    r.hard(P.joint_collar_diameter <= overall, "joint-collar-within-lip",
-           f"collar OD {P.joint_collar_diameter} <= overall {overall:.1f} mm (lip envelope)")
-
-    # Baffle bosses must sit ABOVE the lap band (so the relief never cuts them) and
-    # be tall enough to house the heat-set insert.
-    lap_top = P.parting_z + P.joint_register_lap
-    r.hard(P.baffle_boss_floor_z >= lap_top, "joint-bosses-above-lap",
-           f"baffle boss floor z {P.baffle_boss_floor_z} >= lap top {lap_top}")
+    # Baffle bosses tall enough to house the heat-set insert (full-height column on
+    # the back floor, buttressed at the base).
     r.hard(P.baffle_boss_height >= P.insert_boss_depth, "baffle-boss-houses-insert",
            f"boss height {P.baffle_boss_height} mm >= insert bore {P.insert_boss_depth} mm")
-
-    # Forward pivot sits on the FRAME: boss fully above the parting plane and within
-    # the front rim (so the hinge load path lives entirely in the permanent frame).
-    pivot_bot = P.pivot_boss_z - P.pivot_boss_diameter / 2
-    pivot_top = P.pivot_boss_z + P.pivot_boss_diameter / 2
-    r.hard(pivot_bot >= P.parting_z, "pivot-on-frame",
-           f"pivot boss bottom z {pivot_bot:.1f} >= parting {P.parting_z}")
-    r.hard(pivot_top <= P.cup_total_height, "pivot-within-rim",
-           f"pivot boss top z {pivot_top:.1f} <= rim {P.cup_total_height}")
 
     # --- Driver clamp ring (3-bolt) — clears the vents + catches the flange ----
     clamp_bcr = P.driver_clamp_bolt_circle / 2

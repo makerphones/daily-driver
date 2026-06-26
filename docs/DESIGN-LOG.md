@@ -6,6 +6,37 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Reverted the separating earcup → back to ONE-PIECE cup
+
+The maker reconsidered the modular split and decided the tradeoffs weren't worth it:
+the printed THREAD is the finickiest thing in the build (FDM threads need a clearance
+coupon, can cross-thread, wear), and the whole split added real assembly/seal
+complexity for a benefit (swap open↔sealed / change damping without reprinting the
+front) that doesn't justify it for a build-once product — especially since damping is
+already reachable from the FRONT (pull the baffle + driver). So: back to a one-piece
+cup. (The modular Stages 1/1b/2/3 — split, lattice grille, thread, O-ring seal — and
+their eval reasoning stay in git history + the entries below if it's ever revisited.)
+
+**Removed:** the `frame`/`module` split + `_frame_module_split` (cup is one printed
+part again); the single-start thread + `parts/thread.py` + the `joint_thread*` params;
+the Stage-3 collar + axial O-ring groove + bottoming shoulder + all `joint_*` params;
+the joint + Stage-3 + forward-pivot gate checks; the stale frame/module GLBs + renders.
+`cq_warehouse` stays pinned in dev reqs (still used for the heat-set-insert viz).
+
+**Kept (all independent of the split):** the triangular ×3 lattice grille + flush
+logo, the buttressed baffle bosses (now floored on the back floor again, full-height +
+base flare), `baffle_screw_count=3`, the 3-bolt driver clamp ring, the Grado-style
+yoke post + thumbscrew height adjust, the 4 in cup OD + lip.
+
+**Pivot moved back to mid-height** (`cup_total_height/2`) — it was only forced forward
+to land on the frame for the split; mid is the balanced clamp position again.
+
+**Open/sealed + damping, the one-piece way:** damping is set/changed from the FRONT
+(baffle + driver off, then the clamp ring back on); open vs sealed = two cup variants
+you reprint (the grille is integral). Build 9/9, gate 0 HARD / 1 SOFT.
+
+---
+
 ## 2026-06-26 — Stage 3: axial O-ring seal + hard bottoming shoulder
 
 The frame↔module joint now SEALS for the closed-back variant. Per the eval, the

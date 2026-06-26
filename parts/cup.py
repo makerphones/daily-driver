@@ -19,7 +19,6 @@ import math
 
 import cadquery as cq
 from params import P
-from parts import thread
 
 
 def pivot_stop_pins() -> cq.Workplane:
@@ -215,103 +214,6 @@ def make_cup() -> cq.Workplane:
     return cup
 
 
-# ---- Modular split: FRONT FRAME + REAR MODULE -------------------------------
-# make_cup() above is the WHOLE earcup, kept as the reference shell (the assembly
-# kinematics + the gate's grille/pivot/wall checks run on it). The two PRINTED
-# parts are derived from it by splitting at parting_z, so they can never drift from
-# one geometry. The split is co-located here (one file, no cross-part import) per
-# the build's "parts share only via params" rule. See params.py "Modular split".
-
-
-def _frame_module_split():
-    """Split the whole shell at parting_z into (frame, module).
-
-    Joint = a telescoping SHIPLAP (continuous OD, no external collar):
-      • MODULE keeps its full wall to parting_z, then a thin INNER spigot
-        [cavity_r .. joint_interface_radius] rises one lap above the parting plane.
-      • FRAME keeps its full OUTER wall down to parting_z (so the forward pivot boss
-        stays fully supported), with the INNER wall RELIEVED over the lap so the
-        module spigot telescopes up inside it. The spigot top bottoms on the frame
-        wall above the lap — that annular face is the SEAT (sets cavity depth; later
-        the gasket squeeze). Stage-1 retention is this slip register; the coarse
-        single-start thread lands on these lap faces in Stage 2 (see DESIGN-LOG).
-    """
-    shell = make_cup()
-    pz = P.parting_z
-    lap = P.joint_register_lap
-    cav_r = P.cup_interior_diameter / 2
-    ifc = P.joint_interface_radius
-    clr = P.joint_register_clearance
-    body_r = P.cup_outer_diameter / 2
-    big = P.cup_total_height + 20.0
-
-    def _ring(z0, h, r_out, r_in=None):
-        wp = cq.Workplane("XY").workplane(offset=z0).circle(r_out)
-        if r_in is not None:
-            wp = wp.circle(r_in)
-        return wp.extrude(h)
-
-    # Halves — clean planar cut at the parting plane.
-    module = shell.intersect(_ring(pz - big, big, body_r + 5.0))   # z <= pz
-    frame = shell.intersect(_ring(pz, big, body_r + 5.0))          # z >= pz
-
-    # THREAD the lap faces (Stage 2): module = external/male, frame = internal/female,
-    # single-start coarse. Import-guarded — if cq_warehouse is absent or a thread won't
-    # build, ext/intt come back None and the joint degrades to the PLAIN slip register
-    # (still one valid solid). male major = Ø(2·ifc); female valley = male major + 2·clr.
-    pitch = P.joint_thread_pitch
-    male_major = 2 * ifc
-    female_major = male_major + 2 * clr
-    ext_wp, ext_root = thread.external_thread(male_major, pitch, lap) if P.joint_thread else (None, None)
-    int_wp, _ = thread.internal_thread(female_major, pitch, lap) if P.joint_thread else (None, None)
-
-    # MODULE inner spigot — on the wall top, one lap tall.
-    if ext_wp is not None:
-        core_or = ext_root + 0.15                 # core just past the thread root → clean single-solid fuse
-        spigot = _ring(pz, lap, core_or, cav_r).union(ext_wp.translate((0, 0, pz)))
-    else:
-        spigot = _ring(pz, lap, ifc, cav_r)       # plain slip register (fallback)
-    module = module.union(spigot)
-
-    # FRAME inner relief — open [cav_r-1 .. ifc+clr] over the lap so the spigot
-    # telescopes in. Reaches just into the void (cav_r-1) so the spigot inner face is
-    # flush with the cavity wall; the outer wall [ifc+clr .. body_r] stays intact (it
-    # carries the pivot boss). Baffle bosses floor at pz+lap, ABOVE this band. The
-    # relief bore (ifc+clr) == the female thread valley, so the female thread's outer
-    # cylinder fuses to the bored wall. Relief is deeper than the lap by joint_seat_
-    # clearance so the spigot TOP clears the socket ceiling — the z=pz SHOULDER bottoms.
-    frame = frame.cut(_ring(pz - 0.01, lap + P.joint_seat_clearance, ifc + clr, cav_r - 1.0))
-    if int_wp is not None:
-        frame = frame.union(int_wp.translate((0, 0, pz)))
-
-    # Stage 3 — local COLLAR (both parts) + axial O-ring GROOVE (module) + bottoming
-    # shoulder. The collar bulges the OD at the joint band (<= the lip envelope) to make
-    # a wide seal face OUTBOARD of the thread; the O-ring groove is on the MODULE's
-    # up-facing flange (printed floor-up); the frame collar bottoms plastic-to-plastic
-    # on the lands either side of the groove, capping the O-ring squeeze by GEOMETRY.
-    collar_r = P.joint_collar_diameter / 2
-    ch = 4.0                                       # collar band height each side of the joint
-    module = module.union(_ring(pz - ch, ch, collar_r, body_r - 1.0))   # module flange (below pz)
-    sr = P.joint_seal_mean_diameter / 2
-    gw, gd = P.joint_groove_width, P.joint_groove_depth
-    module = module.cut(_ring(pz - gd, gd + 0.01, sr + gw / 2, sr - gw / 2))  # O-ring groove
-    frame = frame.union(_ring(pz, ch, collar_r, body_r - 1.0))          # frame collar (above pz)
-
-    return frame, module
-
-
-def make_frame() -> cq.Workplane:
-    """Permanent FRONT FRAME (printed): baffle seat, pad lip, yoke pivots, joint socket."""
-    return _frame_module_split()[0]
-
-
-def make_module() -> cq.Workplane:
-    """Removable REAR MODULE (printed): cavity + grille + joint spigot."""
-    return _frame_module_split()[1]
-
-
 if __name__ == "__main__":
     cq.exporters.export(make_cup(), "output/cup.stl")
-    cq.exporters.export(make_frame(), "output/frame.stl")
-    cq.exporters.export(make_module(), "output/module.stl")
-    print("wrote output/cup.stl, output/frame.stl, output/module.stl")
+    print("wrote output/cup.stl")
