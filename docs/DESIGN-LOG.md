@@ -6,6 +6,28 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Bow X-pattern (from the maker's photo) + leather-look headband pad
+
+Maker sent photos of the real metal bow + a Beyerdynamic leather headband pad.
+
+**Bow — central X cut-out (corrected).** My earlier "solid strip" call was wrong: the real
+bow HAS a cut-out — a SINGLE central X/hourglass, not the 6-bay truss across the whole band
+I first had, nor solid. Re-enabled it as a central X (`bow_pattern_enabled=True`,
+`bow_pattern_length` 110 mm, `bow_pattern_bays` 2), defined by developed LENGTH so the span
+is the same at any radius; solid rails carry out to the end tabs. Length UNCHANGED — the
+maker's flat sample is longer than the Beyer, so per their note I referenced only the
+PATTERN + holes, not its length. End holes stay outboard (spacing 22, near the band edges)
+per the photo; exact layout still dialable from a measurement.
+
+**Headband pad — leather cushion look, no buttons.** Added transverse PLEAT seams
+(`headband_pad_pleats` 7, rounded grooves) quilting the head-side face so it reads like a
+Beyerdynamic leather headband pad — deliberately WITHOUT the snap buttons (kept generic,
+not a specific product). Still wraps the band over the full central arc.
+
+Build 13/13, gate 0 HARD.
+
+---
+
 ## 2026-06-26 — Maker review: cable exits, longer post + thumbscrew, wrapping headband pad, earpad, solid bow
 
 A batch of maker-review fixes toward a finished-looking headphone. Build **13/13** (new

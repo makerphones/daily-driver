@@ -67,7 +67,22 @@ def make_headband_pad(radius: float = None, arc_degrees: float = None) -> cq.Wor
     ci = R - bt / 2 - clr
     co = R + bt / 2 + clr
     channel = _arc_band(ci, co, half + 1.0, P.bow_width + 2 * clr)
-    return pad.cut(channel)
+    pad = pad.cut(channel)
+
+    # Leather-cushion PLEATS: shallow rounded transverse grooves quilting the head-side
+    # face (à la a Beyerdynamic pad — but NO snap buttons, kept generic). Each is a Y-axis
+    # cylinder grazing the inner face at ri; spread evenly across the pad arc.
+    gr, gd = P.headband_pad_pleat_radius, P.headband_pad_pleat_depth
+    rc = ri - gr + gd                                            # centre just below the inner face
+    n_pl = P.headband_pad_pleats
+    for k in range(n_pl):
+        a = math.radians(90 - half + (k + 0.5) * (2 * half) / n_pl)
+        seam = cq.Solid.makeCylinder(
+            gr, P.headband_pad_width + 4.0,
+            cq.Vector(rc * math.cos(a), -(P.headband_pad_width / 2 + 2.0), rc * math.sin(a)),
+            cq.Vector(0, 1, 0))
+        pad = pad.cut(cq.Workplane(obj=seam))
+    return pad
 
 
 if __name__ == "__main__":

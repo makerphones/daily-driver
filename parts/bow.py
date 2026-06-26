@@ -71,18 +71,17 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     W = P.bow_width
     band = _arc_band(R - th / 2, R + th / 2, half_arc, W)
 
-    # 2. X-truss cutout (OPTIONAL — the maker's DIY/printed-band aesthetic). The real
-    #    bought Beyer metal head bow is a SOLID strip, so this is OFF by default
-    #    (bow_truss_enabled=False) and the reference reads like the actual band. Turn
-    #    it on only for a printed/DIY band variant. Two outer rails braced by crossing
-    #    diagonal struts; solid end tabs carry the holes; each cell cuts four void
-    #    triangles (top/bottom/left/right), leaving an X of material.
-    if P.bow_truss_enabled:
-        a_start, a_end = 90 - half_arc, 90 + half_arc
-        tab_ang = math.degrees(P.bow_endtab_length / R)  # solid end-tab span
-        a_lo, a_hi = a_start + tab_ang, a_end - tab_ang
+    # 2. Central X cut-out — matches the real metal bow (maker's photo): the X cells
+    #    live in a CENTRAL region of developed length bow_pattern_length, NOT across
+    #    the whole band. Two outer rails are braced by crossing diagonal struts; the
+    #    rails run solid out to the solid end tabs (which carry the holes). Each cell
+    #    cuts four void triangles (top/bottom/left/right), leaving an X of material; n
+    #    cells share struts at the bay boundaries, giving the hourglass-chain look.
+    if P.bow_pattern_enabled:
+        half_pat = math.degrees((P.bow_pattern_length / 2) / R)  # central half-span (deg), length-based
+        a_lo, a_hi = 90 - half_pat, 90 + half_pat
         yin = W / 2 - P.bow_rail_width                    # rail inner edge (y)
-        n = P.bow_truss_bays
+        n = P.bow_pattern_bays
         ang_bay = (a_hi - a_lo) / n
         sw = P.bow_strut_width
         for i in range(n):

@@ -356,10 +356,12 @@ class Params:
     bow_endtab_length: float = 28.0       # ESTIMATE  solid end-tab arc length (holds the 2 holes)
     bow_rail_width: float = 4.0           # ESTIMATE  outer rail width (Y) flanking the truss
     bow_strut_width: float = 3.5          # ESTIMATE  X-brace diagonal strut width
-    bow_truss_bays: int = 6               # ESTIMATE  number of X cells along the central span
-    bow_truss_enabled: bool = False       # SET  OFF by default — the bought Beyer metal head bow is a SOLID
-                                          #   strip, so the reference reads like the real band. Turn ON only
-                                          #   for a printed/DIY band variant (the X-truss lightens a print).
+    # Central X cut-out matching the real metal bow (maker's photo): the X cells live
+    # in a CENTRAL region (developed length bow_pattern_length), NOT across the whole
+    # band — solid rails run out to the solid end tabs that carry the mounting holes.
+    bow_pattern_enabled: bool = True      # SET  the real Beyer-style bow has the central X cut-out
+    bow_pattern_length: float = 110.0     # ESTIMATE  developed length the X pattern spans (centred)
+    bow_pattern_bays: int = 2             # ESTIMATE  number of X cells in the pattern
     # bow_arc_degrees / bow_worn_arc_degrees are DERIVED (helpers below): both
     # conserve bow_developed_length, so the relaxed and flexed bands are one strap.
 
@@ -375,6 +377,11 @@ class Params:
     headband_pad_wrap: float = 4.0               # SET  cushion lip OVER the top of the band (the wrap)
     headband_pad_width: float = 40.0             # ESTIMATE  total width (> 33 mm band → wraps the edges)
     headband_pad_channel_clearance: float = 1.0  # SET  band↔pad slot clearance (the bow nests in)
+    # Leather-cushion look (à la a Beyerdynamic headband pad, but NO snap buttons —
+    # generic, not a specific product): transverse PLEAT seams quilt the underside.
+    headband_pad_pleats: int = 7                  # SET  transverse pleat seams across the cushion
+    headband_pad_pleat_radius: float = 2.5        # SET  pleat-seam groove radius (rounded)
+    headband_pad_pleat_depth: float = 1.2         # SET  how deep each pleat seam cuts the cushion
 
     # ---- Earpad (generalised round cushion MOCKUP — bought, the user's choice) -
     # A representative round earpad so the assembly + website read like a finished
