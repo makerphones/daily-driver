@@ -19,7 +19,7 @@ import math
 
 import cadquery as cq
 from params import P
-from parts import features, thread
+from parts import thread
 
 
 def pivot_stop_pins() -> cq.Workplane:
@@ -119,13 +119,15 @@ def make_cup() -> cq.Workplane:
 
     cup = cup.cut(zone.cut(keep))
 
-    # 4. Baffle-mounting bosses — wall-blended (NOT free-standing posts). Columns
-    #    on the diagonals at the bolt circle (r=baffle_screw_radius=35), from the
-    #    interior floor up to the baffle underside (seat_z). baffle_boss_diameter
-    #    (10) is sized so each boss reaches the inner wall (35 + 5 = 40 > 39 R)
-    #    and the outer grille ring (32), merging into both — that's the "blended
-    #    into the perimeter wall" the v0.3 spec calls for. The heat-set bore in
-    #    the front-facing top takes the baffle screw from the front.
+    # 4. Baffle-mounting bosses — BUTTRESSED columns (the maker flagged the bare
+    #    columns as fragile / snap-off-able). Each is a column at the bolt circle
+    #    (r=baffle_screw_radius), from the joint-lap top (baffle_boss_floor_z,
+    #    frame-only) up to the baffle underside, PLUS a wider base FLARE that merges
+    #    the boss into the cup wall over a much wider arc than the bare column's thin
+    #    lens. Built solid (column + flare) THEN bored from the front-facing top —
+    #    round-before-cut, so the flare adds real support material and the heat-set
+    #    bore stays clear (a base fillet here yields an invalid solid — the boss
+    #    floors in open cavity with no host floor to round into).
     boss_points = [
         (
             P.baffle_screw_radius * math.cos(math.radians(45 + i * 360 / P.baffle_screw_count)),
@@ -133,20 +135,17 @@ def make_cup() -> cq.Workplane:
         )
         for i in range(P.baffle_screw_count)
     ]
-    cup = features.boss(
-        cup,
-        boss_points,
-        floor_z=P.baffle_boss_floor_z,
-        outer_diameter=P.baffle_boss_diameter,
-        bore_diameter=P.m3_insert_hole_diameter,
-        height=P.baffle_boss_height,
-        bore_depth=P.insert_boss_depth,
-        # No base fillet: the boss now FLOORS in open cavity (at the joint-lap top,
-        # frame-only), so there is no host floor to round into — and filleting the
-        # floating base yields an INVALID solid (vs the old floor-seated boss, where
-        # the fillet merely warned-and-skipped). The boss is tied by its wall blend.
-        base_fillet=0.0,
-    )
+    fz, bh = P.baffle_boss_floor_z, P.baffle_boss_height
+    for bx, by in boss_points:
+        col = (cq.Workplane("XY").workplane(offset=fz).center(bx, by)
+               .circle(P.baffle_boss_diameter / 2).extrude(bh))
+        flare = (cq.Workplane("XY").workplane(offset=fz).center(bx, by)
+                 .circle(P.baffle_boss_flare_diameter / 2).extrude(P.baffle_boss_flare_height))
+        cup = cup.union(col).union(flare)
+    for bx, by in boss_points:  # bores last (round-before-cut)
+        bore = (cq.Workplane("XY").workplane(offset=fz + bh).center(bx, by)
+                .circle(P.m3_insert_hole_diameter / 2).extrude(-P.insert_boss_depth))
+        cup = cup.cut(bore)
 
     # 5. Yoke pivot bosses — two external bosses at 0/180 on the cup side walls,
     #    at mid-height, each a radial cylinder spanning the wall to an outer seat so

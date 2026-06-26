@@ -97,11 +97,18 @@ class Params:
     # Four heat-set bosses on the diagonals (45/135/225/315), blended into the
     # perimeter inner wall near the front — NOT free-standing posts. Bore faces
     # front; the baffle screws into them from the front.
-    baffle_screw_count: int = 4           # ESTIMATE  count
+    baffle_screw_count: int = 3           # SET  3 (was 4) — lighter, 3 is a stable
+                                          #   plane + matches the 3-fold driver clamp.
+                                          #   (The baffle's 6 OTHER holes are VENTS.)
     baffle_bolt_circle_diameter: float = 70.0  # ESTIMATE  bolt_circle_dia (bcd)
-    baffle_boss_diameter: float = 10.0    # ESTIMATE  > insert dia so it reaches
-                                          #   the inner wall (r=35 + 5 = 40 > 39)
-                                          #   and merges → "blended into the wall"
+    baffle_boss_diameter: float = 12.0    # SET  10 → 12: deeper wall embedment (reach
+                                          #   r41 > inner wall r39) + a thicker bore wall.
+                                          #   Stays < the female-thread crest (~41.7).
+    # Boss BUTTRESS — a base flare merging the boss into the cup wall so it can't snap
+    # off at the thin wall lens (maker flagged the bare columns as fragile). Built as a
+    # wider base step then bored, so it adds real support material at the junction.
+    baffle_boss_flare_diameter: float = 15.0  # SET  base flare OD (reach r42.5 < thread valley)
+    baffle_boss_flare_height: float = 3.0     # SET  flare height at the base
 
     # ---- Yoke pivot bosses in the cup (external, side walls) -----------------
     # Two bosses at 0/180 on the cup's OUTER side wall, at mid-height, each with
