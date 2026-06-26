@@ -6,6 +6,48 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Fit coupons, driver-clamp soft-round, build123d port deferred
+
+Build **12/12** (two new coupons), gate **0 HARD / 1 SOFT** (the pre-existing yoke
+stop-slot web).
+
+**build123d yoke port — DEFERRED (not now).** The open "soft-round yoke" item is gated
+on the full build123d pipeline port already scoped in `docs/cadquery-build-notes.md`
+(2026-06-25): build123d builds the round-section yoke this OCC build can't, but it's a
+*planned* port of every part + build/gate/assembly into a clean isolated venv — not a
+one-part scramble (installing build123d into this venv pulls OCP 7.9.3 alongside the
+pinned 7.8.1 and silently swaps the kernel under the verified build). Decision: the yoke
+stays the gate-clean flat bracket; the port is a dedicated future effort. Form waits on
+function — nothing is print-verified yet, so this session went to fit coupons instead.
+
+**Fit coupons (new `parts/coupon.py`, two ACCESSORY pieces).** Small printable QA parts
+that isolate a toleranced interface so it's checked against real hardware BEFORE a full
+cup/baffle print. Every FIT dimension DERIVES from the real interface params (the coupon
+can't drift from the part it validates); only coupon scaffolding (`coupon_*`) is local.
+
+- `driver_coupon` — the baffle's BACK driver interface: recess Ø39.8 × 3 (the 39.5
+  driver nests, 0.3 clr), 3 standoff bosses (h2 = body 5 − recess 3) at the Ø60 clamp
+  BCD with M3 insert bores. The real `driver_clamp` ring bolts on → confirms the
+  rear-rim capture + standoff height against the real driver. Central recess puck + 3
+  spokes (trims the full Ø77 plate to just the bits under test). 1 solid, ~6 cm³.
+- `pad_coupon` — FULL grip ring at OD 91.44 + the DT770 lip (ext 5.08 × 2.0). Full ring,
+  not an arc: "does the body grip ~91.4?" is a HOOP question; an arc lets the elastic
+  skirt splay and under-reads the grip. 1 solid, Ø101.6 brim × 15.
+
+Coupons get STL+STEP but are skipped from the web GLB/render (QA tools, not gallery).
+
+**Driver clamp soft-round (maker request).** Rounded the sharp 90° corners: necked the
+posts (`driver_clamp_post_width` 6 < ear pad 9) so the post↔ring and post↔pad junctions
+are real reflex corners, blended with a 3D fillet, plus a perimeter rim roundover. This
+OCC build's ceiling here is tight — an empirical probe found the junction fillet VALID
+only at **0.8 mm** (0.9–1.1 silently invalidate the solid, ≥1.2 hard-fail), rim roundover
+at **0.6**. Locked those, and made the fillet application defensive (`_safe_fillet`: keep
+only if the solid stays valid, else skip). Subtle but real soft; that a bigger radius
+won't take is one more reason the build123d port (its fillets hold where OCC's refuse)
+earns its place.
+
+---
+
 ## 2026-06-26 — Driver MEASURED (39.5 mm OD, 5 mm tall, magnet 27×3)
 
 Real driver measured, replacing the REF estimates. `driver_od` 42 → **39.5**,

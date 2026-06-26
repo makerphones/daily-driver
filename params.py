@@ -207,7 +207,12 @@ class Params:
     driver_clamp_floor_thickness: float = 2.5  # SET  shoulder floor behind the recess
     driver_clamp_wall: float = 2.5           # SET  wall around the recess
     driver_clamp_ear_diameter: float = 9.0   # SET  ear pad dia around each M3 hole
+    driver_clamp_post_width: float = 6.0     # SET  post width (< ear pad 9 → post↔pad shoulders fillet cleanly)
     driver_clamp_standoff: float = 2.0       # SET  baffle-back boss height = body_depth(5) − recess_depth(3)
+    driver_clamp_fillet: float = 0.8         # SET  blend at the post↔ring / post↔pad junctions. 0.8 is this OCC
+                                             #   build's CEILING here — 0.9–1.1 silently invalidate, ≥1.2 hard-fail
+                                             #   (clamp fillet probe). Bigger radii want the build123d port.
+    driver_clamp_edge_round: float = 0.6     # SET  roundover on the ear-plate perimeter (softens the 90° rim corners)
 
     # ---- Integral driver guard (across the aperture, on the baffle) ----------
     guard_spoke_count: int = 6            # ESTIMATE  guard_spoke_count
@@ -325,6 +330,18 @@ class Params:
     headband_pad_thickness: float = 8.0      # ESTIMATE  cushion depth (radial)
     headband_pad_width: float = 40.0         # ESTIMATE  wider than the 33 mm bow, for comfort
     headband_pad_channel_depth: float = 3.0  # ESTIMATE  bow nests this deep; side rails grip it
+
+    # ---- Fit coupons (printable QA pieces; lock tolerances vs real hardware) --
+    # Small parts that ISOLATE a toleranced interface so it's checked against the
+    # real driver / clamp ring / pad BEFORE committing a full cup or baffle print.
+    # Every fit dimension DERIVES from the real interface params above
+    # (driver_recess_diameter, driver_clamp_*, cup_outer_diameter, pad_lip_*), so a
+    # coupon CAN'T drift from the part it validates — only the coupon's own
+    # scaffolding lives here. ACCESSORIES (STL+STEP), not in the assembly/gallery.
+    coupon_driver_puck_margin: float = 4.0   # radial wall around the back recess (puck OD = recess + 2×)
+    coupon_driver_tab_width: float = 10.0    # width of each spoke carrying a standoff boss out to the clamp BCD
+    coupon_pad_ring_wall: float = 3.0        # coupon ring wall — rigidity only (NOT the real ~6.72 cup wall)
+    coupon_pad_ring_height: float = 15.0     # grip-wall height below the lip (>= a typical pad mount-skirt depth)
 
     # ---- Mechanical primitives (convention; see parts/features.py) ----------
     boss_base_fillet: float = 1.0         # fillet tying a boss to its host (print)

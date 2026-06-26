@@ -37,6 +37,7 @@ from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
 from parts.driver import make_driver
+from parts.coupon import make_driver_coupon, make_pad_coupon
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
 # on it: no matplotlib → rendering simply skips, parts still build.
@@ -62,13 +63,20 @@ ACCESSORY = {
     "headband_pad": make_headband_pad,
     "grille_dot": make_grille_dot,
 }
+# Fit coupons → STL + STEP (printed for QA), but NOT in the reference assembly and
+# NOT in the web parts gallery: they isolate a toleranced interface so it can be
+# checked against real hardware before a full cup/baffle print. QA tools, not product.
+COUPON = {
+    "driver_coupon": make_driver_coupon,
+    "pad_coupon": make_pad_coupon,
+}
 # Reference bodies → STEP only (NOT printed): the bought metal bow + a representative
 # driver MOCKUP (shown in the assembly so the driver↔baffle↔clamp fit reads).
 REFERENCE = {
     "bow": make_bow,
     "driver": make_driver,
 }
-PARTS = {**PRINTED, **ACCESSORY, **REFERENCE}
+PARTS = {**PRINTED, **ACCESSORY, **COUPON, **REFERENCE}
 
 OUT = "output"
 RENDERS = "renders"                                  # ships with the design (NOT gitignored)
@@ -95,11 +103,17 @@ def build(names):
         try:
             model = PARTS[name]()
             cq.exporters.export(model, os.path.join(OUT, f"{name}.step"))
-            if name in PRINTED or name in ACCESSORY:
+            if name in PRINTED or name in ACCESSORY or name in COUPON:
                 stl_path = os.path.join(OUT, f"{name}.stl")
                 cq.exporters.export(model, stl_path)
-                tag = "" if name in PRINTED else "  (ACCESSORY — not in the assembly)"
+                tag = ("" if name in PRINTED else
+                       "  (COUPON — fit test, not in the assembly)" if name in COUPON else
+                       "  (ACCESSORY — not in the assembly)")
                 print(f"  [ok]   {name}.stl + {name}.step{tag}")
+                # Coupons are QA tools — no web gallery render/GLB for them.
+                if name in COUPON:
+                    ok.append(name)
+                    continue
                 _render_part(stl_path, name)
                 # Per-part GLB for the website parts gallery's 3D view (a COMMITTED
                 # artifact in docs/models/, served from Pages alongside the assembly
