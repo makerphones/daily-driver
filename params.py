@@ -287,6 +287,9 @@ class Params:
     yoke_arm_hub_width: float = 6.0       # ESTIMATE  arm_w at the hub end — gentle taper
                                           #   (slims toward the hub; >= structural floor)
     yoke_arm_thickness: float = 6.0       # ESTIMATE  arm_th (beefier for print strength)
+    yoke_arm_corner_radius: float = 2.0   # SET  corner-round of the LOFTED arm section (the de-blocky form;
+                                          #   2.0 adversarially verified, 2.5 also builds — taste knob). NOT a
+                                          #   3D fillet: the rounding is in the swept 2D section.
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
     yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)
     yoke_pivot_eye_diameter: float = 12.0  # ESTIMATE  pad around pivot hole (12 hosts the stop slot)

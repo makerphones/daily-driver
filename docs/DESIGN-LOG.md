@@ -6,6 +6,44 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Sleek yoke arms (step 2): blocky bars → lofted rounded tubes
+
+The wraparound yoke arms were flat tapered bars (a chain of ~32 trapezoid extrusions)
+and read "blocky" — sharp 90° edges ran the length of each arm. The build-notes had
+logged this as accept-and-flag (#5) because every rounded-tube attempt previously
+fragmented on this OCC build, with a build123d port as the escape hatch. This pass
+de-blocks the arms in **pure cadquery, no port**.
+
+**What changed.** Each arm is now a single `cq.Solid.makeLoft` through ~13
+rounded-rectangle sections placed perpendicular to the quarter-ellipse tangent (width
+tapers 9→6, thickness 6, `yoke_arm_corner_radius` 2 mm corner arcs). The rounding lives
+in the swept 2D section — a hand-built wire of 4 line segments + 4 tangent arcs (the
+`.fillet()`/`fillet2D` paths are dead once the part has cuts/unions, so the arc wire is
+built by hand). A plane cut across an arm now shows ARCS, not a rectangle: no sharp edge
+runs along the arm. Eyes, Ø3.4 bores, junction hub, Ø8 post, and the 25-cylinder stop-slot
+fan are copied verbatim; bores + slots still cut LAST. The post stays a clean Ø8 cylinder
+(it slides + swivels in the slider collar bore — must not be tapered).
+
+**Why loft.** Three constructions (sweep, loft, rounded-bar-chain) were spiked and
+adversarially verified on the real OCP 7.8 kernel (workflow). loft + sweep both scored
+STRONG (0.95); the bar-chain was only WORKABLE (a knuckled segmented form with non-manifold
+STL seams). loft won the tie — the smoothest *continuous* tube, built via `makeLoft` + a
+hand-built arc wire rather than the less-reliable Sketch-fillet path.
+
+**Verification.** make_yoke() → 1 valid solid (~10.6 cm³). Gate 0 HARD: manifold:yoke,
+pivot-tilt-clearance (1055 ≤ 1237 mm³), pivot-overrotation-stop (free ±20°, blocked ±35°),
+and all structural checks PASS. No assembly.py / gate.py / params edits needed beyond
+promoting the corner radius to `yoke_arm_corner_radius` (project rule 1) — a clean drop-in.
+The old best-effort yoke fillet (which always warn-skipped) is gone. Updated
+cadquery-build-notes #5: the "yoke stays a flat bar" workaround is superseded — a
+perpendicular-section loft rounds it in pure cadquery, no build123d port.
+
+Open: corner radius is `yoke_arm_corner_radius` 2.0 (verified; 2.5 also builds for a
+rounder read). Test print to confirm arm stiffness + pivot friction/feel with the new
+section.
+
+---
+
 ## 2026-06-26 — Yoke mechanism de-bulk (step 1): slider block → slim clamp collar
 
 Maker review: the yoke / post / slider reads blocky, and the lengthened post poked into

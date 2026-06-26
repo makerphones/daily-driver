@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-Fork-yoke — wraparound bracket that follows the earcup (v0.3 engineering pass).
+Fork-yoke — wraparound bracket that follows the earcup (v0.4 sleek-arm pass).
 
 Two arms sweep from a top swivel hub down AROUND the round cup to two pivot eyes
 on its ±X sides. Each arm follows a quarter-ellipse (semi-axes a = eye x, b = hub
@@ -10,6 +10,15 @@ z) so it mimics the cup's circular outline with clearance — wider over the top
 at the sides so the cup can tilt without striking the bracket (cf. the Extreme
 Isolation yoke). Each eye takes an M3 shoulder screw into the cup's pivot boss (the
 tilt joint, ±tilt_range); the swivel hub's vertical bore mates the slider above.
+
+SLEEK-ARM FORM (v0.4): the arms are no longer flat tapered bars. Each arm is now a
+single LOFTED tube — a rounded-rectangle cross-section (width tapers 9→6, thickness
+6, with ~2 mm corner arcs) lofted through stations placed perpendicular to the
+quarter-ellipse tangent. A plane cut across an arm shows ARCS, not a sharp
+rectangle: no 90° edges run along the arm, so it reads as a soft organic form
+rather than a blocky bar. The rounding is in the swept 2D section (the construction),
+NOT a 3D edge fillet — `.fillet()` is unusable on this OCC build once the part has
+cuts/unions (see docs/cadquery-build-notes.md). `revolve` is dead; `loft` works.
 
 Local frame: pivot axis at z=0 (eyes at ±yoke_pivot_centres/2, 0, 0); the hub is at
 z=yoke_fork_height. In assembly the frame is lifted so z=0 lands on the cup's pivot
@@ -21,31 +30,83 @@ All dimensions are ESTIMATES flagged in params.py.
 import math
 
 import cadquery as cq
+from cadquery import Plane, Vector
 from params import P
 
 
-def _bar(p0, p1, w0, w1, thick):
-    """A flat bar in the XZ plane from p0 to p1 (each (x, z)), tapering in width
-    from w0 (at p0) to w1 (at p1). w0 == w1 gives a constant bar. Built from a
-    trapezoid profile (no fillets/chamfers — robust on this OCC build)."""
-    (x0, z0), (x1, z1) = p0, p1
-    cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
-    length = math.hypot(x1 - x0, z1 - z0)
-    ang = math.degrees(math.atan2(z1 - z0, x1 - x0))
-    half = length / 2
-    pts = [(-half, -w0 / 2), (-half, w0 / 2), (half, w1 / 2), (half, -w1 / 2)]
-    return (
-        cq.Workplane("XZ")
-        .transformed(offset=(cx, cz, 0), rotate=(0, 0, ang))
-        .polyline(pts).close()
-        .extrude(thick / 2, both=True)
-    )
+def _ellipse_pt(sign, t):
+    """Point on the quarter-ellipse at parameter t in [0,1] (the arm path).
+    t=0 → eye at (sign*a, 0); t=1 → hub at (0, b). Returns (x, z)."""
+    a = P.yoke_pivot_centres / 2
+    b = P.yoke_fork_height
+    ang = math.radians(90.0 * t)
+    return (sign * a * math.cos(ang), b * math.sin(ang))
+
+
+def _ellipse_tangent(sign, t):
+    """Unit tangent (dx, dz) of the arm path at t, pointing eye→hub. Used to set
+    each loft section's plane perpendicular to the path."""
+    a = P.yoke_pivot_centres / 2
+    b = P.yoke_fork_height
+    ang = math.radians(90.0 * t)
+    dx = -sign * a * math.sin(ang)
+    dz = b * math.cos(ang)
+    n = math.hypot(dx, dz)
+    return (dx / n, dz / n)
+
+
+def _rounded_rect_wire(plane, width, thick, r):
+    """A rounded-rectangle WIRE on `plane`: local-x span = width, local-y span =
+    thick, corner radius r. Built explicitly from 4 line segments + 4 tangent arcs
+    (robust: no fillet helper, no findSolid — 2D fillets fail on this OCC build,
+    but a hand-built arc wire lofts cleanly). Returns a cq Wire."""
+    hw = width / 2.0
+    ht = thick / 2.0
+    r = min(r, hw - 1e-3, ht - 1e-3)
+    sx = hw - r                              # half-length of the flats (x)
+    sy = ht - r                              # half-length of the flats (y)
+    k = r * 0.70710678                       # arc midpoint offset (45°)
+    wp = cq.Workplane(plane).moveTo(-sx, -ht)
+    wp = wp.lineTo(sx, -ht)                                            # bottom edge
+    wp = wp.threePointArc((hw - r + k, -ht + r - k), (hw, -sy))        # BR corner
+    wp = wp.lineTo(hw, sy)                                             # right edge
+    wp = wp.threePointArc((hw - r + k, ht - r + k), (sx, ht))          # TR corner
+    wp = wp.lineTo(-sx, ht)                                            # top edge
+    wp = wp.threePointArc((-hw + r - k, ht - r + k), (-hw, sy))        # TL corner
+    wp = wp.lineTo(-hw, -sy)                                           # left edge
+    wp = wp.threePointArc((-hw + r - k, -ht + r - k), (-sx, -ht))      # BL corner
+    wp = wp.close()
+    return wp.val()
+
+
+def _make_arm(sign, n_stations=12):
+    """Loft one sleek arm through rounded-rect sections placed perpendicular to the
+    quarter-ellipse tangent at each station. Width tapers yoke_arm_width →
+    yoke_arm_hub_width; thickness = yoke_arm_thickness. The corner radius is capped
+    by the local half-width so the slim hub end never self-intersects. Returns a
+    Workplane carrying one solid (loft → a single continuous organic tube)."""
+    arm_w = P.yoke_arm_width
+    arm_w_hub = P.yoke_arm_hub_width
+    arm_t = P.yoke_arm_thickness
+    wires = []
+    for i in range(n_stations + 1):
+        t = i / n_stations
+        cx, cz = _ellipse_pt(sign, t)
+        tx, tz = _ellipse_tangent(sign, t)
+        width = arm_w + (arm_w_hub - arm_w) * t
+        r = min(P.yoke_arm_corner_radius, width / 2 - 1e-3, arm_t / 2 - 1e-3)
+        # section plane ⟂ the tangent: normal along the tangent (in XZ), local-x
+        # in the XZ plane (the WIDTH axis), local-y along global Y (the THICKNESS).
+        pl = Plane(origin=Vector(cx, 0.0, cz),
+                   xDir=Vector(-tz, 0.0, tx),
+                   normal=Vector(tx, 0.0, tz))
+        wires.append(_rounded_rect_wire(pl, width, arm_t, r))
+    return cq.Workplane(obj=cq.Solid.makeLoft(wires, ruled=False))
 
 
 def make_yoke() -> cq.Workplane:
     a = P.yoke_pivot_centres / 2             # 49 — eye x = ellipse semi-axis (sides)
     b = P.yoke_fork_height                   # 55 — hub z = ellipse semi-axis (top)
-    arm_w = P.yoke_arm_width
     arm_t = P.yoke_arm_thickness
     hub_z = P.yoke_fork_height
 
@@ -65,24 +126,21 @@ def make_yoke() -> cq.Workplane:
         # mimicking the cup's circular outline (cf. the Extreme Isolation bracket).
         # The ellipse is taller than wide (b > a), so the gap to the cup grows from
         # ~4 mm at the sides to ~(b − cup_r) at the top — the cup needs that extra
-        # top room to tilt in/out without striking the bracket. Built from short
-        # tapered bars (robust; OCC sweep/fillet are unreliable on this build).
-        n = 32                          # dense → the chord facets read as a smooth curve
-        cpts = [(sign * a * math.cos(math.radians(90 * i / n)),
-                 b * math.sin(math.radians(90 * i / n))) for i in range(n + 1)]
-        arm = eye
-        m = len(cpts) - 1
-        for j in range(m):
-            s0, s1 = j / m, (j + 1) / m
-            w0 = arm_w + (P.yoke_arm_hub_width - arm_w) * s0
-            w1 = arm_w + (P.yoke_arm_hub_width - arm_w) * s1
-            arm = arm.union(_bar(cpts[j], cpts[j + 1], w0, w1, arm_t))
-        yoke = arm if yoke is None else yoke.union(arm)
+        # top room to tilt in/out without striking the bracket. The arm is a SLEEK
+        # lofted tube (rounded section, no sharp edges along it) — see _make_arm.
+        # The loft's first/last sections sit at the eye/hub centres, so each end
+        # overlaps DEEP into the eye / hub cylinder and the union fuses to ONE solid
+        # (a tangent kiss would leave two disjoint solids on this OCC build).
+        arm = _make_arm(sign)
+        piece = eye.union(arm)
+        yoke = piece if yoke is None else yoke.union(piece)
 
     # Junction hub + vertical adjustment POST (replaces the fixed swivel hub). The
     # arms tie into a short junction hub at the apex; a round POST rises from it and
     # SLIDES in the slider for height (head-size) adjustment, locked by the slider
     # thumbscrew (Grado HP1000-style). Round → the cup also swivels when unlocked.
+    # The post MUST stay a clean Ø8 cylinder its full length — it slides + swivels
+    # in the slider collar bore (Ø8.4); do NOT taper or flute it.
     hub_d = P.yoke_post_diameter + 4.0          # short junction hub, wider than the post
     hub = (
         cq.Workplane("XY").workplane(offset=hub_z - 4)
@@ -95,7 +153,8 @@ def make_yoke() -> cq.Workplane:
     yoke = yoke.union(hub).union(post)
 
     # bores: pivot holes (axis X) through each eye. (The adjustment post is SOLID —
-    # no bore; it slides in the slider and the slider thumbscrew locks it.)
+    # no bore; it slides in the slider and the slider thumbscrew locks it.) Cut LAST,
+    # after every union, so the booleans stay on clean geometry.
     for sign in (+1, -1):
         x = sign * a
         bore = (
@@ -108,7 +167,7 @@ def make_yoke() -> cq.Workplane:
         yoke = yoke.cut(bore)
 
     # over-rotation STOP arc slot: a clearance pocket at radius pivot_stop_radius
-    # around each pivot, spanning ±pivot_stop_slot_halfangle from straight-up. The
+    # around each pivot, spanning ±pivot_stop_slot_halfangle from straight-down. The
     # cup's stop pin rides it; the slot ENDS are the hard stop that bounds tilt
     # just past the ±20° working range, protecting the M3 shoulder screw. Built
     # from a fan of cylinders (this OCP build's revolve is unusable — see bow.py).
@@ -129,11 +188,9 @@ def make_yoke() -> cq.Workplane:
             )
             yoke = yoke.cut(seg)
 
-    # best-effort fillets at the knee/junctions (printability); warn, don't mask
-    try:
-        yoke = yoke.edges("|Y").fillet(1.0)
-    except Exception as e:  # noqa: BLE001
-        print(f"  [warn] yoke: junction fillet skipped ({e}).")
+    # NB no 3D edge fillet here: the arm's roundness is in the lofted 2D section, and
+    # `.fillet()` fails on this OCC build once the part has cuts/unions (the eyes,
+    # hub, bores, and stop slots above). See docs/cadquery-build-notes.md.
 
     # Tilt clearance: the wraparound arms follow an ellipse that clears the cup by
     # ~4 mm at the sides and ~10 mm over the top, so the cup tilts in/out without

@@ -45,11 +45,18 @@ slider = slider.edges("|Z").fillet(2.5)      # BRep_API: command not done
    of filleting the 3D solid.
 3. **Annular sectors / cylinder fans** for arcs (revolve substitute).
 4. **Chamfer** where a fillet won't take and the edge is exposed/clean.
-5. **Accept square + flag it.** The wraparound yoke stays a flat bar because every
-   rounded-tube construction (incremental union, batch `combine()`, per-arm
-   `combine()`, swept circle) fragmented when fused with the eyes/hub + bore cuts.
-   Logged in DESIGN-LOG; hand-finish the print or round that one part in another
-   tool if it matters.
+5. **Perpendicular-section LOFT for a smooth swept form.** (SUPERSEDES the old "yoke
+   stays a flat bar" note.) The wraparound yoke arm is now a single
+   `cq.Solid.makeLoft(wires, ruled=False)` through rounded-rectangle sections placed
+   perpendicular to the path tangent — a continuous organic tube, ROUNDED with no sharp
+   edges along it, in pure cadquery. The key: build each section's rounded-rect wire BY
+   HAND (4 line segments + 4 tangent `threePointArc` corners), NOT with `Sketch().fillet()`
+   (fillet2D is unreliable on complex faces here). Loft the arm first; union eyes/hub/post
+   with each end overlapping DEEP (a tangent kiss → two disjoint solids); cut bores/slots
+   LAST. This rounds the form WITHOUT a 3D fillet and WITHOUT the build123d port. (The
+   earlier failures — incremental union, `combine()`, swept circle fused with eyes/hub +
+   bores — were all trying to round AFTER assembly; lofting the smooth section up front
+   sidesteps it. See parts/yoke.py.)
 
 ## How to probe quickly
 
