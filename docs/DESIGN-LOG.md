@@ -6,6 +6,20 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Driver MEASURED (39.5 mm OD, 5 mm tall, magnet 27×3)
+
+Real driver measured, replacing the REF estimates. `driver_od` 42 → **39.5**,
+`driver_body_depth` 8 → **5**, magnet **Ø27 × 3** (was 26 × 5). Cascade: the diaphragm/
+dome dropped to **34** (must be < the 39.5 frame) and `driver_seat_ledge` 3.5 → **2.5**
+so the derived aperture (od − 2·ledge = 34.5) still clears the 34 diaphragm. Clamp
+follows the thinner driver: recess depth 3 → **2**, standoff 5 → **2** (= body_depth −
+baffle recess_depth). Mockup updated (basket Ø39.5 × 5 + magnet behind; the wider front
+flange dropped since the outermost dia IS the 39.5 rim). Build 10/10, gate 0 HARD / 1
+SOFT; the assembly stack (driver seated, clamp on the rear, magnet through the centre)
+still reads. Diaphragm + the clamp recess/standoff stay estimates pending a fit print.
+
+---
+
 ## 2026-06-26 — Driver mockup + clamp-ring orientation fix + baffle back to 4 screws
 
 Maker review of the one-piece cup. Build 10/10, gate 0 HARD / 1 SOFT.

@@ -19,12 +19,7 @@ def make_driver() -> cq.Workplane:
     od = P.driver_od
     bd = P.driver_body_depth
 
-    drv = cq.Workplane("XY").circle(od / 2).extrude(-bd)           # frame body z(-bd..0)
-    # mounting flange — a wider rim at the front (seats on the baffle recess ledge)
-    drv = drv.union(
-        cq.Workplane("XY").workplane(offset=-P.driver_flange_thickness)
-        .circle(P.driver_flange_diameter / 2).extrude(P.driver_flange_thickness)
-    )
+    drv = cq.Workplane("XY").circle(od / 2).extrude(-bd)           # basket z(-bd..0); rim = the mount
     # diaphragm dome — a low cone firing +Z
     dome = cq.Solid.makeCone(
         P.driver_diaphragm_diameter / 2, P.driver_diaphragm_diameter * 0.15,

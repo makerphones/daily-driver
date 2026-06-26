@@ -202,11 +202,12 @@ class Params:
     driver_clamp_bolt_circle: float = 60.0   # SET  bcd (r30): between vents (r26) + frame holes (r35)
     driver_clamp_inner_diameter: float = 34.0  # SET  open centre — clears the magnet; shoulder catches the rim
     driver_clamp_recess_clearance: float = 0.4  # SET  driver OD ↔ ring recess (the driver nests in)
-    driver_clamp_recess_depth: float = 3.0   # SET  how far the driver nests into the ring
+    driver_clamp_recess_depth: float = 2.0   # SET  how far the driver nests into the ring
+                                             #   (≈ the basket that protrudes behind the baffle)
     driver_clamp_floor_thickness: float = 2.5  # SET  shoulder floor behind the recess
     driver_clamp_wall: float = 2.5           # SET  wall around the recess
     driver_clamp_ear_diameter: float = 9.0   # SET  ear pad dia around each M3 hole
-    driver_clamp_standoff: float = 5.0       # ESTIMATE  baffle-back boss height the ring bolts to (driver-pending)
+    driver_clamp_standoff: float = 2.0       # SET  baffle-back boss height = body_depth(5) − recess_depth(3)
 
     # ---- Integral driver guard (across the aperture, on the baffle) ----------
     guard_spoke_count: int = 6            # ESTIMATE  guard_spoke_count
@@ -216,22 +217,18 @@ class Params:
     guard_thickness: float = 1.5          # ESTIMATE  guard rib thickness (Z)
     guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie spokes
 
-    # ---- Driver (REFERENCE — candidate Peerless HPD-40N16) ------------------
-    driver_od: float = 42.0               # REF  outer frame dia. 40 mm class LOCKED
-                                          #   (2026-06-25, not 50). 42 = generic 40 mm frame;
-                                          #   confirm against the chosen driver's measured frame.
-    driver_diaphragm_diameter: float = 40.0  # REF  diaphragm — guard must clear
-    driver_body_depth: float = 8.0        # REF  frame depth behind the baffle
+    # ---- Driver (MEASURED 2026-06-26) ---------------------------------------
+    driver_od: float = 39.5               # MEASURED  outermost frame dia (the "40 mm" driver)
+    driver_diaphragm_diameter: float = 34.0  # ESTIMATE  diaphragm/dome (< the 39.5 frame; guard clears it)
+    driver_body_depth: float = 5.0        # MEASURED  driver height on the outside (the basket)
     driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame
-    # Driver MOCKUP dims (parts/driver.py) — a representative 40 mm dynamic driver shown
-    # in the assembly so the driver↔baffle↔clamp fit reads. REF / driver-pending.
-    driver_flange_diameter: float = 44.0  # REF  mounting-flange OD (rim wider than the frame)
-    driver_flange_thickness: float = 1.5  # REF  flange rim thickness
-    driver_magnet_diameter: float = 26.0  # REF  rear magnet OD (mockup)
-    driver_magnet_depth: float = 5.0      # REF  rear magnet depth behind the frame (mockup)
+    # Driver MOCKUP dims (parts/driver.py) — a representative driver shown in the
+    # assembly so the driver↔baffle↔clamp fit reads. The magnet sits behind the basket.
+    driver_magnet_diameter: float = 27.0  # MEASURED  rear magnet OD
+    driver_magnet_depth: float = 3.0      # MEASURED  rear magnet height
     driver_cutout_tolerance: float = 0.3  # ESTIMATE  fit allowance on the recess
-    driver_seat_ledge: float = 3.5        # ESTIMATE  radial frame seat (per side);
-                                          #   driver_aperture derives as od − 2·this
+    driver_seat_ledge: float = 2.5        # ESTIMATE  radial frame seat (per side); aperture =
+                                          #   od − 2·this = 34.5, so the 34 diaphragm clears it
     # Aperture SHAPE hook: only "round" is authored today. "oval"/"planar" (e.g. a
     # planar-magnetic driver) is a FUTURE variant — baffle.py raises if not round.
     # See DESIGN-LOG. Kept here so the param surface is ready before the geometry is.
