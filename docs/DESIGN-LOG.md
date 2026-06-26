@@ -6,6 +6,35 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Driver mount reworked: shallow seat + collar (not a deep recess); rings+spokes grille
+
+Maker review of the baffle front: the driver cone poked through the guard, and the
+6-spoke guard read too open/fragile. Both fixed — and the root cause was the driver
+MOUNT, not the guard.
+
+**Shallow seat + locating collar, not a deep recess (maker's idea).** The 3 mm back
+recess pushed the driver forward so its dome (proud 1.5) sat at z4.5 — jammed against
+the 3 mm front lamina, fighting the guard for room (0.3 mm). Reworked to a **1 mm seat**
+the driver rim registers into, plus a short **collar wall** (`driver_collar_height` 2.5,
+`driver_collar_wall` 2.0) around the driver on the back for lateral location. The driver
+now sits 2 mm further back → dome tip at z2.5, a clean **1 mm clearance** to the guard
+with NO extra baffle thickness. The collar is kept SHORTER than the driver's
+behind-baffle protrusion (4 mm) so the clamp ring still presses the rear rim to seal —
+and the 1 mm seat leaves a lip for a foam gasket the clamp compresses (maker's intent).
+`driver_clamp_standoff` is now DERIVED (= body_depth − seat = 4); the assembly and the
+`driver_coupon` follow automatically (coupon updated to include the collar).
+
+**Driver guard → concentric rings + radial spokes.** Replaced the bare 6 spokes (too
+open, fragile) with 2 concentric rings tying 6 radial spokes — a classic driver grille,
+far stiffer, still airy. With the dome dropped, it sits at full thickness (1.5) with
+1 mm dome clearance + 1 mm pad setback (no more squeeze warn).
+
+Build 12/12, gate 0 HARD / 1 SOFT (the yoke stop-slot web). NB `driver_dome_proud` is
+still a REF estimate (1.5) — the 1 mm clearance is real margin above it, but measure the
+real dome to lock it; small deltas retune the seat/clearance with no baffle-thickness change.
+
+---
+
 ## 2026-06-26 — Fit coupons, driver-clamp soft-round, build123d port deferred
 
 Build **12/12** (two new coupons), gate **0 HARD / 1 SOFT** (the pre-existing yoke

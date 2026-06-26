@@ -41,10 +41,11 @@ def make_baffle() -> cq.Workplane:
     aperture = cq.Workplane("XY").workplane(offset=-0.5).circle(ap_r).extrude(t + 1.0)
     baffle = baffle.cut(aperture)
 
-    # 3. Driver recess on the BACK: a wider pocket (driver_recess_diameter) cut
-    #    driver_recess_depth up from the back face. The driver frame drops into
-    #    it from behind and seats on the ledge at z=driver_recess_depth; the
-    #    narrower aperture carries on to the front.
+    # 3. Driver SEAT on the BACK: a shallow pocket (driver_recess_diameter) cut
+    #    driver_recess_depth up from the back face. The driver frame rim registers
+    #    into it and seats on the ledge at z=driver_recess_depth; the narrower
+    #    aperture carries on to the front. Shallow (1 mm) on purpose — the dome then
+    #    stays low, clear of the front guard; the COLLAR below adds lateral location.
     recess = (
         cq.Workplane("XY")
         .workplane(offset=-0.5)
@@ -53,47 +54,63 @@ def make_baffle() -> cq.Workplane:
     )
     baffle = baffle.cut(recess)
 
-    # 4. Integral driver guard across the aperture — guard_spoke_count thin
-    #    spokes + a small hub, RECESSED guard_setback below the front face so it
-    #    clears the pad on the front. Spoke ends meet the aperture wall, so the
-    #    guard ties into the plate.
-    #    TODO (fit, measured driver): the REF dome stands ~dome_proud (1.5) proud
-    #    and driver_recess_depth (3) puts the frame front near z=3, so a proud
-    #    dome can reach the guard plane (z≈2.5). Verify guard-to-diaphragm
-    #    clearance against the real driver; may need a deeper recess or a
-    #    peripheral-only guard. NOT resolved here.
-    # The only solid aperture wall is the front lamina (z = recess_depth .. t),
-    # because the driver recess eats the inner plate below recess_depth. So the
-    # guard must live in that lamina to be supported. baffle_thickness=6 with
-    # recess_depth=3 leaves a 3 mm lamina, enough to hold guard_thickness (1.5)
-    # AND the requested guard_setback (1.5). The clamp below stays parametric: if
-    # a measured driver forces a deeper recess and the lamina shrinks, the setback
-    # is held to what fits and the build WARNS rather than floating the guard.
-    lamina = t - P.driver_recess_depth
-    g_th = min(P.guard_thickness, lamina)
-    setback = min(P.guard_setback, lamina - g_th)
-    if setback < P.guard_setback - 1e-6:
-        print(
-            f"  [warn] baffle: guard setback held to {setback:.2f} mm (asked "
-            f"{P.guard_setback:.2f}); front lamina is only {lamina:.2f} mm "
-            f"(recess {P.driver_recess_depth}/{t}). Flagged for the measured driver."
-        )
-    g_top = t - setback
-    g_bot = g_top - g_th
-    # Spokes run slightly past the aperture wall (embed 1 mm) so they FUSE into
-    # the plate rather than meeting it on a coincident (non-merging) face.
-    spoke_len = 2 * (ap_r + 1.0)
-    guard = (
-        cq.Workplane("XY").workplane(offset=g_bot).circle(P.guard_hub_diameter / 2).extrude(P.guard_thickness)
+    # 3b. Driver locating COLLAR — a short wall around the driver on the BACK,
+    #    continuing the seat wall proud of the back face (z = -collar_height .. 0).
+    #    Secures the driver laterally; SHORTER than the driver's behind-baffle
+    #    protrusion (body_depth − seat) so the clamp ring still reaches the rear rim
+    #    and presses the driver forward to seal (room for a foam gasket, per maker).
+    collar = (
+        cq.Workplane("XY")
+        .workplane(offset=-P.driver_collar_height)
+        .circle(P.driver_recess_diameter / 2 + P.driver_collar_wall)
+        .circle(P.driver_recess_diameter / 2)
+        .extrude(P.driver_collar_height)
     )
-    for i in range(P.guard_spoke_count):
+    baffle = baffle.union(collar)
+
+    # 4. Integral driver GUARD across the aperture — concentric RINGS tied by radial
+    #    SPOKES (a classic driver grille: far stronger than bare spokes, still airy).
+    #    It lives in the front lamina (z = recess_depth .. t) — the only solid aperture
+    #    wall, since the back recess eats the inner plate below recess_depth.
+    #    DOME CLEARANCE: the driver dome is a cone, tallest at the centre, peaking at
+    #    z = recess_depth + dome_proud. The guard floor sits guard_dome_clearance ABOVE
+    #    that peak so the diaphragm never touches the grille. The lamina is thin
+    #    (t − recess_depth), so the rib is auto-thinned to fit under the front face and
+    #    the build WARNS the true clearances rather than silently floating the guard.
+    #    NB driver_dome_proud is still a REF estimate — measure it; if the real dome is
+    #    near/over estimate the baffle needs more depth (the lamina can't be cheated).
+    lamina = t - P.driver_recess_depth
+    dome_tip = P.driver_recess_depth + P.driver_dome_proud      # cone peak (centre), baffle frame
+    g_bot = dome_tip + P.guard_dome_clearance                   # guard floor just above the dome
+    g_th = max(0.8, min(P.guard_thickness, t - g_bot - 0.2))    # fit under the front face; keep a printable rib
+    g_top = g_bot + g_th
+    dome_clear = g_bot - dome_tip
+    pad_setback = t - g_top
+    if pad_setback < P.guard_setback - 1e-6:
+        print(
+            f"  [warn] baffle: guard squeezed in the {lamina:.1f} mm lamina — dome "
+            f"clearance {dome_clear:.2f} mm, pad setback {pad_setback:.2f} mm (wanted "
+            f"{P.guard_setback:.1f}). dome_proud is a REF estimate ({P.driver_dome_proud}); "
+            f"measure it and deepen the baffle if the real dome is near/over estimate."
+        )
+    w = P.guard_member_width
+    hub_r = P.guard_hub_diameter / 2
+    # Spokes/rings embed 1 mm past the aperture wall so they FUSE into the plate
+    # rather than meeting it on a coincident (non-merging) face.
+    spoke_len = 2 * (ap_r + 1.0)
+    guard = cq.Workplane("XY").workplane(offset=g_bot).circle(hub_r).extrude(g_th)  # central hub
+    for k in range(P.guard_ring_count):                         # concentric rings
+        rk = hub_r + (ap_r - hub_r) * (k + 1) / (P.guard_ring_count + 1)
+        ring = (
+            cq.Workplane("XY").workplane(offset=g_bot)
+            .circle(rk + w / 2).circle(rk - w / 2).extrude(g_th)
+        )
+        guard = guard.union(ring)
+    for i in range(P.guard_spoke_count):                        # radial spokes
         ang = i * 360.0 / P.guard_spoke_count
         spoke = (
-            cq.Workplane("XY")
-            .workplane(offset=g_bot)
-            .transformed(rotate=(0, 0, ang))
-            .rect(spoke_len, P.guard_member_width)
-            .extrude(P.guard_thickness)
+            cq.Workplane("XY").workplane(offset=g_bot)
+            .transformed(rotate=(0, 0, ang)).rect(spoke_len, w).extrude(g_th)
         )
         guard = guard.union(spoke)
     baffle = baffle.union(guard)

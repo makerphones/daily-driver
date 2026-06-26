@@ -9,10 +9,10 @@ Two independent coupons, each derived ENTIRELY from the real interface params (s
 a coupon can never drift from the part it validates — change params.py and the
 coupon regenerates with it):
 
-  driver_coupon — reproduces the baffle's BACK driver interface: the driver-recess
-    pocket (the measured driver nests into it) plus the 3 standoff bosses at the
-    clamp bolt circle, so the REAL driver_clamp ring bolts on and you can confirm
-    the rear-rim capture / standoff height against the real driver. Frame matches
+  driver_coupon — reproduces the baffle's BACK driver interface: the shallow seat +
+    locating collar (the measured driver registers into them) plus the 3 standoff
+    bosses at the clamp bolt circle, so the REAL driver_clamp ring bolts on and you can
+    confirm the seat/collar fit + rear-rim capture / standoff height. Frame matches
     baffle.py: BACK face z=0, FRONT z=baffle_thickness; recess on the back, bosses
     run −z. A central recess puck + 3 spokes to the bosses (trims the full Ø77
     baffle plate to just the bits under test).
@@ -70,6 +70,15 @@ def make_driver_coupon() -> cq.Workplane:
             .circle(boss_r).extrude(boss_h)
         )
         coupon = coupon.union(boss)
+
+    # 3b. Driver locating COLLAR on the BACK (z = -collar_height .. 0) — same short
+    #     wall as the baffle, so the coupon checks the real seat + collar location.
+    collar = (
+        cq.Workplane("XY").workplane(offset=-P.driver_collar_height)
+        .circle(P.driver_recess_diameter / 2 + P.driver_collar_wall)
+        .circle(P.driver_recess_diameter / 2).extrude(P.driver_collar_height)
+    )
+    coupon = coupon.union(collar)
 
     # 4. Cuts LAST (this OCC build rounds/cuts in that order): aperture, back recess,
     #    then the M3 insert bores through each standoff. Mirrors baffle.py exactly.

@@ -171,7 +171,18 @@ class Params:
     # driver_aperture and driver_recess_diameter now DERIVE from driver_od (see the
     # derived helpers), so the baffle aperture/guard/vents stay coherent when the
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
-    driver_recess_depth: float = 3.0      # ESTIMATE  driver_recess_depth (on BACK)
+    driver_recess_depth: float = 1.0      # SET  shallow seat the driver rim registers into (on BACK).
+                                          #   Was 3 — a deep recess that pushed the dome up into the thin
+                                          #   front lamina (cone poked the guard). Now a 1 mm seat + a
+                                          #   locating COLLAR (below) hold the driver, dropping the dome
+                                          #   ~2 mm clear of the guard with NO extra baffle thickness, and
+                                          #   leaving a lip for a foam seal the clamp compresses.
+    # Driver locating COLLAR — a short wall around the driver on the baffle BACK,
+    # continuing the seat wall proud of the back face. Secures/locates the driver
+    # laterally; kept SHORTER than the driver's behind-baffle protrusion so the clamp
+    # ring still presses the rear rim (good seal + room for foam), per the maker.
+    driver_collar_height: float = 2.5     # SET  collar height proud of the baffle back (< driver protrusion)
+    driver_collar_wall: float = 2.0       # SET  collar radial wall thickness
     # Earpad retaining FLANGE — a thin brim at the CUP's front OUTER edge that
     # extends the perimeter OUTWARD (DT770-style "extension of the circumference"),
     # so the earpad's skirt wraps over it and hooks behind. It sticks OUT radially,
@@ -208,19 +219,26 @@ class Params:
     driver_clamp_wall: float = 2.5           # SET  wall around the recess
     driver_clamp_ear_diameter: float = 9.0   # SET  ear pad dia around each M3 hole
     driver_clamp_post_width: float = 6.0     # SET  post width (< ear pad 9 → post↔pad shoulders fillet cleanly)
-    driver_clamp_standoff: float = 2.0       # SET  baffle-back boss height = body_depth(5) − recess_depth(3)
+    # driver_clamp_standoff is DERIVED below (= body_depth − seat depth) so it tracks the seat.
     driver_clamp_fillet: float = 0.8         # SET  blend at the post↔ring / post↔pad junctions. 0.8 is this OCC
                                              #   build's CEILING here — 0.9–1.1 silently invalidate, ≥1.2 hard-fail
                                              #   (clamp fillet probe). Bigger radii want the build123d port.
     driver_clamp_edge_round: float = 0.6     # SET  roundover on the ear-plate perimeter (softens the 90° rim corners)
 
-    # ---- Integral driver guard (across the aperture, on the baffle) ----------
-    guard_spoke_count: int = 6            # ESTIMATE  guard_spoke_count
-    guard_member_width: float = 2.0       # ESTIMATE  guard_member_w
-    guard_setback: float = 1.5            # ESTIMATE  recessed below front face so
-                                          #   it clears the pad AND the diaphragm
-    guard_thickness: float = 1.5          # ESTIMATE  guard rib thickness (Z)
-    guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie spokes
+    # ---- Integral driver guard (concentric RINGS + radial SPOKES, on the baffle) -
+    # A classic driver grille: concentric rings tie the radial spokes, far stronger
+    # than bare spokes while staying airy. It sits in the front lamina just ABOVE the
+    # driver dome (the diaphragm must never touch it). The lamina is thin, so the rib
+    # is auto-thinned to fit and the build WARNS the true clearances (see baffle.py).
+    guard_spoke_count: int = 6            # ESTIMATE  radial spokes (hub → aperture wall)
+    guard_ring_count: int = 2             # SET  concentric rings tying the spokes (the rings+spokes grille)
+    guard_member_width: float = 2.0       # ESTIMATE  spoke / ring width
+    guard_setback: float = 1.0            # ESTIMATE  DESIRED pad setback below the front face
+                                          #   (warned when the lamina can't give it)
+    guard_dome_clearance: float = 1.0     # SET  gap from the guard floor to the dome peak (no diaphragm contact);
+                                          #   the 1 mm seat gives real room for this now (was 0.3, squeezed)
+    guard_thickness: float = 1.5          # ESTIMATE  guard rib thickness (Z); thinned to fit the lamina
+    guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie the spokes
 
     # ---- Driver (MEASURED 2026-06-26) ---------------------------------------
     driver_od: float = 39.5               # MEASURED  outermost frame dia (the "40 mm" driver)
@@ -364,6 +382,12 @@ class Params:
     def driver_recess_diameter(self) -> float:
         # back recess the driver frame drops into = od + fit tolerance.
         return self.driver_od + self.driver_cutout_tolerance
+
+    @property
+    def driver_clamp_standoff(self) -> float:
+        # baffle-back boss height = how far the driver protrudes behind the back face
+        # = body_depth − the shallow seat. Derived so it tracks driver_recess_depth.
+        return self.driver_body_depth - self.driver_recess_depth
 
     @property
     def adapter_target_aperture(self) -> float:
