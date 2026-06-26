@@ -4,8 +4,9 @@
 """
 Assembly — one side of the Daily Driver in its correct relationship (v0.3).
 
-Chain: cup → baffle (front-mounted) → fork-yoke (pivoted to the cup) → slider
-(on the fork swivel hub) → bow (REFERENCE body). The cup/baffle/yoke/slider poses
+Chain: frame + module (the split earcup) → baffle (front-mounted) → fork-yoke
+(pivoted to the frame) → slider (on the fork swivel hub) → bow (REFERENCE body).
+The frame/module/baffle/yoke/slider poses
 are the real kinematic chain; the bow is posed representatively so one end sits in
 the slider channel and the arc sweeps over toward the other (mirror) side — the
 full head-size kinematics are TBD from the measured bow (ESTIMATES, see params).
@@ -19,13 +20,12 @@ import math
 import cadquery as cq
 
 from params import P
-from parts.cup import make_cup
+from parts.cup import make_frame, make_module
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.bow import make_bow
 from parts.headband_pad import make_headband_pad
-from parts.grille_dot import make_grille_dot
 
 
 # Sub-assembly groups for the manual's interactive parts viewer. The node NAMES
@@ -36,7 +36,7 @@ from parts.grille_dot import make_grille_dot
 SUBASSEMBLIES = {
     "groups": [
         {"id": "earcup", "label": "Earcup",
-         "nodes": ["cup_R", "cup_L", "baffle_R", "baffle_L", "grille_dot_R", "grille_dot_L"]},
+         "nodes": ["frame_R", "frame_L", "module_R", "module_L", "baffle_R", "baffle_L"]},
         {"id": "gimbal", "label": "Gimbal",
          "nodes": ["yoke_R", "yoke_L", "insert_p_R", "insert_p_L", "insert_m_R",
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
@@ -68,7 +68,8 @@ def make_assembly() -> cq.Assembly:
     rest pose, so they read ~90° off in this view — cosmetic here (the gate verifies
     the stop at the part level). Re-clocking them to this rest pose is a follow-up.
     """
-    CHARCOAL = cq.Color(0.30, 0.32, 0.35)
+    CHARCOAL = cq.Color(0.30, 0.32, 0.35)   # front FRAME
+    MODULE_C = cq.Color(0.22, 0.24, 0.27)   # rear MODULE (a touch darker so the split reads when exploded)
     ORANGE = cq.Color(0.92, 0.45, 0.10)
     YOKE_C = cq.Color(0.36, 0.38, 0.42)
     SLIDER_C = cq.Color(0.42, 0.44, 0.48)
@@ -98,9 +99,12 @@ def make_assembly() -> cq.Assembly:
         return w.mirror("YZ", (0, 0, 0))
 
     # ---- RIGHT ear ----
-    cup = T_cup(make_cup())
+    # The earcup is the modular split: FRONT frame + REAR module, posed identically
+    # (both derive from the one shell, co-located) so they read as one cup assembled
+    # and can be EXPLODED APART at the joint in the parts viewer.
+    frame = T_cup(make_frame())
+    module = T_cup(make_module())
     baffle = T_cup(make_baffle().translate((0, 0, P.baffle_seat_z)))
-    grille_dot = T_cup(make_grille_dot())
     yoke = T_yoke(make_yoke())
     slider_z = P.yoke_fork_height + P.yoke_swivel_hub_height / 2 - 5.0 + P.slider_block_height / 2
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
@@ -112,9 +116,9 @@ def make_assembly() -> cq.Assembly:
     pad = make_headband_pad(radius=P.bow_worn_radius).translate(bow_xf)
 
     asm = cq.Assembly(name="daily_driver")
-    for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
-                           ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C),
-                           ("grille_dot", grille_dot, ORANGE)):
+    for nm, solid, col in (("frame", frame, CHARCOAL), ("module", module, MODULE_C),
+                           ("baffle", baffle, ORANGE),
+                           ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C)):
         asm.add(solid, name=f"{nm}_R", color=col)
         asm.add(mirror_L(solid), name=f"{nm}_L", color=col)
 

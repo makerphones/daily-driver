@@ -111,7 +111,7 @@ def build(names):
             from assembly import make_assembly
             asm = make_assembly()
             asm.export(os.path.join(OUT, "assembly.step"))
-            print("  [ok]   assembly.step (cup + baffle + yoke + slider + bow ref)")
+            print("  [ok]   assembly.step (frame + module + baffle + yoke + slider + bow ref)")
             # Web-viewable GLB for the Pages build page (model-viewer). Committed
             # as a published artifact (unlike the gitignored working STL/STEP).
             try:

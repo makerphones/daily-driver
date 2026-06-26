@@ -6,6 +6,21 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Assembly/preview now shows the modular split (explodable at the joint)
+
+The web preview + parts viewer were still posing the unified `make_cup` shell — they
+now use the real split. `assembly.py` poses `make_frame` + `make_module` as separate
+nodes (`frame_R/_L`, `module_R/_L`), so the GitHub-Pages GLB the makerphones manual
+loads shows the modular earcup and the parts viewer can EXPLODE it at the joint. The
+`SUBASSEMBLIES` earcup group is updated to `frame/module/baffle` (the public node
+contract the viewer reads); the rear module is a touch darker so the split reads when
+exploded. Dropped the orange `grille_dot` accent cap from the assembly (the logo is
+flush single-colour now — the cap stays a buildable optional accessory). No geometry
+change; build 9/9, gate 0 HARD / 1 SOFT. (If the website viewer hardcodes any old
+`cup_*` node name rather than reading the manifest, it needs the matching rename.)
+
+---
+
 ## 2026-06-25 — Stage 1b: structural lattice grille; pivot/seal eval → mid-split confirmed
 
 Two outcomes this session: the new grille, and the architecture decision that settles
