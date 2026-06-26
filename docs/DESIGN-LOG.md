@@ -6,6 +6,50 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Bottom-seal homework: asymmetric pins vs asymmetric pads
+
+The maker asked us to do the homework on the IDEAL yoke↔cup pivot placement —
+front-to-back and ASYMMETRIC pin positioning — as a possible alternative to the
+expensive/hard-to-source asymmetric earpads makers use to fix the weak bottom seal. A
+focused 4-lens adversarial workflow (corrected kinematics, pads-vs-geometry, prior
+art, this-design) answered it. (This also CORRECTS a DOF mislabel in the earlier
+pivot/seal entry: the TILT DOF — rotation about the front-back axis — IS the
+top-vs-bottom seal adjuster; the SWIVEL is front-vs-back.)
+
+- **Fore-aft placement: wrong knob.** Fore-aft of the cup↔yoke attachment is the
+  SWIVEL's domain (front-vs-back balance), orthogonal to the bottom (top-vs-bottom)
+  seal. Don't chase the bottom seal with it.
+- **Asymmetric pins ALONE: do nothing.** A free, low-friction hinge self-seats to the
+  one angle of ZERO net moment, so any static axis change (off-centre, canted, or a
+  built-in toe-in *at rest*) only relocates the REST ANGLE — the hinge launders the
+  bias away. Keep the pins EXACTLY COLLINEAR (a bearing/anti-bind requirement, NOT a
+  seal lever). Put all seal asymmetry in the STOP / SPRING / DETENT, never the pin line.
+- **What actually holds bottom pressure** (ranked): (1) a light SPRUNG/preloaded
+  toe-in about the existing M3 axis (~150–250 N·mm → ~3–5 N bottom-rim force) — best,
+  force-regulating, conforms across heads/glasses; (2) an ASYMMETRIC TOE-IN hard stop
+  by re-clocking the existing `pivot_stop_slot` (~1.5–2°) — but a bare stop carries ~0
+  load unless a preload or sub-centroid clamp drives the cup into it; (3) an asymmetric
+  DETENT/friction (Bose US10334352B2 pattern) — position-holding, drifts; (4) biasing
+  the CLAMP RESULTANT ~5–15 mm below cup centre via the slider/hub — front/back-neutral.
+- **Can geometry replace an asymmetric pad? PARTIALLY.** It fixes a PRESSURE deficit
+  (bottom touches but lightly) — so the expensive asymmetric pad is avoidable there.
+  It CANNOT fill a SHAPE GAP (daylight at the jaw/temple/glasses); that needs added
+  material — but the cheap in-house substitute is **cup-rim bottom loft** or a 2–3 mm
+  **foam wedge shim** under the pad arc, NOT a custom pad. Open-back forgiveness (a
+  small leak ≠ bass roll-off) makes symmetric-pad-plus-geometry viable here.
+- **Hybrid-D needed? NO (reconfirmed).** Every held-pressure lever acts ABOUT the
+  existing collinear axis at `pivot_boss_z=24`; none needs the axis relocated. Moving
+  the axis forward/high is the hybrid-D move and only changes rest angle on a free
+  hinge — the least useful lever. Mid-split stands.
+- **DIAGNOSE FIRST (print-dependent), so nothing is implemented yet:** print the
+  symmetric Dekoni + leak/pressure-paper the bottom rim to tell PRESSURE deficit from
+  SHAPE gap; that decides whether we add the sprung toe-in (RANK 1) or rim loft. When
+  we do: PREREQUISITE = re-clock `pivot_stop_slot` to the worn rest pose (still
+  symmetric about −Z / ~90° off per the assembly flag) before any toe-in. Planned
+  params (default off): `pivot_tilt_preload_Nmm`, `pivot_toein_degrees`(+location).
+
+---
+
 ## 2026-06-25 — Assembly/preview now shows the modular split (explodable at the joint)
 
 The web preview + parts viewer were still posing the unified `make_cup` shell — they
