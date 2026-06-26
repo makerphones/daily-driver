@@ -316,18 +316,19 @@ class Params:
     slider_collar_diameter: float = 18.0      # SET  barrel OD around the post bore
     slider_collar_height: float = 26.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
-    # Headband CLAMP (Beyer-style two-piece). The collar's OUTBOARD (+Y local → +X,
-    # away from the head) face is the INNER plastic piece: the bow's metal end seats on
-    # it, a registering RIB enters the bow's open CHANNEL (between the rails) for
-    # anti-rotation, and a separate COVER plate (parts/headband_clamp.py) sandwiches the
-    # metal with two M3 screws through the bow's end-tab holes. The band mounts ALONGSIDE
-    # the post (band outermost) so the post slides past it without intersecting.
+    # Headband CLAMP (Beyer-style two-piece, IN-LINE stack). The post slides in the
+    # slider's LOWER barrel; the band clamps on TOP, directly above the post (both
+    # centred at the ear — post directly under the band, no inboard offset). The clamp's
+    # INNER wall (the −Y plastic piece) seats the band; a RIB enters the bow's open
+    # CHANNEL (between the rails) for anti-rotation; and a separate COVER plate
+    # (parts/headband_clamp.py) is the +Y piece, sandwiching the metal with two M3 screws
+    # through the band's end-tab holes. slider_collar_height = the lower post-bore depth.
     slider_clamp_width: float = 36.0       # SET  clamp width (X) — seats the 33 mm band + the bolts
-    slider_clamp_height: float = 34.0      # SET  clamp height (Z) — spans the end tab + the channel
-    slider_clamp_standoff: float = 6.0     # SET  clamp slab proud of the barrel (+Y); hosts the inserts
-    slider_clamp_hole_z: float = -8.0      # SET  Z of the 2 bolt inserts (= the bow's end-tab holes)
-    slider_clamp_rib_z: float = 9.0        # SET  Z of the anti-rotation rib (sits in the bow's open channel)
-    slider_clamp_rib_height: float = 13.0  # SET  rib Z extent (runs along the open channel)
+    slider_clamp_height: float = 28.0      # SET  clamp height (Z, above the barrel) — spans tab + channel
+    slider_clamp_standoff: float = 7.0     # SET  inner-wall depth (Y) behind the band; hosts the inserts
+    slider_clamp_hole_z: float = 10.0      # SET  Z of the 2 bolt inserts ABOVE the barrel top (= band holes)
+    slider_clamp_rib_z: float = 20.0       # SET  Z of the anti-rotation rib above the barrel top (in the channel)
+    slider_clamp_rib_height: float = 12.0  # SET  rib Z extent (runs along the open channel)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (+Y past the seat)
     slider_clamp_cover_thickness: float = 4.0  # SET  the outer cover plate thickness
 

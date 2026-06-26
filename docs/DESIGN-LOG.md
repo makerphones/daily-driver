@@ -6,6 +6,23 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Headband junction corrected to an IN-LINE stack
+
+The first junction pass (entry below) mounted the band OUTBOARD of the post and shifted
+the cups inboard — which pushed the post to the INSIDE of the band (read as inverted; the
+maker flagged it). The thin metal band can't be perfectly co-axial with the round post
+(one would pass through the other), so the right build is the Grado/Beyer STACK: the post
+slides into the slider's LOWER barrel bore and stops at the barrel top, and the band clamps
+directly ABOVE it — band → slider → post → yoke → cup in one vertical line, post directly
+under the band, no sideways offset. Cups back to normal spacing.
+
+Slider reworked: post bore in the lower barrel (z 0..collar_height), the band clamp above
+(inner wall on −Y seating the band at Y=0 directly over the post bore), thumbscrew moved to
+the +X front. The two-piece clamp + rib-into-the-open-channel + cover plate are unchanged in
+function — just stacked instead of offset. Build **14/14**, gate **0 HARD / 0 SOFT**.
+
+---
+
 ## 2026-06-26 — Headband↔slider junction: Beyer-style two-piece clamp
 
 Maker review: the bow was posed THROUGH the slider (intersecting the post) and never
