@@ -6,6 +6,53 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-25 — Modular earcup: split into FRONT FRAME + REAR MODULE (Stage 1)
+
+The earcup is now a two-part interchangeable design (maker goal: swap the grille,
+change damping, run open↔sealed without reprinting the structure). Decided after a
+5-lens adversarial eval of "Architecture D + coarse multi-start thread + gasket"
+(see the workflow synthesis): commit to D, but **single-start** thread, an **axial
+O-ring seal set by a hard bottoming shoulder**, and **all hinge load in the frame**
+— staged so the unproven thread joint is isolated/gated before it's fused in, with
+a bayonet as the live fallback. This entry is **Stage 1**: the split + parting line
++ forward pivot + a simple slip register. Build 9/9, gate 0 HARD / 1 SOFT.
+
+- **`cup.make_cup` stays the whole reference shell**; two PRINTED parts derive from
+  it by splitting at `parting_z` (co-located in `cup.py`, no cross-part import):
+  - **`make_frame`** — permanent FRONT frame: baffle seat, pad lip, the yoke pivots,
+    and the joint socket. The hinge load path lives here, intact.
+  - **`make_module`** — removable REAR module: cavity + grille + joint spigot.
+- **Joint = a telescoping SHIPLAP** (continuous 91.44 OD, no external collar): the
+  module's inner spigot `[cav_r .. joint_interface_radius=42]` rises one `lap` (6 mm)
+  and the frame's outer wall sleeves down over it; the spigot top bottoms on the
+  frame wall (the seat). Stage-1 retention is this slip register. New params:
+  `parting_z=18`, `joint_register_lap=6`, `joint_interface_radius=42`,
+  `joint_register_clearance=0.35`.
+- **GEOMETRY FINDING — "forward pivot, no ribs" lands the split at MID, not behind
+  the baffle.** The Ø12 pivot boss must sit on the frame; pivot(12) + lap + baffle
+  boss(6) must fit between `parting_z` and the 36 mm rim → `parting_z + lap ≤ 24`,
+  so the most-forward no-rib parting is ~18 (≈ architecture B). A *truly* forward
+  parting (module owns most of the cavity) needs the hybrid-D **ribs** to move the
+  pivot off the frame — the documented upgrade path (the code is `parting_z`-driven,
+  so that's a param + rib change, not a redo). The module still does the core job:
+  grille swap, damping access, open↔sealed.
+- **Forward pivot** (`pivot_boss_z` now `parting_z + boss_radius` = 24, was mid 18):
+  boss spans z18..30 on the frame's intact outer wall. **Baffle bosses** now floor
+  at `parting_z + lap` (24, frame-only) so the lap relief never severs them; their
+  base fillet is dropped (the boss floors in open cavity now — no floor to round to,
+  and filleting the floating base made an invalid solid; the wall blend still ties it).
+- **Gate +8 HARD** (all PASS): `frame`/`module` manifold (one valid solid each — the
+  real buildability gate), `joint-clears-baffle-bosses`, `joint-frame-wall` (3.37),
+  `joint-module-spigot-wall` (3.0), `joint-seat-land` (3.0), `joint-bosses-above-lap`,
+  `baffle-boss-houses-insert`, `pivot-on-frame`, `pivot-within-rim`.
+- **Not yet** (next): swap the module grille to the triangular-×3 lattice + flush
+  logo (Stage 1b); single-start thread on the lap faces (Stage 2); axial O-ring +
+  bottoming shoulder (Stage 3). The **assembly/GLB still pose the unified shell**
+  (`make_cup`) so the website parts-viewer node contract (`cup_R/_L`) is unchanged —
+  splitting the assembly viz + updating the viewer is a follow-up.
+
+---
+
 ## 2026-06-25 — Overall cup OD SET to 4 in (lip 0.2 in); cup body back-solved
 
 First real number from the maker's measurement/decision pass. The maker fixed the

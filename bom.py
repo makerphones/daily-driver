@@ -49,7 +49,7 @@ def bom_rows():
          "Parts Express", "$3–5", "ESTIMATE"),
         ("Cable + Y-split + 3.5 mm TRS plug", "1",
          "online", "$8–15", "ESTIMATE"),
-        ("Printed parts (2× cup, baffle, yoke, slider per side)", "1 set",
+        ("Printed parts (2× frame, module, baffle, yoke, slider per side)", "1 set",
          "own printer or print service", "$3–25", "ESTIMATE"),
     ]
 

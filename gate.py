@@ -27,7 +27,7 @@ from OCP.gp import gp_Pnt
 from OCP.TopAbs import TopAbs_IN, TopAbs_ON
 
 from params import P
-from parts.cup import make_cup, pivot_stop_pins
+from parts.cup import make_cup, make_frame, make_module, pivot_stop_pins
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
@@ -181,15 +181,17 @@ def main():
     print("Building printed parts in-process (part [warn]s below are the")
     print("deferred-cosmetic SOFT warnings; they do not fail the gate)…\n")
 
-    cup = make_cup()
+    cup = make_cup()              # reference shell (grille/pivot/wall checks run on it)
+    frame = make_frame()          # printed: permanent front frame
+    module = make_module()        # printed: removable rear module
     baffle = make_baffle()
     yoke = make_yoke()
     slider = make_slider()
     adapter = make_adapter_ring()
     headband_pad = make_headband_pad()
     grille_dot = make_grille_dot()
-    parts = {"cup": cup, "baffle": baffle, "yoke": yoke, "slider": slider,
-             "adapter_ring": adapter, "headband_pad": headband_pad,
+    parts = {"frame": frame, "module": module, "baffle": baffle, "yoke": yoke,
+             "slider": slider, "adapter_ring": adapter, "headband_pad": headband_pad,
              "grille_dot": grille_dot}
 
     r = Report()
@@ -347,6 +349,45 @@ def main():
            f"flange sticks out {P.pad_lip_extension} mm >= {MIN_WALL} mm")
     r.hard(P.pad_lip_thickness >= MIN_WALL, "pad-flange-thickness",
            f"flange thickness {P.pad_lip_thickness} mm >= {MIN_WALL} mm")
+
+    # --- Modular split: frame ↔ module shiplap joint -------------------------
+    # The manifold pass above already proved frame + module each build as one valid
+    # solid (the real buildability gate for the split). These guard the dimensions
+    # that keep the joint sound: the lap relief clears the baffle bosses, both lap
+    # walls stay printable, a bottoming seat exists, and the forward pivot lands on
+    # the frame, clear of the joint band. (Coarse thread + axial gasket = Stage 2/3.)
+    boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
+    relief_inner = P.joint_interface_radius - P.joint_register_clearance
+    r.hard(relief_inner >= boss_reach, "joint-clears-baffle-bosses",
+           f"lap relief inner {relief_inner:.2f} mm >= boss reach {boss_reach:.1f} mm")
+
+    frame_joint_wall = P.cup_outer_diameter / 2 - (P.joint_interface_radius + P.joint_register_clearance)
+    r.hard(frame_joint_wall >= MIN_WALL, "joint-frame-wall",
+           f"frame outer wall over lap {frame_joint_wall:.2f} mm >= {MIN_WALL} mm")
+
+    module_spigot_wall = P.joint_interface_radius - P.cup_interior_diameter / 2
+    r.hard(module_spigot_wall >= MIN_WALL, "joint-module-spigot-wall",
+           f"module spigot wall {module_spigot_wall:.2f} mm >= {MIN_WALL} mm")
+
+    r.hard(module_spigot_wall > 0, "joint-seat-land",
+           f"bottoming seat land {module_spigot_wall:.2f} mm (spigot top on frame wall)")
+
+    # Baffle bosses must sit ABOVE the lap band (so the relief never cuts them) and
+    # be tall enough to house the heat-set insert.
+    lap_top = P.parting_z + P.joint_register_lap
+    r.hard(P.baffle_boss_floor_z >= lap_top, "joint-bosses-above-lap",
+           f"baffle boss floor z {P.baffle_boss_floor_z} >= lap top {lap_top}")
+    r.hard(P.baffle_boss_height >= P.insert_boss_depth, "baffle-boss-houses-insert",
+           f"boss height {P.baffle_boss_height} mm >= insert bore {P.insert_boss_depth} mm")
+
+    # Forward pivot sits on the FRAME: boss fully above the parting plane and within
+    # the front rim (so the hinge load path lives entirely in the permanent frame).
+    pivot_bot = P.pivot_boss_z - P.pivot_boss_diameter / 2
+    pivot_top = P.pivot_boss_z + P.pivot_boss_diameter / 2
+    r.hard(pivot_bot >= P.parting_z, "pivot-on-frame",
+           f"pivot boss bottom z {pivot_bot:.1f} >= parting {P.parting_z}")
+    r.hard(pivot_top <= P.cup_total_height, "pivot-within-rim",
+           f"pivot boss top z {pivot_top:.1f} <= rim {P.cup_total_height}")
 
     print("\n— SOFT checks (warn, do not fail) —")
 

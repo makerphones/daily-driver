@@ -149,12 +149,16 @@ def make_cup() -> cq.Workplane:
     cup = features.boss(
         cup,
         boss_points,
-        floor_z=P.cup_interior_floor_z,
+        floor_z=P.baffle_boss_floor_z,
         outer_diameter=P.baffle_boss_diameter,
         bore_diameter=P.m3_insert_hole_diameter,
         height=P.baffle_boss_height,
         bore_depth=P.insert_boss_depth,
-        base_fillet=P.boss_base_fillet,
+        # No base fillet: the boss now FLOORS in open cavity (at the joint-lap top,
+        # frame-only), so there is no host floor to round into — and filleting the
+        # floating base yields an INVALID solid (vs the old floor-seated boss, where
+        # the fillet merely warned-and-skipped). The boss is tied by its wall blend.
+        base_fillet=0.0,
     )
 
     # 5. Yoke pivot bosses — two external bosses at 0/180 on the cup side walls,
@@ -225,6 +229,70 @@ def make_cup() -> cq.Workplane:
     return cup
 
 
+# ---- Modular split: FRONT FRAME + REAR MODULE -------------------------------
+# make_cup() above is the WHOLE earcup, kept as the reference shell (the assembly
+# kinematics + the gate's grille/pivot/wall checks run on it). The two PRINTED
+# parts are derived from it by splitting at parting_z, so they can never drift from
+# one geometry. The split is co-located here (one file, no cross-part import) per
+# the build's "parts share only via params" rule. See params.py "Modular split".
+
+
+def _frame_module_split():
+    """Split the whole shell at parting_z into (frame, module).
+
+    Joint = a telescoping SHIPLAP (continuous OD, no external collar):
+      • MODULE keeps its full wall to parting_z, then a thin INNER spigot
+        [cavity_r .. joint_interface_radius] rises one lap above the parting plane.
+      • FRAME keeps its full OUTER wall down to parting_z (so the forward pivot boss
+        stays fully supported), with the INNER wall RELIEVED over the lap so the
+        module spigot telescopes up inside it. The spigot top bottoms on the frame
+        wall above the lap — that annular face is the SEAT (sets cavity depth; later
+        the gasket squeeze). Stage-1 retention is this slip register; the coarse
+        single-start thread lands on these lap faces in Stage 2 (see DESIGN-LOG).
+    """
+    shell = make_cup()
+    pz = P.parting_z
+    lap = P.joint_register_lap
+    cav_r = P.cup_interior_diameter / 2
+    ifc = P.joint_interface_radius
+    clr = P.joint_register_clearance
+    body_r = P.cup_outer_diameter / 2
+    big = P.cup_total_height + 20.0
+
+    def _ring(z0, h, r_out, r_in=None):
+        wp = cq.Workplane("XY").workplane(offset=z0).circle(r_out)
+        if r_in is not None:
+            wp = wp.circle(r_in)
+        return wp.extrude(h)
+
+    # Halves — clean planar cut at the parting plane.
+    module = shell.intersect(_ring(pz - big, big, body_r + 5.0))   # z <= pz
+    frame = shell.intersect(_ring(pz, big, body_r + 5.0))          # z >= pz
+
+    # MODULE inner spigot — ring [cav_r, ifc] one lap tall, on the wall top.
+    module = module.union(_ring(pz, lap, ifc, cav_r))
+
+    # FRAME inner relief — open [cav_r-1 .. ifc+clr] over the lap so the spigot
+    # telescopes in. Reaches just into the void (cav_r-1) so the spigot inner face is
+    # flush with the cavity wall; the outer wall [ifc+clr .. body_r] stays intact (it
+    # carries the pivot boss). Baffle bosses floor at pz+lap, ABOVE this band.
+    frame = frame.cut(_ring(pz - 0.01, lap + 0.02, ifc + clr, cav_r - 1.0))
+
+    return frame, module
+
+
+def make_frame() -> cq.Workplane:
+    """Permanent FRONT FRAME (printed): baffle seat, pad lip, yoke pivots, joint socket."""
+    return _frame_module_split()[0]
+
+
+def make_module() -> cq.Workplane:
+    """Removable REAR MODULE (printed): cavity + grille + joint spigot."""
+    return _frame_module_split()[1]
+
+
 if __name__ == "__main__":
     cq.exporters.export(make_cup(), "output/cup.stl")
-    print("wrote output/cup.stl")
+    cq.exporters.export(make_frame(), "output/frame.stl")
+    cq.exporters.export(make_module(), "output/module.stl")
+    print("wrote output/cup.stl, output/frame.stl, output/module.stl")

@@ -109,6 +109,31 @@ class Params:
     # stops IN the wall (no lug into the cavity) while still housing the insert.
     pivot_boss_through_span: float = 9.0  # ESTIMATE  radial length across the wall
 
+    # ---- Modular split: permanent FRONT FRAME + removable REAR MODULE --------
+    # Architecture "D / forward split, NO ribs" (maker decision 2026-06-25, after a
+    # 5-lens adversarial eval). The cup is built WHOLE as a reference shell
+    # (cup.make_cup) and SPLIT at parting_z into two PRINTED parts:
+    #   • make_frame  — front: baffle seat, pad lip, the YOKE PIVOTS (forward, on the
+    #                   frame), and the joint socket. The permanent structural frame;
+    #                   the hinge load path lives here, intact.
+    #   • make_module — rear: the cavity + grille; swaps for damping / open↔sealed.
+    # GEOMETRY CONSTRAINT (why the split is mid, not behind the baffle): with no ribs
+    # the Ø12 pivot boss must sit on the frame, and pivot(12) + lap + baffle-boss(6)
+    # must fit between parting_z and the 36 mm rim → parting_z + lap ≤ 24. So the
+    # most-forward no-rib parting is ~18 (a clean MID split ≈ architecture B). A truly
+    # forward parting (module owns most of the cavity) needs the hybrid-D ribs to move
+    # the pivot off the frame — the documented upgrade path. See DESIGN-LOG 2026-06-25.
+    # JOINT = a telescoping SHIPLAP: the frame's outer wall sleeves DOWN over the
+    # module's inner spigot (continuous 91.44 OD, no external collar). The spigot top
+    # bottoms on the frame wall (the seat). The coarse single-start THREAD + axial
+    # O-ring GASKET are deferred to Stage 2/3 — Stage 1 is a simple slip register.
+    parting_z: float = 18.0               # SET  split height z (mid; max-forward w/o ribs)
+    joint_register_lap: float = 6.0       # ESTIMATE  spigot↔socket telescoping overlap (axial)
+    joint_interface_radius: float = 42.0  # ESTIMATE  lap interface radius (also ≈ thread major/2,
+                                          #   Ø84, for Stage 2). MUST clear the baffle bosses
+                                          #   (reach r40): 42 leaves a 2 mm margin.
+    joint_register_clearance: float = 0.35  # slip fit, spigot↔socket (= fit_clearance_slip)
+
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore
     m3_clearance_hole: float = 3.4        # M3 free-fit through-hole (standard)
@@ -335,14 +360,24 @@ class Params:
         return self.cup_total_height - self.baffle_thickness
 
     @property
+    def baffle_boss_floor_z(self) -> float:
+        # baffle bosses are FRAME-only now: they floor at the top of the joint lap
+        # band (parting_z + lap) so the lap socket never cuts them, and run up to the
+        # baffle underside. (Was the interior back floor, which the split would sever.)
+        return self.parting_z + self.joint_register_lap
+
+    @property
     def baffle_boss_height(self) -> float:
-        # boss columns run from the interior back floor up to the baffle underside
-        return self.baffle_seat_z - self.cup_interior_floor_z
+        # boss columns run from the joint-lap top up to the baffle underside
+        return self.baffle_seat_z - self.baffle_boss_floor_z
 
     @property
     def pivot_boss_z(self) -> float:
-        # yoke pivot bosses sit at cup mid-height
-        return self.cup_total_height / 2
+        # FORWARD pivot (on the frame, no ribs): the boss bottom sits at the parting
+        # plane, so its centre is parting_z + the boss radius. The boss spans
+        # parting_z .. parting_z+diameter, attached to the frame's intact outer wall
+        # (the shiplap removes only the INNER wall over the lap). (Was mid-height.)
+        return self.parting_z + self.pivot_boss_diameter / 2
 
     @property
     def pivot_boss_outer_radius(self) -> float:
