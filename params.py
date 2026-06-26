@@ -314,19 +314,18 @@ class Params:
     thumbscrew_head_height: float = 5.0      # REF  head height
     thumbscrew_shaft_length: float = 14.0    # REF  shaft from the post surface out through the boss
 
-    # ---- Slider (BOLTS to the bow end tab) ----------------------------------
-    # MECHANISM (decided): the band's end tab bolts to the slider's inside (-Y)
-    # face with two M3 screws (the bow's 2 holes/end), not a friction clamp-ride.
-    # The block + tab seat are sized for the measured 33 mm band (were 22/17 for a
-    # 16 mm bow). The 2 mount bores sit above the swivel bore and straddle X.
-    slider_block_width: float = 42.0      # ESTIMATE  block w (X) — hosts the 33 mm tab + bores
-    slider_block_height: float = 26.0     # ESTIMATE  block h (Z) — the post slides through this
-    slider_block_depth: float = 18.0      # SET  block d (Y) — 16→18 for the central post bore
-                                          #   wall (post bore ↔ bow-tab seat) to clear the floor
-    slider_tab_seat_width: float = 34.0   # ESTIMATE  tab-seat width (measured bow 33 + 1 clr)
-    slider_tab_seat_depth: float = 2.0    # ESTIMATE  tab-seat depth (registers the tab)
-    slider_mount_bore_z: float = 9.0      # ESTIMATE  height of the 2 tab-mount bores (off-centre, clears the central post bore)
-    slider_block_fillet: float = 2.5      # soft-form roundover on the block edges (hand feel)
+    # ---- Slider = CLAMP COLLAR (replaced the box block) ----------------------
+    # A slim rounded BARREL around the post + a slim 2-bolt mount tab for the bow's
+    # end tab + the side thumbscrew. The round post sliding/turning in the barrel bore
+    # is the SWIVEL + height bearing in ONE robust interface (no separate weak joint);
+    # the thumbscrew clamps both. Far less bulk than the old 42×26×18 block. The bow
+    # end tab (33 mm, 2 holes at bow_endtab_hole_spacing) bolts to the mount tab.
+    slider_collar_diameter: float = 18.0      # SET  barrel OD around the post bore
+    slider_collar_height: float = 26.0        # SET  barrel height (post grip + travel feel)
+    slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
+    slider_mount_plate_width: float = 30.0    # SET  bow-mount tab width (hosts the 22-pitch bolts)
+    slider_mount_plate_height: float = 16.0   # SET  bow-mount tab height (Z)
+    slider_mount_plate_thickness: float = 6.0 # SET  tab depth (−Y); hosts the M3 inserts
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first

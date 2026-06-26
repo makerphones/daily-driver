@@ -121,7 +121,9 @@ def make_assembly() -> cq.Assembly:
     yoke = T_yoke(make_yoke())
     # Slider rides the yoke post at a mid head-size position (the post slides through
     # it; the thumbscrew locks the height).
-    slider_z = P.yoke_fork_height + P.yoke_post_length - P.slider_block_height / 2 - 6.0
+    # Collar at the post TOP so the post never pokes up into the bow (fixes the clash);
+    # represents the largest-head setting. The post slides + swivels in the barrel.
+    slider_z = P.yoke_fork_height + P.yoke_post_length - P.slider_collar_height / 2
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
 
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----

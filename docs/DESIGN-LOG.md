@@ -6,6 +6,32 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Yoke mechanism de-bulk (step 1): slider block → slim clamp collar
+
+Maker review: the yoke / post / slider reads blocky, and the lengthened post poked into
+the bow at the slider. Talked through the design space (DT770 blade-in-fork, minimal rod
+gimbal, self-adjusting band). The deciding constraint: the maker needs SWIVEL without a
+weak joint — and the round post is exactly that (slide + swivel in ONE robust bearing; a
+flat blade can't swivel, so it'd force a separate small joint = the weak point we're
+avoiding). So we KEEP the round post and attack the bulk directly instead.
+
+Step 1: replaced the box slider (42×26×18) with a slim CLAMP COLLAR — a rounded barrel
+around the post + a slim 2-bolt mount tab for the bow + the side thumbscrew. The post
+slides + swivels in the barrel bore; the thumbscrew clamps both (Grado set-and-lock,
+unchanged). Gate slider checks reworked (`slider-collar-wall`, `slider-mount-bores-in-tab`,
+dropped the box-only ones). Interference fixed: the collar sits at the post TOP, so the
+post no longer pokes up into the bow.
+
+Build note (kernel): a cylinder boss/tab that tangent-KISSES the curved barrel left two
+disjoint solids (the manifold gate caught it) — both now overlap DEEP into the barrel to
+fuse to one solid. A flat-faced block hid this; a round barrel surfaces it.
+
+Still to do (de-bulk 2…n): taper/flute the post (slimmer look, same Ø8 strength), sleek
+the yoke arms as swept rounded sections, and optionally a more skeletal mount. Build
+13/13, gate 0 HARD.
+
+---
+
 ## 2026-06-26 — Bow X-pattern (from the maker's photo) + leather-look headband pad
 
 Maker sent photos of the real metal bow + a Beyerdynamic leather headband pad.

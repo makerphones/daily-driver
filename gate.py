@@ -285,10 +285,7 @@ def main():
 
     r.hard(P.yoke_post_diameter >= MIN_YOKE_STRUCTURAL, "yoke-post-structural",
            f"adjustment post Ø{P.yoke_post_diameter} mm >= {MIN_YOKE_STRUCTURAL} mm structural")
-    post_bore_wall = (P.slider_block_depth / 2 - P.slider_tab_seat_depth) \
-        - (P.yoke_post_diameter + P.slider_post_clearance) / 2
-    r.hard(post_bore_wall >= MIN_WALL, "slider-postbore-wall",
-           f"slider wall (post bore↔tab seat) {post_bore_wall:.1f} mm >= {MIN_WALL} mm")
+    # (slider post-bore wall is now the collar-wall check in the slider section below)
 
     # --- Step-down adapter ring (accessory) — printable walls. ---
     adapter_wall = (P.adapter_host_diameter - P.adapter_target_driver_od) / 2
@@ -310,31 +307,21 @@ def main():
            f"{P.bow_radius:.0f} mm/{P.bow_arc_degrees:.0f}° at rest → "
            f"{P.bow_worn_radius:.0f} mm/{P.bow_worn_arc_degrees:.0f}° worn (R up, arc down)")
 
-    # The slider rides the measured 33 mm band: its channel must clear the strap
-    # width and the block must wall the channel. (The bow's end mounting holes
-    # raise a ride-vs-bolt-on mechanism question — flagged in DESIGN-LOG.)
-    r.hard(P.slider_tab_seat_width >= P.bow_width + 0.5, "slider-seat-fits-bow",
-           f"seat {P.slider_tab_seat_width} mm >= bow {P.bow_width} + 0.5 clr")
-    r.hard(P.slider_block_width >= P.slider_tab_seat_width + 2 * MIN_WALL,
-           "slider-seat-walls",
-           f"block {P.slider_block_width} mm >= seat {P.slider_tab_seat_width} "
-           f"+ 2×{MIN_WALL} wall")
-
-    # Slider bolt-on geometry: the two tab-mount bores must clear the swivel bore
-    # below, sit within the block, and the across-width pair must fit the tab seat.
+    # The clamp collar carries the bow: the barrel must wall the post bore, the mount
+    # tab hosts the two bolts at the bow's hole pitch, and those bolts must clear the
+    # central post bore. (The round post in the bore is the swivel + height bearing.)
     bore_r = P.m3_insert_hole_diameter / 2
     post_bore_r = (P.yoke_post_diameter + P.slider_post_clearance) / 2
     mount_x = P.bow_endtab_hole_spacing / 2
+    collar_wall = P.slider_collar_diameter / 2 - post_bore_r
+    r.hard(collar_wall >= MIN_WALL, "slider-collar-wall",
+           f"barrel wall (collar↔post bore) {collar_wall:.1f} mm >= {MIN_WALL} mm")
     r.hard(mount_x - bore_r >= post_bore_r, "slider-mount-clears-postbore",
            f"mount bore x{mount_x:.0f}−r{bore_r:.1f} clears central post bore r{post_bore_r:.1f}")
-    r.hard(P.slider_mount_bore_z + bore_r + MIN_BOSS_WALL <= P.slider_block_height / 2,
-           "slider-mount-in-block",
-           f"mount z {P.slider_mount_bore_z} +r+{MIN_BOSS_WALL} cap within block half-height "
-           f"{P.slider_block_height / 2:.1f} mm")
-    r.hard(P.bow_endtab_hole_spacing + P.m3_insert_hole_diameter <= P.slider_tab_seat_width,
-           "slider-mount-bores-in-seat",
+    r.hard(P.bow_endtab_hole_spacing + P.m3_insert_hole_diameter <= P.slider_mount_plate_width,
+           "slider-mount-bores-in-tab",
            f"pitch {P.bow_endtab_hole_spacing} + bore {P.m3_insert_hole_diameter} "
-           f"<= seat {P.slider_tab_seat_width} mm")
+           f"<= mount tab {P.slider_mount_plate_width} mm")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
