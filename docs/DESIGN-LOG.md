@@ -6,6 +6,20 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Guard clears the dome's DYNAMIC (excursed) travel, not just its rest height
+
+Maker flagged that the diaphragm MOVES — the grille has to clear the dome's forward-most
+*in-play* (excursed) position, not just its rest height, or it rubs at high SPL. Added
+`driver_dome_excursion` (ESTIMATE **1.0**, a conservative 40 mm-driver placeholder —
+MEASURE) and reworked the guard budget: floor = seat + dome_proud + **excursion** +
+clearance. With the 1 mm seat the excursed dome peaks at z3.5; the guard sits z4.0–5.5
+(0.5 mm margin beyond excursion, 0.5 mm pad setback) — fits the 6 mm baffle. New SOFT
+gate check `guard-dome-excursion` tracks it, and baffle.py warns (incl. "BLOWN") if a
+measured dome/excursion overruns the budget — levers in order: shallower seat, thinner
+guard, deeper baffle. Build 12/12, gate 0 HARD.
+
+---
+
 ## 2026-06-26 — Driver mount reworked: shallow seat + collar (not a deep recess); rings+spokes grille
 
 Maker review of the baffle front: the driver cone poked through the guard, and the

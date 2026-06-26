@@ -80,18 +80,19 @@ def make_baffle() -> cq.Workplane:
     #    NB driver_dome_proud is still a REF estimate — measure it; if the real dome is
     #    near/over estimate the baffle needs more depth (the lamina can't be cheated).
     lamina = t - P.driver_recess_depth
-    dome_tip = P.driver_recess_depth + P.driver_dome_proud      # cone peak (centre), baffle frame
-    g_bot = dome_tip + P.guard_dome_clearance                   # guard floor just above the dome
-    g_th = max(0.8, min(P.guard_thickness, t - g_bot - 0.2))    # fit under the front face; keep a printable rib
+    dome_static = P.driver_recess_depth + P.driver_dome_proud       # cone peak at REST
+    dome_dynamic = dome_static + P.driver_dome_excursion            # forward-most IN PLAY (excursion)
+    g_bot = dome_dynamic + P.guard_dome_clearance                  # guard floor: margin beyond the excursed dome
+    g_th = max(0.8, min(P.guard_thickness, t - g_bot))            # fit under the front face; keep a printable rib
     g_top = g_bot + g_th
-    dome_clear = g_bot - dome_tip
     pad_setback = t - g_top
     if pad_setback < P.guard_setback - 1e-6:
+        how = "BLOWN — guard would sit past the front face" if pad_setback < -1e-6 else "tight"
         print(
-            f"  [warn] baffle: guard squeezed in the {lamina:.1f} mm lamina — dome "
-            f"clearance {dome_clear:.2f} mm, pad setback {pad_setback:.2f} mm (wanted "
-            f"{P.guard_setback:.1f}). dome_proud is a REF estimate ({P.driver_dome_proud}); "
-            f"measure it and deepen the baffle if the real dome is near/over estimate."
+            f"  [warn] baffle: dome clearance budget {how}. seat {P.driver_recess_depth}, dome "
+            f"{P.driver_dome_proud}+excursion {P.driver_dome_excursion} → dynamic dome z{dome_dynamic:.1f}; "
+            f"guard z{g_bot:.1f}–{g_top:.1f}, pad setback {pad_setback:.2f} (want {P.guard_setback}). "
+            f"Both dome figures are estimates — MEASURE; shallower seat / thinner guard / deeper baffle if blown."
         )
     w = P.guard_member_width
     hub_r = P.guard_hub_diameter / 2

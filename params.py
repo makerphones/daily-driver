@@ -233,10 +233,10 @@ class Params:
     guard_spoke_count: int = 6            # ESTIMATE  radial spokes (hub → aperture wall)
     guard_ring_count: int = 2             # SET  concentric rings tying the spokes (the rings+spokes grille)
     guard_member_width: float = 2.0       # ESTIMATE  spoke / ring width
-    guard_setback: float = 1.0            # ESTIMATE  DESIRED pad setback below the front face
-                                          #   (warned when the lamina can't give it)
-    guard_dome_clearance: float = 1.0     # SET  gap from the guard floor to the dome peak (no diaphragm contact);
-                                          #   the 1 mm seat gives real room for this now (was 0.3, squeezed)
+    guard_setback: float = 0.5            # ESTIMATE  DESIRED pad setback below the front face. The guard sits in
+                                          #   the pad's OPEN centre, so a small setback is fine (warned if below)
+    guard_dome_clearance: float = 0.5     # SET  safety gap from the guard floor to the dome's DYNAMIC (excursed)
+                                          #   forward-most position — i.e. margin BEYOND driver_dome_excursion
     guard_thickness: float = 1.5          # ESTIMATE  guard rib thickness (Z); thinned to fit the lamina
     guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie the spokes
 
@@ -244,7 +244,11 @@ class Params:
     driver_od: float = 39.5               # MEASURED  outermost frame dia (the "40 mm" driver)
     driver_diaphragm_diameter: float = 34.0  # ESTIMATE  diaphragm/dome (< the 39.5 frame; guard clears it)
     driver_body_depth: float = 5.0        # MEASURED  driver height on the outside (the basket)
-    driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame
+    driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame (at REST)
+    driver_dome_excursion: float = 1.0    # ESTIMATE  forward DYNAMIC travel of the dome in play — MEASURE.
+                                          #   The grille must clear the dome's forward-most (excursed) position,
+                                          #   not just its rest height, or it rubs at high SPL. 1.0 is a
+                                          #   conservative 40 mm-driver placeholder until measured.
     # Driver MOCKUP dims (parts/driver.py) — a representative driver shown in the
     # assembly so the driver↔baffle↔clamp fit reads. The magnet sits behind the basket.
     driver_magnet_diameter: float = 27.0  # MEASURED  rear magnet OD

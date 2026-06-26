@@ -383,6 +383,15 @@ def main():
            f"front lamina {lamina:.1f} mm vs guard {P.guard_thickness}+setback "
            f"{P.guard_setback}={need:.1f} mm")
 
+    # Driver dome DYNAMIC clearance: the grille must clear the dome's forward-most
+    # (excursed) position, not just its rest height, or the diaphragm rubs at high
+    # SPL. Both dome figures are ESTIMATES (MEASURE) → SOFT, not HARD, for now.
+    dome_dynamic = P.driver_recess_depth + P.driver_dome_proud + P.driver_dome_excursion
+    dome_need = dome_dynamic + P.guard_dome_clearance + 0.8   # + min printable guard rib
+    r.soft(dome_need <= P.baffle_thickness, "guard-dome-excursion",
+           f"excursed dome z{dome_dynamic:.1f} (seat+proud+excursion) + {P.guard_dome_clearance} clr "
+           f"+ 0.8 rib = z{dome_need:.1f} ≤ baffle front z{P.baffle_thickness} (dome figures are estimates — MEASURE)")
+
     # The Task-1 over-rotation stop slot notches the eye; the web between the slot
     # and the pivot bore is below the 2 mm print floor. It's a non-load-path
     # clearance notch at the unloaded eye bottom, but thin/fragile — FLAGGED, not
