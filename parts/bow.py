@@ -71,29 +71,31 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     W = P.bow_width
     band = _arc_band(R - th / 2, R + th / 2, half_arc, W)
 
-    # 2. X-TRUSS cutout over the central span — two outer rails braced by crossing
-    #    diagonal struts (the maker's reference band): lightens the strap and gives
-    #    it the signature look while keeping a continuous load path. Solid end tabs
-    #    (bow_endtab_length) are left intact to carry the mounting holes. Each cell
-    #    cuts four void triangles (top/bottom/left/right), leaving an X of material.
-    a_start, a_end = 90 - half_arc, 90 + half_arc
-    tab_ang = math.degrees(P.bow_endtab_length / R)      # solid end-tab span
-    a_lo, a_hi = a_start + tab_ang, a_end - tab_ang
-    yin = W / 2 - P.bow_rail_width                        # rail inner edge (y)
-    n = P.bow_truss_bays
-    ang_bay = (a_hi - a_lo) / n
-    sw = P.bow_strut_width
-    for i in range(n):
-        a_c = a_lo + (i + 0.5) * ang_bay
-        hs = math.radians(ang_bay) * R / 2               # half bay arc-length (mm)
-        voids = [
-            [(-hs + sw, yin), (hs - sw, yin), (0.0, sw)],        # top
-            [(-hs + sw, -yin), (hs - sw, -yin), (0.0, -sw)],     # bottom
-            [(-hs, yin - sw), (-hs, -yin + sw), (-sw, 0.0)],     # left
-            [(hs, yin - sw), (hs, -yin + sw), (sw, 0.0)],        # right
-        ]
-        for v in voids:
-            band = band.cut(_radial_cutter(v, a_c, R))
+    # 2. X-truss cutout (OPTIONAL — the maker's DIY/printed-band aesthetic). The real
+    #    bought Beyer metal head bow is a SOLID strip, so this is OFF by default
+    #    (bow_truss_enabled=False) and the reference reads like the actual band. Turn
+    #    it on only for a printed/DIY band variant. Two outer rails braced by crossing
+    #    diagonal struts; solid end tabs carry the holes; each cell cuts four void
+    #    triangles (top/bottom/left/right), leaving an X of material.
+    if P.bow_truss_enabled:
+        a_start, a_end = 90 - half_arc, 90 + half_arc
+        tab_ang = math.degrees(P.bow_endtab_length / R)  # solid end-tab span
+        a_lo, a_hi = a_start + tab_ang, a_end - tab_ang
+        yin = W / 2 - P.bow_rail_width                    # rail inner edge (y)
+        n = P.bow_truss_bays
+        ang_bay = (a_hi - a_lo) / n
+        sw = P.bow_strut_width
+        for i in range(n):
+            a_c = a_lo + (i + 0.5) * ang_bay
+            hs = math.radians(ang_bay) * R / 2           # half bay arc-length (mm)
+            voids = [
+                [(-hs + sw, yin), (hs - sw, yin), (0.0, sw)],        # top
+                [(-hs + sw, -yin), (hs - sw, -yin), (0.0, -sw)],     # bottom
+                [(-hs, yin - sw), (-hs, -yin + sw), (-sw, 0.0)],     # left
+                [(hs, yin - sw), (hs, -yin + sw), (sw, 0.0)],        # right
+            ]
+            for v in voids:
+                band = band.cut(_radial_cutter(v, a_c, R))
 
     # 3. End-tab MOUNTING HOLES — the band bolts to the slider's inside face with
     #    two M3 screws per end. Two holes side-by-side ACROSS the tab width (the

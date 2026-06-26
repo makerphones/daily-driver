@@ -15,6 +15,14 @@
       ]
     },
     {
+      "id": "earpad",
+      "label": "Earpads",
+      "nodes": [
+        "earpad_R",
+        "earpad_L"
+      ]
+    },
+    {
       "id": "gimbal",
       "label": "Gimbal",
       "nodes": [
@@ -35,13 +43,23 @@
       "label": "Headband",
       "nodes": [
         "bow_ref",
-        "headband_pad",
         "slider_R",
-        "slider_L"
+        "slider_L",
+        "thumbscrew_R",
+        "thumbscrew_L"
+      ]
+    },
+    {
+      "id": "headband_pad",
+      "label": "Headband pad",
+      "nodes": [
+        "headband_pad"
       ]
     }
   ],
   "bought": [
-    "bow_ref"
+    "bow_ref",
+    "earpad_R",
+    "earpad_L"
   ]
 }

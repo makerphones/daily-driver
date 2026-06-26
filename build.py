@@ -37,6 +37,7 @@ from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
 from parts.driver import make_driver
+from parts.earpad import make_earpad
 from parts.coupon import make_driver_coupon, make_pad_coupon
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
@@ -75,6 +76,7 @@ COUPON = {
 REFERENCE = {
     "bow": make_bow,
     "driver": make_driver,
+    "earpad": make_earpad,
 }
 PARTS = {**PRINTED, **ACCESSORY, **COUPON, **REFERENCE}
 

@@ -54,6 +54,12 @@ class Params:
     cup_back_round: float = 5.5           # soft-form ROUNDOVER radius on the back-outer edge
                                           #   (was a 45° chamfer; a fillet is a softer transition)
 
+    # ---- Cable exit (bottom of each earcup) ----------------------------------
+    # A hole through the cup's −Y wall — the BOTTOM when worn (T_cup maps cup −Y to
+    # global −Z) — for the driver cable to exit. One per cup; sized for a cable +
+    # optional grommet/strain relief (TBD). Placed at the pivot mid-height (depth).
+    cable_exit_diameter: float = 5.0      # ESTIMATE  cable passthrough (cable + grommet TBD)
+
     # ---- Rear vent grille (DECOUPLED from the baffle bosses, v0.3) -----------
     # Remaining material = center hub + concentric rings + radial spokes; the
     # gaps open to the driver. The outer ring is now its OWN radius (no longer
@@ -294,12 +300,19 @@ class Params:
     # locks both height + swivel by friction. (Replaces the old fixed swivel hub/bore;
     # Beyer's friction-clip in the block is the alternative, noted in the LOG.)
     yoke_post_diameter: float = 8.0       # SET  round adjustment post OD (slide + swivel)
-    yoke_post_length: float = 34.0        # SET  post length above the arm junction (travel + grip)
+    yoke_post_length: float = 52.0        # SET  post length above the arm junction. >= slider block (26) +
+                                          #   adjust travel (18) + grip margin, so the slider stays fully
+                                          #   engaged across the whole head-size range (34 was too short).
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
     slider_thumbscrew_diameter: float = 4.0      # SET  M4 thumbscrew (bigger for hand grip)
     slider_thumbscrew_insert_hole: float = 5.6   # SET  M4 brass heat-set bore (the lock)
     slider_thumbscrew_boss: float = 9.0   # SET  boss OD on the +Y face hosting the insert
+    # M4 thumbscrew MOCKUP (parts/hardware.py) — the height lock, shown in the assembly
+    # so the Grado-style post+thumbscrew mechanism reads. Hand-grip head wider than the boss.
+    thumbscrew_head_diameter: float = 12.0   # REF  knurled hand-grip head OD (mockup)
+    thumbscrew_head_height: float = 5.0      # REF  head height
+    thumbscrew_shaft_length: float = 14.0    # REF  shaft from the post surface out through the boss
 
     # ---- Slider (BOLTS to the bow end tab) ----------------------------------
     # MECHANISM (decided): the band's end tab bolts to the slider's inside (-Y)
@@ -333,7 +346,10 @@ class Params:
                                           #   (~156 mm cups). The band springs open from the
                                           #   63.5 at-rest; developed length is conserved.
     bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia (M3 clr)
-    bow_endtab_hole_spacing: float = 14.0  # ESTIMATE/REF  along-band pitch of the 2 end holes
+    bow_endtab_hole_spacing: float = 22.0  # ESTIMATE/REF  pitch of the 2 end holes ACROSS the width.
+                                           #   Widened 14→22 to sit them near the band's OUTER edges
+                                           #   (the real band's holes are outboard, not central) — exact
+                                           #   layout TBD from the photo/measured part. Slider follows this.
     bow_endtab_width: float = 33.0        # ESTIMATE/REF  end-tab width (= strap width)
     # X-truss cutout (the maker's reference band): two outer rails braced by
     # crossing diagonal struts over the central span; solid end tabs carry the holes.
@@ -341,6 +357,9 @@ class Params:
     bow_rail_width: float = 4.0           # ESTIMATE  outer rail width (Y) flanking the truss
     bow_strut_width: float = 3.5          # ESTIMATE  X-brace diagonal strut width
     bow_truss_bays: int = 6               # ESTIMATE  number of X cells along the central span
+    bow_truss_enabled: bool = False       # SET  OFF by default — the bought Beyer metal head bow is a SOLID
+                                          #   strip, so the reference reads like the real band. Turn ON only
+                                          #   for a printed/DIY band variant (the X-truss lightens a print).
     # bow_arc_degrees / bow_worn_arc_degrees are DERIVED (helpers below): both
     # conserve bow_developed_length, so the relaxed and flexed bands are one strap.
 
@@ -348,10 +367,22 @@ class Params:
     # Soft comfort pad (foam / printed TPU) hugging the bow's concave underside at
     # the crown. First pass — a simple arc band; form/retention refined later. All
     # ESTIMATE. One shared pad at the crown (not per-ear).
-    headband_pad_arc_degrees: float = 80.0   # ESTIMATE  contact arc at the crown
-    headband_pad_thickness: float = 8.0      # ESTIMATE  cushion depth (radial)
-    headband_pad_width: float = 40.0         # ESTIMATE  wider than the 33 mm bow, for comfort
-    headband_pad_channel_depth: float = 3.0  # ESTIMATE  bow nests this deep; side rails grip it
+    # Full-arc cushion that WRAPS the band: a head-side cushion (thickness) plus a lip
+    # OVER the top (wrap), spanning the band BETWEEN the end tabs. The band nests in a
+    # channel and the pad wraps its underside, both edges, and over the top. (was an
+    # 80° crown-only band on the bow's inner face.)
+    headband_pad_thickness: float = 8.0          # ESTIMATE  head-side cushion depth (radial, below the band)
+    headband_pad_wrap: float = 4.0               # SET  cushion lip OVER the top of the band (the wrap)
+    headband_pad_width: float = 40.0             # ESTIMATE  total width (> 33 mm band → wraps the edges)
+    headband_pad_channel_clearance: float = 1.0  # SET  band↔pad slot clearance (the bow nests in)
+
+    # ---- Earpad (generalised round cushion MOCKUP — bought, the user's choice) -
+    # A representative round earpad so the assembly + website read like a finished
+    # headphone. Users fit their OWN from the Beyerdynamic range or aftermarket
+    # (Brainwavz, Dekoni); these are a generic round-pad ESTIMATE — measure/refine.
+    earpad_outer_diameter: float = 100.0  # ESTIMATE  cushion OD
+    earpad_inner_diameter: float = 60.0   # ESTIMATE  ear-opening ID
+    earpad_base_flat: float = 1.5         # SET  flat mounting base (seats on the cup front rim)
 
     # ---- Fit coupons (printable QA pieces; lock tolerances vs real hardware) --
     # Small parts that ISOLATE a toleranced interface so it's checked against the

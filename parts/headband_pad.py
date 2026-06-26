@@ -2,18 +2,19 @@
 # SPDX-License-Identifier: MIT
 
 """
-Headband pad — ROUGH DRAFT (crown cushion under the bow).
+Headband pad — crown cushion that WRAPS the bow (rough-draft mockup).
 
-A soft comfort pad (foam, or printed TPU) that hugs the concave underside of the
-bow at the crown, where the headband rests on the head. This is a first pass: an
-arc band on the bow's inner radius, wider than the steel band for comfort. Its
-form, retention (how it clips/slots to the bow), and material are all TBD — the
-point here is to put a credible cushion in the assembly so it reads as a real
-headphone. Every dimension is an ESTIMATE (params.py).
+A soft comfort cushion (foam, or printed TPU) that runs the full central arc of the
+bow — BETWEEN the two end tabs (which stay bare for the slider screws) — and wraps
+AROUND the steel band: a thick cushion on the head side, walls up both edges, and a
+lip over the top, with the band nested in a channel through the middle. This reads as
+a real wrapped headband pad rather than the old 80° crown sliver on the inner face.
+Form, retention, and material are still TBD; every dimension is an ESTIMATE (params).
 
-Built from an extruded annular sector (same approach as the bow — this OCC build's
-`revolve` is unusable). Apex at the top (+Z) in the XZ plane, width along Y, so it
-takes the bow's assembly transform directly.
+Built from extruded annular sectors (this OCC build's `revolve` is unusable). Apex at
+the top (+Z) in the XZ plane, width along Y, so it takes the bow's assembly transform
+directly. The band channel is cut as a narrower annular sector, open at the pad's two
+arc ends where the band continues out to the tabs.
 """
 
 import math
@@ -22,43 +23,50 @@ import cadquery as cq
 from params import P
 
 
-def make_headband_pad(radius: float = None) -> cq.Workplane:
-    # Defaults to the at-rest bow radius; the assembly passes the flexed (worn)
-    # radius so the pad hugs the bow in the worn pose.
-    R = P.bow_radius if radius is None else radius
-    ro = R - P.bow_thickness / 2                     # hug the bow's inner (concave) face
-    ri = ro - P.headband_pad_thickness
-    half = P.headband_pad_arc_degrees / 2
-    a0, am, a1 = 90 - half, 90, 90 + half
+def _arc_band(rin, rout, half_deg, y_width):
+    """Annular sector (rin..rout) centred on +Z (90°), ±half_deg, extruded ±Y."""
+    b0, bm, b1 = 90 - half_deg, 90, 90 + half_deg
 
     def p(r, a):
         a = math.radians(a)
         return (r * math.cos(a), r * math.sin(a))
 
-    Ao, Mo, Bo = p(ro, a0), p(ro, am), p(ro, a1)
-    Bi, Mi, Ai = p(ri, a1), p(ri, am), p(ri, a0)
-    pad = (
+    Ao, Mo, Bo = p(rout, b0), p(rout, bm), p(rout, b1)
+    Bi, Mi, Ai = p(rin, b1), p(rin, bm), p(rin, b0)
+    return (
         cq.Workplane("XZ")
         .moveTo(*Ao).threePointArc(Mo, Bo)
         .lineTo(*Bi).threePointArc(Mi, Ai)
         .close()
-        .extrude(P.headband_pad_width / 2, both=True)
+        .extrude(y_width / 2, both=True)
     )
 
-    # Retention channel: the bow nests into the pad's outer (bow-facing) face so
-    # the pad's side rails grip the bow edges — a rough press/snap fit (TBD). Cut a
-    # narrower arc band (bow width + clearance, along Y) out of the outer radius.
-    ch_w = P.bow_width + 1.5
-    co, ci = ro + 1.0, ro - P.headband_pad_channel_depth
-    Co, CMo, CBo = p(co, a0), p(co, am), p(co, a1)
-    CBi, CMi, CAi = p(ci, a1), p(ci, am), p(ci, a0)
-    channel = (
-        cq.Workplane("XZ")
-        .moveTo(*Co).threePointArc(CMo, CBo)
-        .lineTo(*CBi).threePointArc(CMi, CAi)
-        .close()
-        .extrude(ch_w / 2, both=True)
-    )
+
+def make_headband_pad(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
+    """Crown cushion wrapping the bow. Defaults to the at-rest bow geometry; the
+    assembly passes the flexed (worn) radius + arc so the pad hugs the worn band.
+    The pad spans the FULL band arc minus the end tabs (bare for the slider screws).
+    """
+    R = P.bow_radius if radius is None else radius
+    full_arc = P.bow_arc_degrees if arc_degrees is None else arc_degrees
+    bt = P.bow_thickness
+    clr = P.headband_pad_channel_clearance
+
+    # Span the central arc BETWEEN the end tabs (leave the screw tabs bare).
+    tab_ang = math.degrees(P.bow_endtab_length / R) + 4.0        # tab + small margin
+    half = max(10.0, full_arc / 2 - tab_ang)
+
+    # Cushion cross-section WRAPS the band: head-side cushion (thickness) below, a lip
+    # over the top (wrap) above, walls up both edges (width > band width).
+    ri = R - bt / 2 - P.headband_pad_thickness                  # head-side (inner) cushion face
+    ro = R + bt / 2 + P.headband_pad_wrap                       # over-the-top (outer) cushion face
+    pad = _arc_band(ri, ro, half, P.headband_pad_width)
+
+    # Band channel: the bow nests in; cut slightly longer (half + 1°) so it's OPEN at
+    # the pad's two arc ends, where the band continues out to the tabs.
+    ci = R - bt / 2 - clr
+    co = R + bt / 2 + clr
+    channel = _arc_band(ci, co, half + 1.0, P.bow_width + 2 * clr)
     return pad.cut(channel)
 
 

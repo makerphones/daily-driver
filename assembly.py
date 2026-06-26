@@ -28,6 +28,7 @@ from parts.bow import make_bow
 from parts.headband_pad import make_headband_pad
 from parts.driver import make_driver
 from parts.driver_clamp import make_driver_clamp
+from parts.earpad import make_earpad
 
 
 # Sub-assembly groups for the manual's interactive parts viewer. The node NAMES
@@ -40,13 +41,17 @@ SUBASSEMBLIES = {
         {"id": "earcup", "label": "Earcup",
          "nodes": ["cup_R", "cup_L", "baffle_R", "baffle_L",
                    "driver_R", "driver_L", "driver_clamp_R", "driver_clamp_L"]},
+        {"id": "earpad", "label": "Earpads",
+         "nodes": ["earpad_R", "earpad_L"]},
         {"id": "gimbal", "label": "Gimbal",
          "nodes": ["yoke_R", "yoke_L", "insert_p_R", "insert_p_L", "insert_m_R",
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
         {"id": "headband", "label": "Headband",
-         "nodes": ["bow_ref", "headband_pad", "slider_R", "slider_L"]},
+         "nodes": ["bow_ref", "slider_R", "slider_L", "thumbscrew_R", "thumbscrew_L"]},
+        {"id": "headband_pad", "label": "Headband pad",
+         "nodes": ["headband_pad"]},
     ],
-    "bought": ["bow_ref"],
+    "bought": ["bow_ref", "earpad_R", "earpad_L"],
 }
 
 
@@ -111,6 +116,8 @@ def make_assembly() -> cq.Assembly:
     rear_rim_z = ledge_z - P.driver_body_depth
     driver = T_cup(make_driver().translate((0, 0, ledge_z)))
     driver_clamp = T_cup(make_driver_clamp().translate((0, 0, rear_rim_z)))
+    # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X).
+    earpad = T_cup(make_earpad().translate((0, 0, P.cup_total_height)))
     yoke = T_yoke(make_yoke())
     # Slider rides the yoke post at a mid head-size position (the post slides through
     # it; the thumbscrew locks the height).
@@ -121,7 +128,8 @@ def make_assembly() -> cq.Assembly:
     bow_xf = (0, 0, slider_z - ez)                         # ends land at (±Xe, 0, slider_z)
     bow = make_bow(radius=P.bow_worn_radius,
                    arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
-    pad = make_headband_pad(radius=P.bow_worn_radius).translate(bow_xf)
+    pad = make_headband_pad(radius=P.bow_worn_radius,
+                            arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
@@ -132,6 +140,8 @@ def make_assembly() -> cq.Assembly:
 
     asm.add(bow, name="bow_ref", color=STEEL)              # shared headband (REF)
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
+    asm.add(earpad, name="earpad_R", color=PAD_C)          # round pad mockup (bring your own)
+    asm.add(mirror_L(earpad), name="earpad_L", color=PAD_C)
 
     # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:
@@ -151,6 +161,21 @@ def make_assembly() -> cq.Assembly:
             asm.add(mirror_L(screw), name=f"screw_{tag}_L", color=SCREW_C)
     except Exception as e:  # noqa: BLE001 — viz only; never block the build
         print(f"  [warn] assembly: pivot hardware skipped ({e}).")
+
+    # Thumbscrew (M4) — the height lock, shown so the Grado-style post+thumbscrew
+    # mechanism reads. Rides with the slider: tip on the post surface, head out the
+    # slider's +Y boss (which T_yoke turns to face outward from the head).
+    try:
+        from parts.hardware import make_thumbscrew
+        ts = (make_thumbscrew()
+              .rotate((0, 0, 0), (1, 0, 0), -90)               # shaft → +Y, tip at origin
+              .translate((0, -P.yoke_post_diameter / 2, 0))    # tip on the post surface
+              .translate((0, 0, slider_z)))                    # ride with the slider
+        ts_R = T_yoke(ts)
+        asm.add(ts_R, name="thumbscrew_R", color=SCREW_C)
+        asm.add(mirror_L(ts_R), name="thumbscrew_L", color=SCREW_C)
+    except Exception as e:  # noqa: BLE001 — viz only
+        print(f"  [warn] assembly: thumbscrew skipped ({e}).")
     return asm
 
 

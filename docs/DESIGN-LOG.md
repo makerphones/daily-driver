@@ -6,6 +6,45 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Maker review: cable exits, longer post + thumbscrew, wrapping headband pad, earpad, solid bow
+
+A batch of maker-review fixes toward a finished-looking headphone. Build **13/13** (new
+earpad reference), gate **0 HARD**.
+
+**Cable exits.** A hole through each cup's −Y wall — the BOTTOM when worn (T_cup maps cup
+−Y → global −Z) — for the driver cable (`cable_exit_diameter` 5, at the pivot mid-height,
+clear of the ±X pivot bosses). Sized for a cable + optional grommet (TBD).
+
+**Yoke post + thumbscrew.** The travel post was too short for real use: `yoke_post_length`
+34 → **52** (≥ slider block 26 + travel 18 + grip), so the slider stays engaged across the
+whole head-size range. Added the M4 thumbscrew (the height lock) as a knurled mockup
+(`hardware.make_thumbscrew`), posed in the assembly tip-on-the-post, head out the slider's
++Y boss — the Grado-style lock now reads in the model.
+
+**Headband pad — full arc + wraps the band.** Was an 80° crown sliver on the bow's inner
+face. Now a full-arc cushion (spanning between the end tabs) that WRAPS the band: head-side
+cushion + a lip over the top + walls up both edges, with the band nested in a channel
+(`headband_pad_wrap`, `headband_pad_channel_clearance`). Split into its OWN toggle group
+(`headband_pad`) so the website explode view can disable it on its own.
+
+**Earpad mockup (new `parts/earpad.py`, REFERENCE).** A generalised round cushion (torus
+primitive + flat base; OD 100 / ID 60 / ~18 mm tall) so the assembly + site read like a
+real headphone. Builders bring their own from the Beyerdynamic range or aftermarket
+(Brainwavz, Dekoni); dims are a generic ESTIMATE to refine. Posed on each cup front, own
+toggle group (`earpad`), listed as `bought` in the manifest.
+
+**Bow → solid band (mimic the real Beyer bow); end holes outboard.** The all-over X-truss
+was a printed/DIY aesthetic; the bought metal head bow is a SOLID strip, so the truss is
+now OFF by default (`bow_truss_enabled=False`) and the reference reads like the real band.
+Moved the end-tab screw holes toward the outer edges (`bow_endtab_hole_spacing` 14 → 22;
+the slider's mount bores follow). EXACT hole layout still TBD — no headband photo is in the
+repo; flagged to re-share/measure it to match the real part.
+
+Website: the parts viewer is data-driven from `daily-driver.groups.json`, so the new
+`earpad` + `headband_pad` toggle groups appear automatically once the GLB + manifest deploy.
+
+---
+
 ## 2026-06-26 — Guard clears the dome's DYNAMIC (excursed) travel, not just its rest height
 
 Maker flagged that the diaphragm MOVES — the grille has to clear the dome's forward-most

@@ -211,6 +211,14 @@ def make_cup() -> cq.Workplane:
         print(f"  [warn] cup: pad-flange roundover skipped ({e}).")
     cup = cup.union(flange)
 
+    # 8. Cable exit — a hole through the −Y wall (the cup's BOTTOM when worn: T_cup
+    #    maps cup −Y → global −Z) so the driver cable leaves the cup. At the pivot
+    #    mid-height (depth), clear of the ±X pivot bosses. A clean through-cut, last.
+    cable = cq.Solid.makeCylinder(
+        P.cable_exit_diameter / 2, od / 2 + 2.0,
+        cq.Vector(0, -(od / 2 + 2.0), P.pivot_boss_z), cq.Vector(0, 1, 0))
+    cup = cup.cut(cq.Workplane(obj=cable))
+
     return cup
 
 

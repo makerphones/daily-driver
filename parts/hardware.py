@@ -25,6 +25,8 @@ VERIFIED against cq_warehouse 0.8.0 (git-only, dormant since 2023):
     length 5.70 — those are the REF insert dims in params.py.
 """
 
+import math
+
 import cadquery as cq
 from params import P
 
@@ -84,3 +86,31 @@ def make_heatset_insert() -> cq.Workplane:
 def make_shoulder_screw() -> cq.Workplane:
     """The shoulder screw. Always the primitive composition (no library class)."""
     return shoulder_screw_envelope()
+
+
+def make_thumbscrew() -> cq.Workplane:
+    """M4 thumbscrew MOCKUP — knurled hand-grip head + threaded shaft, axis +Z.
+
+    Datum z=0 is the shaft TIP (the face that presses the post); the shaft runs +Z
+    out through the slider boss to the head on top. Assembly-viz only — the slider's
+    heat-set insert + clearance bore are the real interface (this just shows the lock).
+    """
+    shaft = (cq.Workplane("XY")
+             .circle(P.slider_thumbscrew_diameter / 2).extrude(P.thumbscrew_shaft_length))
+    head = (cq.Workplane("XY").workplane(offset=P.thumbscrew_shaft_length)
+            .circle(P.thumbscrew_head_diameter / 2).extrude(P.thumbscrew_head_height))
+    ts = shaft.union(head)
+    # Knurl hint: a ring of shallow flutes down the head rim so it reads as a
+    # hand-grip thumbscrew, not a plain screw. Cosmetic, best-effort (cuts are safe).
+    try:
+        hr = P.thumbscrew_head_diameter / 2
+        for i in range(16):
+            a = math.radians(i * 360.0 / 16)
+            flute = cq.Solid.makeCylinder(
+                0.5, P.thumbscrew_head_height + 1.0,
+                cq.Vector(hr * math.cos(a), hr * math.sin(a), P.thumbscrew_shaft_length - 0.5),
+                cq.Vector(0, 0, 1))
+            ts = ts.cut(cq.Workplane(obj=flute))
+    except Exception:  # noqa: BLE001 — knurl is cosmetic; never fail the viz
+        pass
+    return ts
