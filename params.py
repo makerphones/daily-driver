@@ -316,9 +316,20 @@ class Params:
     slider_collar_diameter: float = 18.0      # SET  barrel OD around the post bore
     slider_collar_height: float = 26.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
-    slider_mount_plate_width: float = 30.0    # SET  bow-mount tab width (hosts the 22-pitch bolts)
-    slider_mount_plate_height: float = 16.0   # SET  bow-mount tab height (Z)
-    slider_mount_plate_thickness: float = 6.0 # SET  tab depth (−Y); hosts the M3 inserts
+    # Headband CLAMP (Beyer-style two-piece). The collar's OUTBOARD (+Y local → +X,
+    # away from the head) face is the INNER plastic piece: the bow's metal end seats on
+    # it, a registering RIB enters the bow's open CHANNEL (between the rails) for
+    # anti-rotation, and a separate COVER plate (parts/headband_clamp.py) sandwiches the
+    # metal with two M3 screws through the bow's end-tab holes. The band mounts ALONGSIDE
+    # the post (band outermost) so the post slides past it without intersecting.
+    slider_clamp_width: float = 36.0       # SET  clamp width (X) — seats the 33 mm band + the bolts
+    slider_clamp_height: float = 34.0      # SET  clamp height (Z) — spans the end tab + the channel
+    slider_clamp_standoff: float = 6.0     # SET  clamp slab proud of the barrel (+Y); hosts the inserts
+    slider_clamp_hole_z: float = -8.0      # SET  Z of the 2 bolt inserts (= the bow's end-tab holes)
+    slider_clamp_rib_z: float = 9.0        # SET  Z of the anti-rotation rib (sits in the bow's open channel)
+    slider_clamp_rib_height: float = 13.0  # SET  rib Z extent (runs along the open channel)
+    slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (+Y past the seat)
+    slider_clamp_cover_thickness: float = 4.0  # SET  the outer cover plate thickness
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first

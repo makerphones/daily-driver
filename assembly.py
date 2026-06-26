@@ -29,6 +29,7 @@ from parts.headband_pad import make_headband_pad
 from parts.driver import make_driver
 from parts.driver_clamp import make_driver_clamp
 from parts.earpad import make_earpad
+from parts.headband_clamp import make_headband_clamp
 
 
 # Sub-assembly groups for the manual's interactive parts viewer. The node NAMES
@@ -47,7 +48,8 @@ SUBASSEMBLIES = {
          "nodes": ["yoke_R", "yoke_L", "insert_p_R", "insert_p_L", "insert_m_R",
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
         {"id": "headband", "label": "Headband",
-         "nodes": ["bow_ref", "slider_R", "slider_L", "thumbscrew_R", "thumbscrew_L"]},
+         "nodes": ["bow_ref", "slider_R", "slider_L", "thumbscrew_R", "thumbscrew_L",
+                   "headband_clamp_R", "headband_clamp_L"]},
         {"id": "headband_pad", "label": "Headband pad",
          "nodes": ["headband_pad"]},
     ],
@@ -92,16 +94,21 @@ def make_assembly() -> cq.Assembly:
     # worn arc dips just under 180° while the measured at-rest arc is >180°). Ear
     # spacing = where the flexed band's ends land (~78 mm → cups ~156 mm apart).
     end_a = 90 - P.bow_worn_arc_degrees / 2
-    Xe = P.bow_worn_radius * math.cos(math.radians(end_a))  # ear half-spacing = bow end x
+    Xe = P.bow_worn_radius * math.cos(math.radians(end_a))  # bow END x (where the band clamps)
     ez = P.bow_worn_radius * math.sin(math.radians(end_a))
+    # The band mounts OUTBOARD of the post (band outermost): the cup/yoke/post sit a
+    # clamp-offset INBOARD of the bow end, so the slider's outboard (+X) clamp face
+    # reaches out to the band — and the post slides PAST the band, not through it.
+    clamp_off = P.slider_collar_diameter / 2 + P.slider_clamp_standoff
+    Xe_cup = Xe - clamp_off
 
-    def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe,0,0)
+    def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe_cup,0,0)
         return (w.rotate((0, 0, 0), (0, 1, 0), -90)
                  .rotate((0, 0, 0), (1, 0, 0), 90)
-                 .translate((Xe + pbz, 0, 0)))
+                 .translate((Xe_cup + pbz, 0, 0)))
 
-    def T_yoke(w):   # eyes → ±Y, arch stays +Z (up); pivot centre → (Xe,0,0)
-        return w.rotate((0, 0, 0), (0, 0, 1), -90).translate((Xe, 0, 0))
+    def T_yoke(w):   # eyes → ±Y, arch stays +Z (up); pivot centre → (Xe_cup,0,0)
+        return w.rotate((0, 0, 0), (0, 0, 1), -90).translate((Xe_cup, 0, 0))
 
     def mirror_L(w):  # right ear → left ear (true mirror across the head centre)
         return w.mirror("YZ", (0, 0, 0))
@@ -132,6 +139,11 @@ def make_assembly() -> cq.Assembly:
                    arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
     pad = make_headband_pad(radius=P.bow_worn_radius,
                             arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
+    # Headband CLAMP cover (outer plastic piece) sandwiching the band end against the
+    # slider's outboard clamp face. Posed like the slider, offset +Y past the band.
+    cover_y = (P.slider_collar_diameter / 2 + P.slider_clamp_standoff
+               + P.bow_thickness + P.slider_clamp_cover_thickness / 2)
+    cover = T_yoke(make_headband_clamp().translate((0, cover_y, slider_z)))
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
@@ -144,6 +156,8 @@ def make_assembly() -> cq.Assembly:
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
     asm.add(earpad, name="earpad_R", color=PAD_C)          # round pad mockup (bring your own)
     asm.add(mirror_L(earpad), name="earpad_L", color=PAD_C)
+    asm.add(cover, name="headband_clamp_R", color=SLIDER_C)   # outer clamp plate
+    asm.add(mirror_L(cover), name="headband_clamp_L", color=SLIDER_C)
 
     # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:

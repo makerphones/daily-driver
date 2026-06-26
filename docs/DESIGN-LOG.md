@@ -6,6 +6,27 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Headband↔slider junction: Beyer-style two-piece clamp
+
+Maker review: the bow was posed THROUGH the slider (intersecting the post) and never
+actually mounted. Designed the real junction — a Beyer-style two-piece clamp.
+
+- The slider collar's OUTBOARD (+X) face is now the INNER plastic piece: the band's metal
+  end seats on it, a registering RIB enters the bow's open CHANNEL (between the rails) for
+  anti-rotation + stiffness, and two M3 inserts sit at the band's end-hole pitch.
+- A new COVER plate (`parts/headband_clamp.py`, ACCESSORY) is the OUTER piece: it sandwiches
+  the metal and bolts down (2 screws through the band holes into the slider), with a SLOT
+  that receives the rib so the band is locked from both sides.
+- The thumbscrew moved to the front (+X local) to clear the outboard clamp face.
+
+Pose fix: the band now mounts ALONGSIDE the post (band outermost) — the cup/yoke/post sit a
+clamp-offset INBOARD of the bow end, so the post slides PAST the band instead of through it
+(fixing the odd intersection). The solid end tab is now purposeful (clamped); the rib does
+the anti-rotation, so the band's open pattern stays open. Build **14/14**, gate **0 HARD /
+0 SOFT**. First pass — clamp bulk, exact mating, and the worn-pose proportions can be tuned.
+
+---
+
 ## 2026-06-26 — Removed the pivot over-rotation stop (free rotation, Grado-style)
 
 Maker's call: the cup now rotates FREELY in the yoke. Dropped the over-rotation hard

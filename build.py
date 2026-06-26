@@ -38,6 +38,7 @@ from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
 from parts.driver import make_driver
 from parts.earpad import make_earpad
+from parts.headband_clamp import make_headband_clamp
 from parts.coupon import make_driver_coupon, make_pad_coupon
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
@@ -63,6 +64,7 @@ ACCESSORY = {
     "adapter_ring": make_adapter_ring,
     "headband_pad": make_headband_pad,
     "grille_dot": make_grille_dot,
+    "headband_clamp": make_headband_clamp,
 }
 # Fit coupons → STL + STEP (printed for QA), but NOT in the reference assembly and
 # NOT in the web parts gallery: they isolate a toleranced interface so it can be

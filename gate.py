@@ -279,10 +279,10 @@ def main():
            f"barrel wall (collar↔post bore) {collar_wall:.1f} mm >= {MIN_WALL} mm")
     r.hard(mount_x - bore_r >= post_bore_r, "slider-mount-clears-postbore",
            f"mount bore x{mount_x:.0f}−r{bore_r:.1f} clears central post bore r{post_bore_r:.1f}")
-    r.hard(P.bow_endtab_hole_spacing + P.m3_insert_hole_diameter <= P.slider_mount_plate_width,
-           "slider-mount-bores-in-tab",
+    r.hard(P.bow_endtab_hole_spacing + P.m3_insert_hole_diameter <= P.slider_clamp_width,
+           "slider-mount-bores-in-clamp",
            f"pitch {P.bow_endtab_hole_spacing} + bore {P.m3_insert_hole_diameter} "
-           f"<= mount tab {P.slider_mount_plate_width} mm")
+           f"<= clamp width {P.slider_clamp_width} mm")
 
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2

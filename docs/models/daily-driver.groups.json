@@ -46,7 +46,9 @@
         "slider_R",
         "slider_L",
         "thumbscrew_R",
-        "thumbscrew_L"
+        "thumbscrew_L",
+        "headband_clamp_R",
+        "headband_clamp_L"
       ]
     },
     {
