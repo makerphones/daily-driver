@@ -6,6 +6,38 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Stage 3: axial O-ring seal + hard bottoming shoulder
+
+The frame↔module joint now SEALS for the closed-back variant. Per the eval, the
+O-ring squeeze is set by GEOMETRY, not thread torque. Build 10/10, gate 0 HARD /
+1 SOFT; frame + module each one valid solid.
+
+- **Local COLLAR** (`joint_collar_diameter=98`, ≤ the 101.6 lip envelope): both parts
+  bulge the OD at the joint band to make a seal face OUTBOARD of the thread — the
+  6.7 mm wall is fully spent on the thread, so a 3.3 mm axial groove has nowhere else
+  to go (the eval anticipated this collar). Module flange below the parting plane,
+  frame collar above; their flat faces meet at z=parting.
+- **Axial O-ring** (not radial — a radial gland leaks along FDM layer lines):
+  AS568 dash-2xx, **CS 2.62**, mean seal Ø **92**. The GROOVE is on the MODULE's
+  up-facing flange so it prints **floor-up** (the only FDM-airtight sealing face).
+  Groove **depth 2.1 → ~20% squeeze**, **width 3.3 → 78% fill** (< 85%, no hydraulic
+  lock). The OPEN lattice module just omits the O-ring; the SEALED module fits it.
+- **Hard bottoming SHOULDER:** the collar lands either side of the groove (in 1.0 /
+  out 1.4 mm) bottom plastic-to-plastic; the spigot top is held `joint_seat_clearance`
+  (0.3 mm) short of the socket ceiling so this z=parting shoulder is the stop. So the
+  squeeze (and the cavity volume) is capped by geometry — independent of how hard the
+  thread is twisted.
+- **Gate +5:** `joint-gasket-squeeze` (12–25%), `joint-groove-fill` (≤85%),
+  `joint-shoulder-lands` (≥0.8 both sides), `joint-collar-within-lip` (≤101.6); the
+  frame/module manifold checks confirm the collar+groove still build as one solid.
+- **Open / not verified:** needs a print + the actual sourced O-ring to confirm the
+  seal and the seated squeeze (the eval's Stage-3 seal coupon — water/pressure or an
+  REW low-freq sweep). The collar adds a joint band (a few grams) — the cost of the
+  integrated seal; a smaller O-ring (CS 1.78) would shrink it if weight bites. Driver
+  clamp + thread-coupon prints still pending before this is print-and-assemble ready.
+
+---
+
 ## 2026-06-26 — Driver clamp ring, buttressed bosses, Grado-style yoke height adjust
 
 A batch of maker-driven mechanical changes (3 committed checkpoints). Build 10/10,

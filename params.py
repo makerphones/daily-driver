@@ -155,6 +155,20 @@ class Params:
     # (still one valid solid). The gate's frame/module manifold checks are the go/no-go.
     joint_thread: bool = True             # SET  thread the lap (else plain slip register)
     joint_thread_pitch: float = 3.0       # SET  coarse single-start pitch (FDM-printable)
+    # Stage 3: hard bottoming SHOULDER + axial O-ring SEAL. The seal SQUEEZE is set by
+    # GEOMETRY, not thread torque: a local COLLAR bulges both parts at the joint band
+    # (OD <= 101.6 lip) to make a seal face OUTBOARD of the thread; the O-ring GROOVE is
+    # on the MODULE's up-facing flange (printed floor-up = the only FDM-airtight face),
+    # and the frame collar bottoms plastic-to-plastic on the lands either side of it,
+    # capping the squeeze. The spigot top is held ~joint_seat_clearance short of the
+    # socket ceiling so the z=parting SHOULDER is the hard stop. The OPEN (lattice)
+    # module just omits the O-ring; the SEALED module fits it. (Eval Stage 3.)
+    joint_collar_diameter: float = 98.0   # SET  collar OD at the joint band (<= 101.6 lip)
+    joint_oring_cross_section: float = 2.62  # SET  AS568 dash-2xx O-ring cord dia
+    joint_seal_mean_diameter: float = 92.0  # SET  O-ring mean seal Ø (groove centre, outboard of thread)
+    joint_groove_depth: float = 2.1       # SET  groove depth at bottomed (~20% squeeze)
+    joint_groove_width: float = 3.3       # SET  groove width (<= 85% fill, no hydraulic lock)
+    joint_seat_clearance: float = 0.3     # SET  spigot-top↔socket-ceiling gap so the shoulder bottoms
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore

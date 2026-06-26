@@ -389,6 +389,23 @@ def main():
     r.hard(seat_land > 0, "joint-seat-land",
            f"bottoming shoulder {seat_land:.2f} mm (frame bottoms on the module wall top)")
 
+    # --- Stage 3: axial O-ring seal + bottoming shoulder (squeeze set by GEOMETRY) -
+    cs = P.joint_oring_cross_section
+    squeeze = (cs - P.joint_groove_depth) / cs
+    r.hard(0.12 <= squeeze <= 0.25, "joint-gasket-squeeze",
+           f"O-ring squeeze {squeeze*100:.0f}% in [12,25] (groove {P.joint_groove_depth} / CS {cs})")
+    fill = (math.pi * (cs / 2) ** 2) / (P.joint_groove_depth * P.joint_groove_width)
+    r.hard(fill <= 0.85, "joint-groove-fill",
+           f"groove fill {fill*100:.0f}% <= 85% (no hydraulic lock)")
+    sr = P.joint_seal_mean_diameter / 2
+    out_land = P.joint_collar_diameter / 2 - (sr + P.joint_groove_width / 2)
+    in_land = (sr - P.joint_groove_width / 2) - (P.joint_interface_radius + P.joint_register_clearance)
+    r.hard(min(out_land, in_land) >= 0.8, "joint-shoulder-lands",
+           f"bottoming lands in {in_land:.1f} / out {out_land:.1f} mm >= 0.8 (hard stop both sides of the groove)")
+    overall = 2 * (P.cup_outer_diameter / 2 + P.pad_lip_extension)
+    r.hard(P.joint_collar_diameter <= overall, "joint-collar-within-lip",
+           f"collar OD {P.joint_collar_diameter} <= overall {overall:.1f} mm (lip envelope)")
+
     # Baffle bosses must sit ABOVE the lap band (so the relief never cuts them) and
     # be tall enough to house the heat-set insert.
     lap_top = P.parting_z + P.joint_register_lap

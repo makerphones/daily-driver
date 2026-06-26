@@ -278,10 +278,24 @@ def _frame_module_split():
     # flush with the cavity wall; the outer wall [ifc+clr .. body_r] stays intact (it
     # carries the pivot boss). Baffle bosses floor at pz+lap, ABOVE this band. The
     # relief bore (ifc+clr) == the female thread valley, so the female thread's outer
-    # cylinder fuses to the bored wall.
-    frame = frame.cut(_ring(pz - 0.01, lap + 0.02, ifc + clr, cav_r - 1.0))
+    # cylinder fuses to the bored wall. Relief is deeper than the lap by joint_seat_
+    # clearance so the spigot TOP clears the socket ceiling — the z=pz SHOULDER bottoms.
+    frame = frame.cut(_ring(pz - 0.01, lap + P.joint_seat_clearance, ifc + clr, cav_r - 1.0))
     if int_wp is not None:
         frame = frame.union(int_wp.translate((0, 0, pz)))
+
+    # Stage 3 — local COLLAR (both parts) + axial O-ring GROOVE (module) + bottoming
+    # shoulder. The collar bulges the OD at the joint band (<= the lip envelope) to make
+    # a wide seal face OUTBOARD of the thread; the O-ring groove is on the MODULE's
+    # up-facing flange (printed floor-up); the frame collar bottoms plastic-to-plastic
+    # on the lands either side of the groove, capping the O-ring squeeze by GEOMETRY.
+    collar_r = P.joint_collar_diameter / 2
+    ch = 4.0                                       # collar band height each side of the joint
+    module = module.union(_ring(pz - ch, ch, collar_r, body_r - 1.0))   # module flange (below pz)
+    sr = P.joint_seal_mean_diameter / 2
+    gw, gd = P.joint_groove_width, P.joint_groove_depth
+    module = module.cut(_ring(pz - gd, gd + 0.01, sr + gw / 2, sr - gw / 2))  # O-ring groove
+    frame = frame.union(_ring(pz, ch, collar_r, body_r - 1.0))          # frame collar (above pz)
 
     return frame, module
 
