@@ -21,32 +21,6 @@ import cadquery as cq
 from params import P
 
 
-def pivot_stop_pins() -> cq.Workplane:
-    """The two over-rotation stop pins, in the cup frame.
-
-    Shared by make_cup (unioned onto the cup) and gate.py (rotated to verify the
-    hard stop), so the gate checks the exact geometry that ships. Each pin sits on
-    a boss end-cap face at pivot_stop_radius from the pivot axis, in the cup −Y
-    direction. In the assembly's worn pose the cup is mounted 90° clocked vs the
-    yoke, which rotates cup −Y to global −Z — landing the pin in the yoke eye's
-    −Z arc slot at the tilt rest. Re-derived from Open-Omega's cup rotation limiter
-    (credited in DESIGN-LOG); nothing copied.
-    """
-    r_out_boss = P.pivot_boss_outer_radius
-    zc = P.pivot_boss_z
-    pins = None
-    for sign in (+1, -1):
-        pin = (
-            cq.Workplane("YZ")
-            .workplane(offset=sign * (r_out_boss - 2.0))
-            .center(-P.pivot_stop_radius, zc)        # cup −Y → worn-pose slot at global −Z
-            .circle(P.pivot_stop_pin_diameter / 2)
-            .extrude(sign * (P.yoke_arm_thickness + 2.0))
-        )
-        pins = pin if pins is None else pins.union(pin)
-    return pins
-
-
 def make_cup() -> cq.Workplane:
     od = P.cup_outer_diameter
     total_h = P.cup_total_height
@@ -175,15 +149,6 @@ def make_cup() -> cq.Workplane:
             .extrude(-sign * P.insert_boss_depth)
         )
         cup = cup.cut(bore)
-
-    # 5b. Over-rotation STOP pin — a small pin on each boss end-cap face at
-    #     pivot_stop_radius from the pivot axis (cup −Y), protruding into the mating
-    #     yoke eye's arc slot. In the worn pose the cup is 90° clocked vs the yoke,
-    #     so cup −Y lands at the slot (yoke −Z), away from the arm. The slot ends are
-    #     the hard stop; this pin is the follower. Re-derived from Open-Omega's cup
-    #     rotation limiter (credited in DESIGN-LOG); nothing copied. Geometry is in
-    #     pivot_stop_pins() so the gate verifies exactly what ships.
-    cup = cup.union(pivot_stop_pins())
 
     # 6. Edge treatment: the back-outer comfort/print break is now the chamfer in
     #    step 2b (the form pass "set the outer profile"), so the old no-op outer-

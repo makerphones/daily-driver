@@ -166,27 +166,8 @@ def make_yoke() -> cq.Workplane:
         )
         yoke = yoke.cut(bore)
 
-    # over-rotation STOP arc slot: a clearance pocket at radius pivot_stop_radius
-    # around each pivot, spanning ±pivot_stop_slot_halfangle from straight-down. The
-    # cup's stop pin rides it; the slot ENDS are the hard stop that bounds tilt
-    # just past the ±20° working range, protecting the M3 shoulder screw. Built
-    # from a fan of cylinders (this OCP build's revolve is unusable — see bow.py).
-    rp = P.pivot_stop_radius
-    slot_r = (P.pivot_stop_pin_diameter + 2 * P.pivot_stop_slot_clearance) / 2
-    half_a = P.pivot_stop_slot_halfangle
-    nseg = 25
-    for sign in (+1, -1):
-        x = sign * a
-        for k in range(nseg):
-            ang = math.radians(-half_a + 2 * half_a * k / (nseg - 1))
-            seg = (
-                cq.Workplane("YZ")
-                .workplane(offset=x - (arm_t / 2 + 1))
-                .center(rp * math.sin(ang), -rp * math.cos(ang))  # radius rp, ±ang from −Z
-                .circle(slot_r)
-                .extrude(arm_t + 2)
-            )
-            yoke = yoke.cut(seg)
+    # (Over-rotation stop slot REMOVED 2026-06-26 — the cup now rotates freely in the
+    # yoke, Grado-style. The eye is a clean bored cylinder; no notch weakening it.)
 
     # NB no 3D edge fillet here: the arm's roundness is in the lofted 2D section, and
     # `.fillet()` fails on this OCC build once the part has cuts/unions (the eyes,

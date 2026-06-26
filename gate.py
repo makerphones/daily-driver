@@ -27,7 +27,7 @@ from OCP.gp import gp_Pnt
 from OCP.TopAbs import TopAbs_IN, TopAbs_ON
 
 from params import P
-from parts.cup import make_cup, pivot_stop_pins
+from parts.cup import make_cup
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
@@ -45,10 +45,6 @@ OPEN_MIN = 0.30         # grille open-area band (acoustic + structural) ...
 OPEN_MAX = 0.50         # ... around the 0.40 target; outside = out of range
 MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
-STOP_OVER_ANGLE = 35.0  # deg — the over-rotation stop MUST block the cup by here
-STOP_EPS = 0.05         # mm³ — pin∩yoke above this = stop engaged (vs free in slot)
-STOP_REST_CLOCK = 90.0  # deg — cup↔yoke relative clock at the worn rest (pad ⟂ arch);
-                        # the pin (cup −Y) lands at the slot (yoke −Z) here. Tilt is ± this.
 # The yoke is LOAD-BEARING, so its load-path sections are held to the 4 mm
 # STRUCTURAL floor (params.wall_thickness_structural), not the 2 mm wall floor —
 # per the spec's "4 mm at structural points" and Openmod's v1→Mk2 thin-section fix.
@@ -150,33 +146,6 @@ def _tilt_clearance(cup, yoke_origin):
     return vol(0.0), vol(P.pivot_tilt_degrees), vol(-P.pivot_tilt_degrees)
 
 
-def _stop_engagement(yoke_origin):
-    """Probe the over-rotation hard stop: (working_vol, over_vol, first_blocked_deg).
-
-    Tests at the WORN rest clocking: the assembly mounts the cup 90° clocked vs the
-    yoke (pad ⟂ arch), so the pin (cup −Y) lands at the slot (yoke −Z) at rest. We
-    apply that STOP_REST_CLOCK base rotation, then sweep the tilt around it. ~0 =
-    pin riding free in the slot; a jump = a slot end (the hard stop) engaged.
-    Isolated to the pins, so the eye/boss bearing overlap doesn't pollute it.
-    """
-    pins = pivot_stop_pins()
-    yoke = yoke_origin.translate((0, 0, P.pivot_boss_z))
-    zc = P.pivot_boss_z
-
-    def vol(tilt):  # tilt is measured from the worn rest; base clock aligns pin↔slot
-        p = pins.rotate((0, 0, zc), (1, 0, zc), STOP_REST_CLOCK + tilt)
-        try:
-            return _solid_volume(p.intersect(yoke))
-        except Exception:  # noqa: BLE001
-            return 0.0
-
-    working = max(vol(P.pivot_tilt_degrees), vol(-P.pivot_tilt_degrees))
-    over = min(vol(STOP_OVER_ANGLE), vol(-STOP_OVER_ANGLE))
-    first_blocked = next((a for a in range(int(P.pivot_tilt_degrees), 91)
-                          if vol(a) > STOP_EPS), None)
-    return working, over, first_blocked
-
-
 def main():
     print("Daily Driver — printability gate\n")
     print("Building printed parts in-process (part [warn]s below are the")
@@ -263,14 +232,6 @@ def main():
            f"cup∩yoke at ±{P.pivot_tilt_degrees:.0f}° = {worst:.0f} mm³ vs 0° "
            f"{base:.0f} mm³ (<= +{int(MAX_TILT_EXTRA_FRAC*100)}%)")
 
-    # 6e. Over-rotation HARD STOP: the working ±tilt range must ride free, and the
-    #     stop must engage before STOP_OVER_ANGLE so the cup can't be forced over
-    #     and shear the M3 shoulder screw. (Re-derived from Open-Omega's limiter.)
-    working, over, first_blocked = _stop_engagement(yoke)
-    r.hard(working < STOP_EPS and over > STOP_EPS, "pivot-overrotation-stop",
-           f"free through ±{P.pivot_tilt_degrees:.0f}° ({working:.2f} mm³), "
-           f"blocked by ±{STOP_OVER_ANGLE:.0f}° ({over:.2f} mm³); "
-           f"engages ≈ ±{first_blocked}°")
 
     # --- Yoke structural floor — load-bearing sections held to the 4 mm
     #     STRUCTURAL floor, not the 2 mm wall floor (Openmod's v1→Mk2 lesson:
@@ -379,17 +340,6 @@ def main():
            f"excursed dome z{dome_dynamic:.1f} (seat+proud+excursion) + {P.guard_dome_clearance} clr "
            f"+ 0.8 rib = z{dome_need:.1f} ≤ baffle front z{P.baffle_thickness} (dome figures are estimates — MEASURE)")
 
-    # The Task-1 over-rotation stop slot notches the eye; the web between the slot
-    # and the pivot bore is below the 2 mm print floor. It's a non-load-path
-    # clearance notch at the unloaded eye bottom, but thin/fragile — FLAGGED, not
-    # silently accepted: a slot in a ⌀12 eye can't keep a ≥2 mm bore web (would
-    # need a much larger eye or relocating the stop off the eye). Open decision;
-    # confirm on a test print.
-    slot_web = (P.pivot_stop_radius - (P.pivot_stop_pin_diameter / 2 + P.pivot_stop_slot_clearance)
-                - P.yoke_pivot_hole_diameter / 2)
-    r.soft(slot_web >= MIN_WALL, "yoke-stop-slot-web",
-           f"stop-slot↔bore web {slot_web:.1f} mm vs {MIN_WALL} mm print floor "
-           f"(non-load-path notch; FLAGGED for test print / relief)")
 
     print(f"\n{'='*60}")
     print(f"HARD failures: {r.fails}   SOFT warnings: {r.warns}")

@@ -6,6 +6,20 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Removed the pivot over-rotation stop (free rotation, Grado-style)
+
+Maker's call: the cup now rotates FREELY in the yoke. Dropped the over-rotation hard
+stop — the pin on each cup pivot boss + the arc slot in each yoke eye. Reasons: the pin
+was a snap-off risk, the slot notch weakened the eye (and made the junction look weak),
+and free rotation is a non-issue in practice (Grado headphones rotate freely in the yoke
++ slider with no adoption problem). The M3 shoulder screw is the only tilt joint now; the
+eye is a clean bored cylinder. Removed from cup.py (pins), yoke.py (slot fan), gate.py
+(`pivot-overrotation-stop` hard + `yoke-stop-slot-web` soft + `_stop_engagement`), and the
+`pivot_stop_*` params. Build 13/13, gate **0 HARD / 0 SOFT** (the lone soft warn WAS the
+stop-slot web — now gone). `pivot-tilt-clearance` still verifies the ±20° tilt.
+
+---
+
 ## 2026-06-26 — Sleek yoke arms (step 2): blocky bars → lofted rounded tubes
 
 The wraparound yoke arms were flat tapered bars (a chain of ~32 trapezoid extrusions)

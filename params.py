@@ -151,21 +151,11 @@ class Params:
     shoulder_screw_head_diameter: float = 6.5      # ESTIMATE  head OD
     shoulder_screw_head_height: float = 3.0        # ESTIMATE  head height
 
-    # ---- Pivot over-rotation hard stop --------------------------------------
-    # A pin on each cup pivot boss rides an arc slot in the mating yoke eye; the
-    # slot ENDS are hard stops that bound cup tilt just past the ±20° working
-    # range, so the cup can't be forced over and shear the M3 shoulder screw.
-    # Primary purpose: protect the pivot/screw. Cable routing isn't designed yet,
-    # so cable protection is a SECONDARY benefit once routing exists (flagged).
-    # Re-derived from Open-Omega's separate "cup rotation limiter" (CERN-OHL-P) —
-    # nothing copied. The effective engagement angle is MEASURED by the gate.
-    # Stop lives at the BOTTOM of the eye (−Z), clear of the arm bar that joins at
-    # the top (+Z). Slot radius is set so it clears both the pivot bore and the eye
-    # rim (no fragmentation). Effective engagement ≈ halfangle − pin's angular half.
-    pivot_stop_slot_halfangle: float = 22.0  # ESTIMATE  arc-slot half-span; engages ~28° (past ±20°)
-    pivot_stop_radius: float = 3.6           # ESTIMATE  pin/slot radius from the pivot axis
-    pivot_stop_pin_diameter: float = 1.6     # ESTIMATE  stop-pin dia (rides the slot)
-    pivot_stop_slot_clearance: float = 0.4   # ESTIMATE  radial slip clearance, pin↔slot
+    # ---- Pivot over-rotation hard stop — REMOVED 2026-06-26 ------------------
+    # The cup now rotates FREELY in the yoke (Grado-style — free pivot, no detent or
+    # hard stop). The old pin-on-cup + arc-slot-in-yoke-eye stop was dropped: the pin
+    # was a snap-off risk and the slot notch weakened the eye, and free rotation is a
+    # non-issue in practice (cf. Grado). The shoulder screw is the only tilt joint.
 
     # ---- Baffle plate (front-mount) -----------------------------------------
     baffle_outer_diameter: float = 77.0   # ESTIMATE  baffle_od (drops into id 78)
