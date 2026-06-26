@@ -365,12 +365,23 @@ def main():
     r.hard(frame_joint_wall >= MIN_WALL, "joint-frame-wall",
            f"frame outer wall over lap {frame_joint_wall:.2f} mm >= {MIN_WALL} mm")
 
-    module_spigot_wall = P.joint_interface_radius - P.cup_interior_diameter / 2
-    r.hard(module_spigot_wall >= MIN_WALL, "joint-module-spigot-wall",
-           f"module spigot wall {module_spigot_wall:.2f} mm >= {MIN_WALL} mm")
+    # Module spigot structural CORE — when threaded, the solid backbone is the core
+    # below the thread root (the ridges are intermittent), thinner than the crest
+    # envelope, so check root−cavity (conservative ISO truncated depth ≈ 0.6·pitch).
+    thread_depth = 0.6 * P.joint_thread_pitch if P.joint_thread else 0.0
+    module_core = (P.joint_interface_radius - thread_depth) - P.cup_interior_diameter / 2
+    r.hard(module_core >= MIN_WALL, "joint-module-spigot-wall",
+           f"module spigot {'core@root' if P.joint_thread else 'wall'} {module_core:.2f} mm "
+           f">= {MIN_WALL} mm")
 
-    r.hard(module_spigot_wall > 0, "joint-seat-land",
-           f"bottoming seat land {module_spigot_wall:.2f} mm (spigot top on frame wall)")
+    # Female crest must clear the baffle bosses (radial), beyond the z-separation.
+    female_crest = (P.joint_interface_radius + P.joint_register_clearance) - thread_depth
+    r.hard((not P.joint_thread) or female_crest >= boss_reach, "joint-female-clears-bosses",
+           f"female crest {female_crest:.2f} mm >= boss reach {boss_reach:.1f} mm")
+
+    seat_land = P.cup_outer_diameter / 2 - P.joint_interface_radius   # module shoulder outside the spigot
+    r.hard(seat_land > 0, "joint-seat-land",
+           f"bottoming shoulder {seat_land:.2f} mm (frame bottoms on the module wall top)")
 
     # Baffle bosses must sit ABOVE the lap band (so the relief never cuts them) and
     # be tall enough to house the heat-set insert.

@@ -16,12 +16,14 @@ ocp_vscode==3.4.0
 # the gate/CI never need it. NOT in requirements.txt (keeps the core build pure).
 matplotlib>=3.8
 
-# OPTIONAL accurate fastener geometry (parts/hardware.py): the heat-set insert in
-# the assembly visualisation. The gate + STL build use pure-cadquery primitive
-# envelopes, so this is NOT required for any check — it only sharpens the picture,
-# and hardware.py falls back to the primitive if it's absent or won't import.
-# cq_warehouse is git-only (not on PyPI), dormant since 2023, and has NO
-# ShoulderScrew class (so the screw is composed from primitives). Verified: 0.8.0
-# imports + builds HeatSetNut on this cadquery 2.7 / OCP 7.8 stack, and it declares
-# no runtime deps, so this line installs WITHOUT touching the pinned cadquery.
-cq_warehouse @ git+https://github.com/gumyr/cq_warehouse.git
+# OPTIONAL cq_warehouse — powers two things, BOTH guarded so the core build never
+# needs it: (1) the accurate heat-set insert in the assembly viz (parts/hardware.py),
+# and (2) the Stage-2 joint THREAD (parts/thread.py, IsoThread). The thread is a
+# printed feature, but it's import-guarded: if cq_warehouse is absent or a thread
+# won't build, the joint DEGRADES to the plain slip register (still one valid solid),
+# so build.py + gate.py stay importable + green on requirements.txt alone.
+# cq_warehouse is git-only (not on PyPI), dormant since 2023, has NO ShoulderScrew
+# class (screw composed from primitives), and declares no runtime deps (installs
+# WITHOUT touching the pinned cadquery). PINNED to the verified commit for a
+# reproducible thread build (cadquery 2.7 / OCP 7.8 — IsoThread Ø86/pitch-3 builds).
+cq_warehouse @ git+https://github.com/gumyr/cq_warehouse.git@daa46507ecc429c0e2dce11d9d5ffd09b12a42af

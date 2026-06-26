@@ -133,11 +133,21 @@ class Params:
     # bottoms on the frame wall (the seat). The coarse single-start THREAD + axial
     # O-ring GASKET are deferred to Stage 2/3 — Stage 1 is a simple slip register.
     parting_z: float = 18.0               # SET  split height z (mid; max-forward w/o ribs)
-    joint_register_lap: float = 6.0       # ESTIMATE  spigot↔socket telescoping overlap (axial)
-    joint_interface_radius: float = 42.0  # ESTIMATE  lap interface radius (also ≈ thread major/2,
-                                          #   Ø84, for Stage 2). MUST clear the baffle bosses
-                                          #   (reach r40): 42 leaves a 2 mm margin.
-    joint_register_clearance: float = 0.35  # slip fit, spigot↔socket (= fit_clearance_slip)
+    joint_register_lap: float = 6.0       # ESTIMATE  lap / thread engagement length (axial)
+    # joint_interface_radius is the THREAD MAJOR radius (crest) AND the plain-register
+    # interface. Ø86 (r43), pitch 3 is the wall-budget sweet spot for the 6.7 mm wall:
+    # male core (root−cavity) ≈ 2.4 mm and frame outer wall (body−female valley) ≈ 2.4
+    # mm both clear the 2 mm floor, and the female crest (~41.7) clears the baffle
+    # bosses (reach r40). (Ø84/pitch4 from the eval collapsed the male core to ~0.8 mm
+    # in THIS shiplap; coarser-but-shallower pitch 3 at Ø86 fixes it — see DESIGN-LOG.)
+    joint_interface_radius: float = 43.0  # SET  thread major radius (Ø86) = lap interface
+    joint_register_clearance: float = 0.35  # SET  radial thread/slip clearance (FDM)
+    # Stage 2: a single-start coarse thread on the lap faces (cq_warehouse IsoThread —
+    # module = external/male, frame = internal/female). Import-guarded: if cq_warehouse
+    # is absent or a thread won't build, the joint DEGRADES to the plain slip register
+    # (still one valid solid). The gate's frame/module manifold checks are the go/no-go.
+    joint_thread: bool = True             # SET  thread the lap (else plain slip register)
+    joint_thread_pitch: float = 3.0       # SET  coarse single-start pitch (FDM-printable)
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore

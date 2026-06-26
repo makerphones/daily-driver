@@ -19,7 +19,7 @@ import math
 
 import cadquery as cq
 from params import P
-from parts import features
+from parts import features, thread
 
 
 def pivot_stop_pins() -> cq.Workplane:
@@ -256,14 +256,33 @@ def _frame_module_split():
     module = shell.intersect(_ring(pz - big, big, body_r + 5.0))   # z <= pz
     frame = shell.intersect(_ring(pz, big, body_r + 5.0))          # z >= pz
 
-    # MODULE inner spigot — ring [cav_r, ifc] one lap tall, on the wall top.
-    module = module.union(_ring(pz, lap, ifc, cav_r))
+    # THREAD the lap faces (Stage 2): module = external/male, frame = internal/female,
+    # single-start coarse. Import-guarded — if cq_warehouse is absent or a thread won't
+    # build, ext/intt come back None and the joint degrades to the PLAIN slip register
+    # (still one valid solid). male major = Ø(2·ifc); female valley = male major + 2·clr.
+    pitch = P.joint_thread_pitch
+    male_major = 2 * ifc
+    female_major = male_major + 2 * clr
+    ext_wp, ext_root = thread.external_thread(male_major, pitch, lap) if P.joint_thread else (None, None)
+    int_wp, _ = thread.internal_thread(female_major, pitch, lap) if P.joint_thread else (None, None)
+
+    # MODULE inner spigot — on the wall top, one lap tall.
+    if ext_wp is not None:
+        core_or = ext_root + 0.15                 # core just past the thread root → clean single-solid fuse
+        spigot = _ring(pz, lap, core_or, cav_r).union(ext_wp.translate((0, 0, pz)))
+    else:
+        spigot = _ring(pz, lap, ifc, cav_r)       # plain slip register (fallback)
+    module = module.union(spigot)
 
     # FRAME inner relief — open [cav_r-1 .. ifc+clr] over the lap so the spigot
     # telescopes in. Reaches just into the void (cav_r-1) so the spigot inner face is
     # flush with the cavity wall; the outer wall [ifc+clr .. body_r] stays intact (it
-    # carries the pivot boss). Baffle bosses floor at pz+lap, ABOVE this band.
+    # carries the pivot boss). Baffle bosses floor at pz+lap, ABOVE this band. The
+    # relief bore (ifc+clr) == the female thread valley, so the female thread's outer
+    # cylinder fuses to the bored wall.
     frame = frame.cut(_ring(pz - 0.01, lap + 0.02, ifc + clr, cav_r - 1.0))
+    if int_wp is not None:
+        frame = frame.union(int_wp.translate((0, 0, pz)))
 
     return frame, module
 

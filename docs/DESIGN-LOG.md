@@ -6,6 +6,39 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Stage 2: single-start coarse thread on the joint (twist-lock)
+
+The frame↔module joint now carries a real printable THREAD (was a plain slip
+register): the module spigot gets the EXTERNAL/male thread, the frame socket the
+INTERNAL/female thread, via `cq_warehouse` `IsoThread` (single-start, coarse). Build
+9/9, gate 0 HARD / 1 SOFT. Both parts build as ONE valid solid — the eval-flagged
+union fragmentation did NOT occur at this sizing.
+
+- **Sizing — Ø86 / pitch 3, NOT the eval's Ø84 / pitch 4.** In THIS shiplap the
+  6.7 mm wall must hold: male core + thread depth + clearance + frame outer wall.
+  At Ø84/pitch-4 the male solid core collapsed to ~0.8 mm (well under the 2 mm
+  floor). A coarser-but-SHALLOWER pitch-3 thread at Ø86 (r43) is the sweet spot —
+  verified in the venv: male core **2.38**, frame wall **2.37**, female crest **41.7**
+  (clears the baffle bosses at r40). New params: `joint_interface_radius` 42 → **43**
+  (the thread major radius + lap interface), `joint_thread=True`, `joint_thread_pitch=3`.
+- **Fit:** 0.35 mm radial clearance — female valley = male major + 2·clr (Ø86.7). The
+  spigot core is sized just past the external thread root (`min_radius + 0.15`) so the
+  thread fuses to the core as one solid.
+- **Import-guarded (`parts/thread.py`):** the thread wraps `IsoThread` (re-wrapped as a
+  plain `cq.Solid` so OCC transforms don't re-invoke its constructor). If `cq_warehouse`
+  is absent or a thread won't build, the joint DEGRADES to the plain slip register
+  (still one valid solid) — VERIFIED — so build + gate stay green on core deps.
+  `cq_warehouse` PINNED to its verified commit in `requirements-dev.txt`.
+- **Gate:** `joint-module-spigot-wall` is now thread-aware (checks the solid core@root,
+  not the crest envelope); added `joint-female-clears-bosses`. The frame/module
+  one-valid-solid manifold checks remain the real go/no-go for the thread.
+- **Still open / NOT verified:** the thread fit is unprinted — needs a 2–3-turn male+
+  female COUPON print to confirm it hand-threads at the 0.35 clearance (the eval's
+  Stage-2 coupon). The hard bottoming SHOULDER + axial O-ring GASKET are Stage 3. The
+  3-lug bayonet remains the live fallback if a print shows the thread won't seat.
+
+---
+
 ## 2026-06-25 — Per-part GLBs for the website's 3D parts gallery
 
 `build.py` now exports a per-part GLB to `docs/models/<part>.glb` (committed,
