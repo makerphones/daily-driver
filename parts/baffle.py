@@ -132,13 +132,14 @@ def make_baffle() -> cq.Workplane:
         )
         baffle = baffle.cut(vent)
 
-    # 7. Driver-clamp inserts — 3 small bosses on the BACK face (z=0) at the clamp
-    #    bolt circle, each with an M3 heat-set bore, for the driver clamp ring. The
-    #    bosses sit at r30 (between the vents and the frame holes) at 0/120/240,
-    #    interleaving with the 6 vents (offset 30°) so they don't collide. The boss
-    #    gives the insert depth without breaching the front face.
+    # 7. Driver-clamp STANDOFFS — 3 bosses on the BACK face (z=0) at the clamp bolt
+    #    circle that reach BACK to meet the clamp ring at the driver's rear depth, each
+    #    with an M3 heat-set bore. At r30 (between the vents and the mount holes) at
+    #    0/120/240, interleaving with the 6 vents (offset 30°) so they don't collide.
+    #    Standoff ≈ driver_body_depth − driver_recess_depth (the driver depth behind
+    #    the baffle back, where the clamp ring's shoulder bears on the frame rim).
     cbr = P.driver_clamp_bolt_circle / 2
-    boss_h = 2.5
+    boss_h = P.driver_clamp_standoff
     for i in range(P.driver_clamp_count):
         a = math.radians(i * 360.0 / P.driver_clamp_count)   # 0 / 120 / 240
         cx, cy = cbr * math.cos(a), cbr * math.sin(a)

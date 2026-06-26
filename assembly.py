@@ -26,6 +26,8 @@ from parts.yoke import make_yoke
 from parts.slider import make_slider
 from parts.bow import make_bow
 from parts.headband_pad import make_headband_pad
+from parts.driver import make_driver
+from parts.driver_clamp import make_driver_clamp
 
 
 # Sub-assembly groups for the manual's interactive parts viewer. The node NAMES
@@ -36,7 +38,8 @@ from parts.headband_pad import make_headband_pad
 SUBASSEMBLIES = {
     "groups": [
         {"id": "earcup", "label": "Earcup",
-         "nodes": ["cup_R", "cup_L", "baffle_R", "baffle_L"]},
+         "nodes": ["cup_R", "cup_L", "baffle_R", "baffle_L",
+                   "driver_R", "driver_L", "driver_clamp_R", "driver_clamp_L"]},
         {"id": "gimbal", "label": "Gimbal",
          "nodes": ["yoke_R", "yoke_L", "insert_p_R", "insert_p_L", "insert_m_R",
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
@@ -76,6 +79,7 @@ def make_assembly() -> cq.Assembly:
     BRASS = cq.Color(0.80, 0.68, 0.30)
     SCREW_C = cq.Color(0.55, 0.57, 0.60)
     PAD_C = cq.Color(0.13, 0.13, 0.15)   # near-black foam/velour
+    DRIVER_C = cq.Color(0.10, 0.10, 0.12)  # driver mockup (black)
 
     pbz = P.pivot_boss_z
     # Worn pose: the spring band flexes OPEN from its 63.5 mm at-rest circle to
@@ -100,6 +104,13 @@ def make_assembly() -> cq.Assembly:
     # ---- RIGHT ear ----
     cup = T_cup(make_cup())
     baffle = T_cup(make_baffle().translate((0, 0, P.baffle_seat_z)))
+    # Driver (mockup) seated in the baffle's back recess, firing forward; the clamp
+    # ring behind it retains the rear rim. ledge = where the flange seats; rear_rim =
+    # the driver back where the clamp shoulder bears.
+    ledge_z = P.baffle_seat_z + P.driver_recess_depth
+    rear_rim_z = ledge_z - P.driver_body_depth
+    driver = T_cup(make_driver().translate((0, 0, ledge_z)))
+    driver_clamp = T_cup(make_driver_clamp().translate((0, 0, rear_rim_z)))
     yoke = T_yoke(make_yoke())
     # Slider rides the yoke post at a mid head-size position (the post slides through
     # it; the thumbscrew locks the height).
@@ -114,6 +125,7 @@ def make_assembly() -> cq.Assembly:
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
+                           ("driver", driver, DRIVER_C), ("driver_clamp", driver_clamp, STEEL),
                            ("yoke", yoke, YOKE_C), ("slider", slider, SLIDER_C)):
         asm.add(solid, name=f"{nm}_R", color=col)
         asm.add(mirror_L(solid), name=f"{nm}_L", color=col)

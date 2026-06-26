@@ -36,6 +36,7 @@ from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
+from parts.driver import make_driver
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
 # on it: no matplotlib → rendering simply skips, parts still build.
@@ -61,9 +62,11 @@ ACCESSORY = {
     "headband_pad": make_headband_pad,
     "grille_dot": make_grille_dot,
 }
-# Reference bodies → STEP only (NOT printed).
+# Reference bodies → STEP only (NOT printed): the bought metal bow + a representative
+# driver MOCKUP (shown in the assembly so the driver↔baffle↔clamp fit reads).
 REFERENCE = {
     "bow": make_bow,
+    "driver": make_driver,
 }
 PARTS = {**PRINTED, **ACCESSORY, **REFERENCE}
 
@@ -124,7 +127,7 @@ def build(names):
             from assembly import make_assembly
             asm = make_assembly()
             asm.export(os.path.join(OUT, "assembly.step"))
-            print("  [ok]   assembly.step (frame + module + baffle + yoke + slider + bow ref)")
+            print("  [ok]   assembly.step (cup + baffle + driver + clamp + yoke + slider + bow ref)")
             # Web-viewable GLB for the Pages build page (model-viewer). Committed
             # as a published artifact (unlike the gitignored working STL/STEP).
             try:

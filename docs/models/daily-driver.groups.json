@@ -7,7 +7,11 @@
         "cup_R",
         "cup_L",
         "baffle_R",
-        "baffle_L"
+        "baffle_L",
+        "driver_R",
+        "driver_L",
+        "driver_clamp_R",
+        "driver_clamp_L"
       ]
     },
     {

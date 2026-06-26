@@ -6,6 +6,32 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Driver mockup + clamp-ring orientation fix + baffle back to 4 screws
+
+Maker review of the one-piece cup. Build 10/10, gate 0 HARD / 1 SOFT.
+
+- **Baffle screws 3 → 4** (maker's choice; reverts my "lighter" 3). The 6 small holes
+  the maker saw AROUND the driver are the controlled VENTS (`baffle_vent_count=6`,
+  Ø2) in the flat ring between the aperture and the bolt circle — they connect the
+  front ear-cavity to the rear cup-cavity (a minor tuning knob; largely redundant with
+  the wide-open lattice back, so a candidate to drop in the acoustic loop).
+- **Driver MOCKUP added** (`parts/driver.py`, REFERENCE — not printed): a representative
+  40 mm dynamic driver (frame + mounting flange + dome + rear magnet) so the
+  driver↔baffle↔clamp fit reads in the assembly.
+- **Clamp-ring orientation FIXED.** It was a proud LIP pressing the flange (wrong, per
+  the maker). Now it's a RECESS: the driver's rear nests slightly INTO the ring, the
+  recess wall captures the driver's outer edge, and the recess floor (an inner
+  shoulder) bears on the back of the frame rim — pressing the driver forward into the
+  baffle. The magnet protrudes back through the open centre.
+- **Clamp now IN the assembly** (was accessory-only): posed behind the driver, bolting
+  to baffle-back STANDOFF bosses that reach back ≈ `driver_body_depth − driver_recess_
+  depth` to meet the ring at the driver's rear. Added driver + clamp to the parts
+  viewer's earcup group. Verified the stack geometrically (driver seated, clamp on the
+  rear rim, magnet through the centre, standoffs meeting the ears).
+- Driver-fit dims (flange/magnet/standoff/recess depth) are REF / driver-measured-pending.
+
+---
+
 ## 2026-06-26 — Reverted the separating earcup → back to ONE-PIECE cup
 
 The maker reconsidered the modular split and decided the tradeoffs weren't worth it:

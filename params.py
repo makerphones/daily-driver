@@ -97,9 +97,8 @@ class Params:
     # Four heat-set bosses on the diagonals (45/135/225/315), blended into the
     # perimeter inner wall near the front — NOT free-standing posts. Bore faces
     # front; the baffle screws into them from the front.
-    baffle_screw_count: int = 3           # SET  3 (was 4) — lighter, 3 is a stable
-                                          #   plane + matches the 3-fold driver clamp.
-                                          #   (The baffle's 6 OTHER holes are VENTS.)
+    baffle_screw_count: int = 4           # SET  4 (maker's choice). The baffle's 6
+                                          #   OTHER small holes are VENTS, not screws.
     baffle_bolt_circle_diameter: float = 70.0  # ESTIMATE  bolt_circle_dia (bcd)
     baffle_boss_diameter: float = 12.0    # SET  10 → 12: deeper wall embedment (reach
                                           #   r41 > inner wall r39) + a thicker bore wall.
@@ -190,20 +189,24 @@ class Params:
     # NOTE: cable entry is cup-side per v0.3 (dual entry) — NOT on the baffle.
 
     # ---- Driver clamp ring (3-bolt, holds the driver to the baffle) ----------
-    # The maker's prototype: a 3-ear ring (like an exhaust flange) that presses the
-    # driver into the baffle's back recess, bolted to 3 heat-set inserts in the
-    # baffle BACK. Independent of the baffle→frame mount. The bolt circle sits at
-    # r30 — BETWEEN the vents (~r26) and the frame-mount holes (r35) — and the 3 ears
-    # (0/120/240) interleave with the 6 vents (offset 30°) so they don't collide.
-    # A raised front LIP presses the driver's mounting flange. Light: a thin eared
-    # ring, open centre. (Driver-fit dims are REF/driver-pending.)
+    # The maker's prototype: a 3-ear ring that slips over the BACK of the driver and
+    # retains it by the PERIMETER. The driver nests SLIGHTLY into a RECESS in the ring
+    # (not pressed by a proud lip) — the recess wall captures the driver's outer edge
+    # and the recess floor (an inner shoulder) bears on the back of the frame rim,
+    # pressing the driver forward into the baffle's recess. The magnet/back clears
+    # through the open centre. Bolts to 3 inserts on the baffle BACK at bcd 60 (between
+    # the vents ~r26 and the frame holes r35; the 3 ears interleave with the 6 vents).
+    # Standoff bosses on the baffle reach back to the ring at the driver's back depth.
+    # (Driver-fit dims are REF / driver-measured-pending.)
     driver_clamp_count: int = 3              # SET  3-ear clamp (matches the prototype)
     driver_clamp_bolt_circle: float = 60.0   # SET  bcd (r30): between vents (r26) + frame holes (r35)
-    driver_clamp_inner_diameter: float = 34.0  # SET  open centre (clears the driver magnet/dome)
-    driver_clamp_ring_outer: float = 46.0    # SET  ring body OD (just past the driver od 42)
-    driver_clamp_thickness: float = 3.0      # SET  ring/ear thickness (light)
+    driver_clamp_inner_diameter: float = 34.0  # SET  open centre — clears the magnet; shoulder catches the rim
+    driver_clamp_recess_clearance: float = 0.4  # SET  driver OD ↔ ring recess (the driver nests in)
+    driver_clamp_recess_depth: float = 3.0   # SET  how far the driver nests into the ring
+    driver_clamp_floor_thickness: float = 2.5  # SET  shoulder floor behind the recess
+    driver_clamp_wall: float = 2.5           # SET  wall around the recess
     driver_clamp_ear_diameter: float = 9.0   # SET  ear pad dia around each M3 hole
-    driver_clamp_lip_height: float = 2.0     # ESTIMATE  front lip standoff to the seated flange (driver-pending)
+    driver_clamp_standoff: float = 5.0       # ESTIMATE  baffle-back boss height the ring bolts to (driver-pending)
 
     # ---- Integral driver guard (across the aperture, on the baffle) ----------
     guard_spoke_count: int = 6            # ESTIMATE  guard_spoke_count
@@ -220,6 +223,12 @@ class Params:
     driver_diaphragm_diameter: float = 40.0  # REF  diaphragm — guard must clear
     driver_body_depth: float = 8.0        # REF  frame depth behind the baffle
     driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame
+    # Driver MOCKUP dims (parts/driver.py) — a representative 40 mm dynamic driver shown
+    # in the assembly so the driver↔baffle↔clamp fit reads. REF / driver-pending.
+    driver_flange_diameter: float = 44.0  # REF  mounting-flange OD (rim wider than the frame)
+    driver_flange_thickness: float = 1.5  # REF  flange rim thickness
+    driver_magnet_diameter: float = 26.0  # REF  rear magnet OD (mockup)
+    driver_magnet_depth: float = 5.0      # REF  rear magnet depth behind the frame (mockup)
     driver_cutout_tolerance: float = 0.3  # ESTIMATE  fit allowance on the recess
     driver_seat_ledge: float = 3.5        # ESTIMATE  radial frame seat (per side);
                                           #   driver_aperture derives as od − 2·this
