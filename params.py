@@ -224,6 +224,22 @@ class Params:
     # baffle bolt circle reuses baffle_bolt_circle_diameter (aligned to the cup).
     # NOTE: cable entry is cup-side per v0.3 (dual entry) — NOT on the baffle.
 
+    # ---- Driver clamp ring (3-bolt, holds the driver to the baffle) ----------
+    # The maker's prototype: a 3-ear ring (like an exhaust flange) that presses the
+    # driver into the baffle's back recess, bolted to 3 heat-set inserts in the
+    # baffle BACK. Independent of the baffle→frame mount. The bolt circle sits at
+    # r30 — BETWEEN the vents (~r26) and the frame-mount holes (r35) — and the 3 ears
+    # (0/120/240) interleave with the 6 vents (offset 30°) so they don't collide.
+    # A raised front LIP presses the driver's mounting flange. Light: a thin eared
+    # ring, open centre. (Driver-fit dims are REF/driver-pending.)
+    driver_clamp_count: int = 3              # SET  3-ear clamp (matches the prototype)
+    driver_clamp_bolt_circle: float = 60.0   # SET  bcd (r30): between vents (r26) + frame holes (r35)
+    driver_clamp_inner_diameter: float = 34.0  # SET  open centre (clears the driver magnet/dome)
+    driver_clamp_ring_outer: float = 46.0    # SET  ring body OD (just past the driver od 42)
+    driver_clamp_thickness: float = 3.0      # SET  ring/ear thickness (light)
+    driver_clamp_ear_diameter: float = 9.0   # SET  ear pad dia around each M3 hole
+    driver_clamp_lip_height: float = 2.0     # ESTIMATE  front lip standoff to the seated flange (driver-pending)
+
     # ---- Integral driver guard (across the aperture, on the baffle) ----------
     guard_spoke_count: int = 6            # ESTIMATE  guard_spoke_count
     guard_member_width: float = 2.0       # ESTIMATE  guard_member_w

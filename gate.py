@@ -34,6 +34,7 @@ from parts.slider import make_slider
 from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
+from parts.driver_clamp import make_driver_clamp
 from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
 # ---- Thresholds (named + transparent; not new checks, just the limits) -------
@@ -190,9 +191,10 @@ def main():
     adapter = make_adapter_ring()
     headband_pad = make_headband_pad()
     grille_dot = make_grille_dot()
+    driver_clamp = make_driver_clamp()
     parts = {"frame": frame, "module": module, "baffle": baffle, "yoke": yoke,
-             "slider": slider, "adapter_ring": adapter, "headband_pad": headband_pad,
-             "grille_dot": grille_dot}
+             "slider": slider, "driver_clamp": driver_clamp, "adapter_ring": adapter,
+             "headband_pad": headband_pad, "grille_dot": grille_dot}
 
     r = Report()
 
@@ -399,6 +401,21 @@ def main():
            f"pivot boss bottom z {pivot_bot:.1f} >= parting {P.parting_z}")
     r.hard(pivot_top <= P.cup_total_height, "pivot-within-rim",
            f"pivot boss top z {pivot_top:.1f} <= rim {P.cup_total_height}")
+
+    # --- Driver clamp ring (3-bolt) — clears the vents + catches the flange ----
+    clamp_bcr = P.driver_clamp_bolt_circle / 2
+    vent_r = (P.driver_aperture / 2 + P.baffle_screw_radius) / 2   # == baffle.py's derivation
+    r.hard(P.driver_aperture / 2 < clamp_bcr < P.baffle_screw_radius, "driver-clamp-bcd-band",
+           f"clamp bcd r{clamp_bcr:.1f} between vents r{vent_r:.1f} and frame bcd r{P.baffle_screw_radius:.0f}")
+    # The 3 clamp bosses (0/120/240) must clear the 6 vents (offset 30°) angularly,
+    # since they share the baffle back at overlapping radii.
+    clamp_half = math.degrees(math.asin(min(1.0, (P.insert_boss_diameter / 2) / clamp_bcr)))
+    vent_half = math.degrees(math.asin(min(1.0, (P.baffle_vent_diameter / 2) / vent_r)))
+    gap = 30.0 - (clamp_half + vent_half)
+    r.hard(gap > 0, "driver-clamp-clears-vents",
+           f"clamp boss↔vent gap {gap:.1f}° > 0 (bosses 0/120/240 vs vents offset 30°)")
+    r.hard(P.driver_clamp_inner_diameter < P.driver_od, "driver-clamp-catches-flange",
+           f"clamp inner Ø{P.driver_clamp_inner_diameter} < driver Ø{P.driver_od} (lip catches the flange)")
 
     print("\n— SOFT checks (warn, do not fail) —")
 
