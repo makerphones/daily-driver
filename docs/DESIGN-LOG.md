@@ -6,6 +6,18 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Assembly sequence written (`docs/ASSEMBLY.md`)
+
+Sixth readiness-batch item. Wrote the canonical **build order**, grounded in the real interfaces +
+the BOM part numbers: Stage 0 all heat-sets first → driver+front-gasket+clamp ring → baffle+damping
+felt into the cup → cup↔yoke **pivot washer-stack** `[head|wave|nylon|eye|nylon|boss]` (the friction
+hinge) → **shoe-drops-in-before-the-post** → post/slider/8-32 knob → bow sandwich → cable/pads/measure.
+The order is chosen so nothing traps a part you still need to reach and every screw threads into an
+already-seated insert. The doc also names itself as the **explode tool's intended step order**.
+
+Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
+render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
+
 ## 2026-06-27 — S/M/L reference heads + sprung-bow helper (worn-fit made visible)
 
 Fifth readiness-batch item, and the start of the worn-fit blocker. The maker asked for three head

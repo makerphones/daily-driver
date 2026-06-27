@@ -87,11 +87,14 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
   ~2 cm too TALL. Trim `yoke_fork_height`/post ~20 mm + map slider travel S↔L (full extension = largest)
   so the band lands. The 3 heads now make the gap visible to calibrate against. (Its own careful pass —
   ripples through yoke geometry + gate + renders.)
-- [ ] **6. Assembly sequence + explode refinement.** Write the Daily-Driver assembly order
-  (heat-sets → driver seat + gasket + clamp ring → pivot **washer-stack** `[head|wave|nylon|eye|
-  nylon|boss]` → shoe-drops-in-before-the-post → post/slider → band sandwich); **draw the washer
-  stack in the render**; refine the **explode tool** to follow the assembly order/grouping (the
-  explode currently flies parts out of frame + has no sequence semantics).
+- [~] **6. Assembly sequence + explode refinement.** DONE: wrote **`docs/ASSEMBLY.md`** — the full
+  ordered build (Stage 0 heat-sets → driver+gasket+clamp → baffle+damping into cup → pivot
+  **washer-stack** `[head|wave|nylon|eye|nylon|boss]` → shoe-before-post → post/slider/knob → band
+  sandwich → finish), grounded in the real interfaces + BOM part numbers, and named as the explode's
+  intended step order. **REMAINING (viz polish, scoped):** (a) draw the pivot washer stack in the
+  assembly render (currently insert+screw only — "a manual nicety", DESIGN-LOG); (b) refine the
+  explode tool to step through the ASSEMBLY.md stages in order + clamp offsets so parts stay in frame
+  (the doc now defines the order to follow). Both iterative "as we go" per the maker.
 
 ## Parking lot (revisit)
 
@@ -100,6 +103,9 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
   (and/or a shorter post) ~20 mm so the band reaches the head, then map slider travel S↔L (full
   extension = largest head). Its own pass — ripples through the yoke geometry + gate + renders. The
   S/M/L heads (done) make the gap visible to calibrate against.
+- **Assembly viz polish** — (a) draw the pivot washer stack `[head|wave|nylon|eye|nylon|boss]` in the
+  render (assembly.py currently shows insert+screw only); (b) refine the explode tool to step through
+  the `ASSEMBLY.md` stages in order and clamp the per-part offsets so nothing flies out of frame.
 - **Full design-spec refresh (website `.mdx` + local `design-spec.md`)** — both still describe the
   pre-bow "spring-steel-arc" architecture, the old pivot, Dekoni-default pads. Item 3 fixed only the
   actively-wrong facts (143 cc, pad default) + a status note. Do the full v0.4 reconciliation AFTER
