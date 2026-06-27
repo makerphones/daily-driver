@@ -24,6 +24,16 @@ plane, the *worst* reach while worn. The fixes below follow from the verified wo
   proud of the lozenge and so *touches the head first* — now **drafts inward `slider_clamp_cover_ease
   1.2`** on its head face into a soft central crown instead of a square rim. Build 2/2, gate
   **0 HARD / 0 SOFT**; renders confirm the head side now eases back.
+- **Thumbscrew → OUTBOARD (done).** Moved the boss/insert/clearance from local +X (front/back
+  = worst worn reach) to local **+Y** (`slider_thumbscrew_boss_z 5` lift, `_boss_proud 6`), so
+  in the worn pose the knurled Ø12 head faces straight out the side of the head — pinchable with
+  the phones on — and the screw drives the post into the FULL lozenge backing (firmer lock) vs
+  the thin 2.8 mm barrel ring. Lifted toward the crown so the head clears the gusset band (z±7)
+  and the band sweep above. Boss is at x=0 on the +Y centreline, clear of the gussets (nearest
+  vertices x=±4.3). Fixed the two stale/contradictory comments (slider.py "+X front face";
+  assembly.py "(M4)" + "+Y faces outward" — the geometry was actually +X). Updated the assembly
+  mockup (shaft → +Y, lifted). Gate **0 HARD / 0 SOFT** (bore + walls untouched; boss adds
+  material outboard).
 
 ## 2026-06-26 — Slider: tube gusset (grown-in), pill kept; ergonomics is next
 

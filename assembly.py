@@ -183,15 +183,17 @@ def make_assembly() -> cq.Assembly:
     except Exception as e:  # noqa: BLE001 — viz only; never block the build
         print(f"  [warn] assembly: pivot hardware skipped ({e}).")
 
-    # Thumbscrew (M4) — the height lock, shown so the Grado-style post+thumbscrew
-    # mechanism reads. Rides with the slider: tip on the post surface, head out the
-    # slider's +Y boss (which T_yoke turns to face outward from the head).
+    # Thumbscrew (M3) — the height lock, shown so the Grado/HP1000-style post+thumbscrew
+    # mechanism reads. Rides with the slider, LIFTED by the boss_z offset: tip on the post
+    # surface, head out the slider's +Y OUTBOARD boss. T_yoke maps local +Y → global +X, so
+    # in the worn pose the knurled head faces straight out the side of the head (the natural
+    # two-finger reach with the phones ON), not front/back along the temple as the old +X did.
     try:
         from parts.hardware import make_thumbscrew
         ts = (make_thumbscrew()
-              .rotate((0, 0, 0), (0, 1, 0), 90)                # shaft → +X (front), tip at origin
-              .translate((P.yoke_post_diameter / 2, 0, 0))     # tip on the post, barrel mid (z=0)
-              .translate((0, 0, slider_z)))                    # ride with the slider
+              .rotate((0, 0, 0), (1, 0, 0), -90)                       # shaft → +Y (outboard), tip at origin
+              .translate((0, P.yoke_post_diameter / 2, 0))             # tip on the post surface
+              .translate((0, 0, slider_z + P.slider_thumbscrew_boss_z)))  # ride + lift with the boss
         ts_R = T_yoke(ts)
         asm.add(ts_R, name="thumbscrew_R", color=SCREW_C)
         asm.add(mirror_L(ts_R), name="thumbscrew_L", color=SCREW_C)

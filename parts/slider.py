@@ -132,17 +132,22 @@ def make_slider() -> cq.Workplane:
             cq.Vector(x, seat_y, P.slider_clamp_hole_z), cq.Vector(0, 1, 0))
         collar = collar.cut(cq.Workplane(obj=bore))
 
-    # THUMBSCREW boss on the +X (front) face of the barrel — small M3 lock.
-    boss_h = 4.0
+    # THUMBSCREW boss on the +Y OUTBOARD face of the barrel — small M3 lock. In the worn
+    # pose local +Y → global +X (straight out the side of the head), so the knurled head
+    # faces the natural two-finger reach with the phones ON; it's LIFTED in +Z (boss_z) so
+    # that head clears the gusset band. Pressing the post toward −Y jams it into the FULL
+    # lozenge backing (firm friction lock), not the thin barrel ring the old +X screw drove.
+    boss_h = P.slider_thumbscrew_boss_proud
     bovl = 4.0
+    bz = P.slider_thumbscrew_boss_z
     boss = cq.Solid.makeCylinder(P.slider_thumbscrew_boss / 2, boss_h + bovl,
-                                 cq.Vector(R - bovl, 0, 0), cq.Vector(1, 0, 0))
+                                 cq.Vector(0, R - bovl, bz), cq.Vector(0, 1, 0))
     collar = collar.union(cq.Workplane(obj=boss))
     ins = cq.Solid.makeCylinder(P.slider_thumbscrew_insert_hole / 2, P.insert_boss_depth,
-                                cq.Vector(R + boss_h, 0, 0), cq.Vector(-1, 0, 0))
+                                cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=ins))
     clrc = cq.Solid.makeCylinder(P.slider_thumbscrew_diameter / 2 + 0.2, R + boss_h,
-                                 cq.Vector(R + boss_h, 0, 0), cq.Vector(-1, 0, 0))
+                                 cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=clrc))
     return collar
 
