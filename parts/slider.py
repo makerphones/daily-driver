@@ -58,6 +58,7 @@ def make_slider() -> cq.Workplane:
     LZ = P.slider_clamp_height
     rr = P.slider_clamp_corner_r
     bev = P.slider_clamp_bevel
+    bevh = P.slider_clamp_bevel_head
     pd = P.slider_clamp_standoff
     bt = P.bow_thickness
     s = P.bow_endtab_hole_spacing / 2
@@ -73,10 +74,17 @@ def make_slider() -> cq.Workplane:
     except Exception as e:  # noqa: BLE001 — kernel may refuse on this OCC build
         print(f"  [warn] slider: barrel rim roundover skipped ({e}).")
 
-    # CLAMP LOZENGE — flat rounded stadium, BEVELED from the full inner face to a smaller
-    # outer face (the sleek edge). Lofts cleanly from two arc wires.
+    # CLAMP LOZENGE — flat rounded stadium, a shallow LENS in section: it eases to BOTH
+    # faces from a widest mid-band, so neither face presents a proud square lip. Three arc
+    # wires (lofts cleanly where fillets fail):
+    #   • HEAD side (-Y, y_in): an INSET eased lip (bevh) so the perimeter RECEDES from the
+    #     temple — the contact face is a smaller pillow, the widest section sits bevh behind
+    #     it. This is the ergonomic head-relief (was a full-size square edge pointing at skin).
+    #   • MID band (y_in+bevh): the full stadium — widest, set back from the head.
+    #   • OUTER (+Y, y_out, buried in the barrel): the existing cosmetic bevel (the sleek edge).
     pill = cq.Solid.makeLoft([
-        _lozenge_wire(y_in, LX, LZ, rr),
+        _lozenge_wire(y_in, LX - 2 * bevh, LZ - 2 * bevh, rr - bevh),
+        _lozenge_wire(y_in + bevh, LX, LZ, rr),
         _lozenge_wire(y_out, LX - 2 * bev, LZ - 2 * bev, rr - bev)])
     collar = collar.union(cq.Workplane(obj=pill))
 

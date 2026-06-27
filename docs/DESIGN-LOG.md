@@ -6,6 +6,25 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider ERGONOMICS pass (pill kept): head relief, thumbscrew→outboard, grab
+
+The ergonomics-before-polish work the last entry queued. A critique panel (frame-verify +
+3 lenses + synthesis) first corrected a load-bearing error baked into the old comments: the
+thumbscrew was NOT on an "outer/front" face in any useful sense — local +X maps (via T_yoke's
+−90° about Z) to global **−Y = front/back**, i.e. tucked along the temple in the sagittal
+plane, the *worst* reach while worn. The fixes below follow from the verified worn-pose frame
+(local −Y → head, +Y → straight outboard, +Z → up the post, X = the 44 mm front-back axis).
+
+- **Head/temple contact (done).** The lozenge's sleek bevel used to be on the *outer* face,
+  leaving the **head-side perimeter as the widest, proudest square lip pointing at the temple**.
+  Reversed it: the lozenge is now a shallow **lens** in section — a 3-wire loft that eases to
+  BOTH faces from a widest mid-band. The head face (−Y) is **inset `slider_clamp_bevel_head 3`**
+  so its perimeter recedes from skin (eased pillow, not a proud edge); the mid-band is the full
+  stadium set 3 mm back; the outer keeps its cosmetic bevel. The **cover plate** — which stands
+  proud of the lozenge and so *touches the head first* — now **drafts inward `slider_clamp_cover_ease
+  1.2`** on its head face into a soft central crown instead of a square rim. Build 2/2, gate
+  **0 HARD / 0 SOFT**; renders confirm the head side now eases back.
+
 ## 2026-06-26 — Slider: tube gusset (grown-in), pill kept; ergonomics is next
 
 Maker on the two open form choices: **keep the pill** (no flatter/teardrop) — improve it for

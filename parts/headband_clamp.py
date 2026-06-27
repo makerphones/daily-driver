@@ -51,11 +51,16 @@ def make_headband_clamp() -> cq.Workplane:
     ch = (z_top - z_lo) + 4.0
     rr = min(P.slider_clamp_corner_r - 1.0, ch / 2 - 0.5)
 
-    def wire(y):
-        plane = cq.Plane(origin=(0, y, z_mid), xDir=(1, 0, 0), normal=(0, 1, 0))
-        return _rounded_rect_wire(plane, cw, ch, rr)
+    ce = P.slider_clamp_cover_ease
 
-    cover = cq.Workplane(obj=cq.Solid.makeLoft([wire(clamp_face - ct), wire(clamp_face)]))
+    def wire(y, inset=0.0):
+        plane = cq.Plane(origin=(0, y, z_mid), xDir=(1, 0, 0), normal=(0, 1, 0))
+        return _rounded_rect_wire(plane, cw - 2 * inset, ch - 2 * inset, max(rr - inset, 1.0))
+
+    # The cover is the FIRST thing to touch the head (it stands proud of the lozenge by ct).
+    # Draft its head-side (-Y) face inward (ce) so the rim recedes from the temple → a soft
+    # central crown instead of a square plate edge. Band-side stays full (seats on the lozenge).
+    cover = cq.Workplane(obj=cq.Solid.makeLoft([wire(clamp_face - ct, ce), wire(clamp_face)]))
 
     # Two M3 clearance holes (axis Y) at the prong-tip hole pitch + bolt height.
     for x in (+s, -s):

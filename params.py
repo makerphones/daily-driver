@@ -337,6 +337,9 @@ class Params:
     slider_clamp_height: float = 22.0      # SET  lozenge height (Z)
     slider_clamp_corner_r: float = 9.0     # SET  lozenge corner radius (the rounded ends)
     slider_clamp_bevel: float = 2.0        # SET  perimeter bevel inner→outer face (the sleek "angle")
+    slider_clamp_bevel_head: float = 3.0   # SET  HEAD-side relief: the inner (-Y) face is INSET this much so its
+                                           #   perimeter RECEDES from the temple (eased pillow, not a proud square
+                                           #   lip). Widest section sits this far behind the contact face. Ergo pass.
     slider_clamp_standoff: float = 6.0     # SET  lozenge depth (Y) proud of the barrel; hosts the inserts
     slider_clamp_z_lo: float = -6.0        # SET  recess/cover bottom Z (holds the prong tip)
     slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes)
@@ -344,6 +347,8 @@ class Params:
     slider_clamp_rib_height: float = 3.0   # SET  rib Z extent (short — registers, doesn't block the exit)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
     slider_clamp_cover_thickness: float = 3.0  # SET  the inner cover plate thickness
+    slider_clamp_cover_ease: float = 1.2   # SET  the cover (first thing to touch the head) drafts inward this much
+                                           #   on its head-side face → a soft central crown, rim off the skin. Ergo pass.
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first
