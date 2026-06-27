@@ -21,6 +21,8 @@ Frame: z=0 at the barrel MID; lozenge centred there; bolts at hole_z. ESTIMATES 
 Rounded outlines are hand-built arc wires (this OCC build's 2D/3D fillets fail) and lofted.
 """
 
+import math
+
 import cadquery as cq
 from params import P
 
@@ -77,6 +79,20 @@ def make_slider() -> cq.Workplane:
         _lozenge_wire(y_in, LX, LZ, rr),
         _lozenge_wire(y_out, LX - 2 * bev, LZ - 2 * bev, rr - bev)])
     collar = collar.union(cq.Workplane(obj=pill))
+
+    # GUSSETS — fair the tube into the lozenge so it reads grown-in, not stuck-on. A small
+    # triangular web on each side of the vertical tube↔lozenge junction; each web buries one
+    # vertex deep in the lozenge AND one in the tube wall so the union stays one solid.
+    xj = math.sqrt(max(R * R - y_out * y_out, 1.0))      # where the tube crosses the outer face
+    g = P.slider_tube_gusset
+    gz = P.slider_tube_gusset_z / 2
+    for sx in (+1, -1):
+        tri = [(sx * (xj + g), y_out - 1.5),             # outboard along the face, into the lozenge
+               (sx * (xj - 2.0), y_out - 1.5),           # corner, buried in both bodies
+               (sx * (R - 2.0), y_out + 3.0)]            # up into the tube wall (clear of the bore)
+        web = (cq.Workplane("XY").workplane(offset=-gz)
+               .polyline(tri).close().extrude(2 * gz))
+        collar = collar.union(web)
 
     # RECESS — shallow pocket in the lozenge's inner face the band's prongs register into.
     rec_d = bt + 0.4

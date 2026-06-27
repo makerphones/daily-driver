@@ -6,6 +6,30 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider: tube gusset (grown-in), pill kept; ergonomics is next
+
+Maker on the two open form choices: **keep the pill** (no flatter/teardrop) — improve it for
+**ergonomics** first, and keep the thumbscrew that locks the post. **Fair the tube in with a
+small gusset** so it looks grown-in, not stuck-on.
+
+- **Tube gusset (done):** a small triangular web on each side of the vertical tube↔lozenge
+  junction (`slider_tube_gusset 5`, `_z 14`), each burying one vertex deep in the lozenge
+  and one in the tube wall so the union stays one solid (no tangent-kiss split). The tube
+  now flares into the body instead of meeting the back face as a bare cylinder. Built by
+  construction (extruded triangle), clear of the post bore. Pill shape + M3 thumbscrew
+  unchanged. Build **14/14**, gate **0 HARD / 0 SOFT**.
+- **Promoted** this build to the website's *current build* channel (`promote.py`).
+
+**NEXT SESSION — lead item: slider ERGONOMICS.** The maker wants ergonomics improved before
+any more aesthetic shaping (pill stays). Open questions to work through: (1) head/temple
+contact — does the inner cover/lozenge sit comfortably, any edges to ease; (2) hand access to
+the height-adjust **thumbscrew** — is it reachable and pinchable with the headphone on/off,
+is the front face the right spot vs. the outer face; (3) the adjust motion itself
+(loosen → slide the block on the post → retighten) — is the block grabbable and the travel
+sensible. Then the deferred fillet/chamfer pass. Prong-tip rounding still pending.
+
+---
+
 ## 2026-06-26 — Slider v0.9: flat rounded LOZENGE (Beyerdynamic end-cap form)
 
 Maker: the v0.8 block was "closer but a little clunky." Reference = the real Beyerdynamic

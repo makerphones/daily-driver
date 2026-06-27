@@ -317,6 +317,8 @@ class Params:
     slider_collar_diameter: float = 14.0      # SET  barrel OD around the post bore (Ø8.4 bore + 2.8 wall)
     slider_collar_height: float = 18.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
+    slider_tube_gusset: float = 5.0           # SET  gusset run that fairs the tube into the lozenge (grown-in)
+    slider_tube_gusset_z: float = 14.0        # SET  gusset extent along the tube height (Z)
     # Headband CLAMP (Beyer-style two-piece, OFFSET-OUTER layout). The post-bore TUBE
     # (the barrel) is the OUTER body — the band attaches on the barrel's INNER (−Y,
     # head-side) face, so the rod + tube ride OUTSIDE the metal band (maker's call). The
