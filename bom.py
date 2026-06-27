@@ -28,6 +28,8 @@ def bom_rows():
     baffle_screws = P.baffle_screw_count * EARS          # M3, baffle → frame bosses
     clamp_screws = P.driver_clamp_count * EARS           # M3, driver clamp ring → baffle back
     pivot_screws = P.pivot_boss_count * EARS             # M3 shoulder screws (the tilt joint)
+    pivot_nylon_washers = 2 * P.pivot_boss_count * EARS  # 2/joint: head-side + boss-side
+    pivot_wave_washers = P.pivot_boss_count * EARS       # 1/joint: tilt-hold preload
     thumbscrews = EARS                                   # 4-40 knurled thumbscrew, slider height lock (1/side)
     m3_inserts = (P.baffle_screw_count + P.driver_clamp_count + P.pivot_boss_count) * EARS
     ts_inserts = EARS                                    # one 8-32 heat-set per slider, for the thumbscrew
@@ -43,8 +45,12 @@ def bom_rows():
          "Dekoni Audio", "$30–45", "ESTIMATE"),
         ("Beyerdynamic Metal Head Bow (or DIY 1095 spring steel)", "1",
          "north-america.beyerdynamic.com", "~$11", "REF"),
-        (f"M3 shoulder screw — yoke↔cup pivot (shoulder ⌀{P.shoulder_screw_shoulder_diameter:.0f} mm)",
+        (f"M3 shoulder screw — yoke↔cup pivot, ISO 7379 Ø{P.shoulder_screw_shoulder_diameter:.0f} shoulder × M3 (eye rides the shoulder)",
          f"{pivot_screws}", "McMaster-Carr / hardware", "~$1.50 ea (~$6)", "ESTIMATE"),
+        ("Nylon flat washer, M3 — pivot tilt stack (head-side + boss-side; protects PETG + adds drag)",
+         f"{pivot_nylon_washers}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
+        ("M3 wave/Belleville washer — pivot tilt preload (cup holds its angle, no detent)",
+         f"{pivot_wave_washers}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
         (f"M3 socket-head screw, ~{int(P.baffle_thickness)}–10 mm — baffle → frame",
          f"{baffle_screws}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
         ("M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle",

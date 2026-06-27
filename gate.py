@@ -205,11 +205,21 @@ def main():
     # --- Pivot HARDWARE FIT — validated against the real M3 shoulder screw +
     #     heat-set insert (parts/hardware.py), not a placeholder. ---
 
-    # 6a. Shoulder must span the yoke eye so the eye pivots on the SMOOTH shoulder,
-    #     not the thread.
-    r.hard(P.shoulder_screw_shoulder_length >= P.yoke_arm_thickness,
-           "pivot-shoulder-spans-eye",
-           f"shoulder {P.shoulder_screw_shoulder_length} mm >= eye {P.yoke_arm_thickness} mm")
+    # 6a. Shoulder must span the yoke eye + the tilt-friction WASHER STACK so the eye pivots on
+    #     the SMOOTH shoulder (not the thread) and is captured but never clamped.
+    washer_stack = 2 * P.pivot_nylon_washer_thickness + P.pivot_wave_washer_height
+    r.hard(P.shoulder_screw_shoulder_length >= P.yoke_arm_thickness + washer_stack,
+           "pivot-shoulder-spans-stack",
+           f"shoulder {P.shoulder_screw_shoulder_length} mm >= eye {P.yoke_arm_thickness} + "
+           f"washers {washer_stack:.1f} mm")
+
+    # 6a-2. The eye BORE must CLEAR the shoulder OD or the eye can't ride it. This was the latent
+    #       bug — a Ø3.4 (M3-clearance) bore on a Ø4.0 shoulder — that the gate previously missed.
+    #       Pairs with the eye-web check below: the bore admits the shoulder AND the web survives it.
+    r.hard(P.yoke_pivot_hole_diameter >= P.shoulder_screw_shoulder_diameter + 0.15,
+           "pivot-bore-clears-shoulder",
+           f"eye bore {P.yoke_pivot_hole_diameter} mm >= shoulder "
+           f"{P.shoulder_screw_shoulder_diameter} + 0.15 mm clr")
 
     # 6b. Thread fully engages the insert and doesn't bottom out past it
     #     (geometric: thread solid ∩ insert envelope).

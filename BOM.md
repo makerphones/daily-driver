@@ -13,7 +13,9 @@ project rule: never present a guessed price as confirmed).
 | 40 mm dynamic driver, 32 Ω | 2 | Parts Express / Madisound | $8–18 | ESTIMATE |
 | Dekoni Universal 100 mm ear pads (Beyer-type) | 1 pair | Dekoni Audio | $30–45 | ESTIMATE |
 | Beyerdynamic Metal Head Bow (or DIY 1095 spring steel) | 1 | north-america.beyerdynamic.com | ~$11 | REF |
-| M3 shoulder screw — yoke↔cup pivot (shoulder ⌀4 mm) | 4 | McMaster-Carr / hardware | ~$1.50 ea (~$6) | ESTIMATE |
+| M3 shoulder screw — yoke↔cup pivot, ISO 7379 Ø4 shoulder × M3 (eye rides the shoulder) | 4 | McMaster-Carr / hardware | ~$1.50 ea (~$6) | ESTIMATE |
+| Nylon flat washer, M3 — pivot tilt stack (head-side + boss-side; protects PETG + adds drag) | 8 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
+| M3 wave/Belleville washer — pivot tilt preload (cup holds its angle, no detent) | 4 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | M3 socket-head screw, ~6–10 mm — baffle → frame | 8 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | Knurled knob / large-head thumb screw, 8-32, ⌀5/8" head — slider height lock (presses the shoe) | 2 | McMaster-Carr (knurled knobs / thumb-screw knobs) | ~$2 ea | ESTIMATE |

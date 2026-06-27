@@ -149,8 +149,14 @@ class Params:
     shoulder_screw_shoulder_diameter: float = 4.0  # ESTIMATE  smooth shoulder OD (≈4 on M3)
     shoulder_screw_shoulder_length: float = 8.0    # ESTIMATE  bearing length the eye rides
     shoulder_screw_thread_length: float = 5.0      # ESTIMATE  thread into insert (<= insert len)
-    shoulder_screw_head_diameter: float = 6.5      # ESTIMATE  head OD
-    shoulder_screw_head_height: float = 3.0        # ESTIMATE  head height
+    shoulder_screw_head_diameter: float = 7.0      # REF  ISO 7379-4-M3 head OD (was 6.5 est; caliper-confirm)
+    shoulder_screw_head_height: float = 3.0        # ESTIMATE  head height (tall cap — washer stack hides it)
+    # Pivot tilt-friction WASHER STACK (bought): [head | M3 wave/Belleville | nylon flat | eye |
+    # nylon flat | boss]. Nylon protects the PETG from the steel head + adds drag; the wave washer
+    # preloads the stack so the cup HOLDS its tilt angle (a friction hinge). NO bushing/spacer — the
+    # shoulder LENGTH is the spacer and the eye rides the smooth Ø4 shoulder directly.
+    pivot_nylon_washer_thickness: float = 0.5  # SET  thin nylon flat washer (×2 per side: head + boss face)
+    pivot_wave_washer_height: float = 0.6      # SET  M3 wave washer compressed/working height (the preload)
 
     # ---- Pivot over-rotation hard stop — REMOVED 2026-06-26 ------------------
     # The cup now rotates FREELY in the yoke (Grado-style — free pivot, no detent or
@@ -282,8 +288,9 @@ class Params:
                                           #   2.0 adversarially verified, 2.5 also builds — taste knob). NOT a
                                           #   3D fillet: the rounding is in the swept 2D section.
     yoke_fork_height: float = 55.0        # ESTIMATE  fork_height (pivot → hub)
-    yoke_pivot_hole_diameter: float = 3.4  # ESTIMATE  pivot_hole (M3 clearance)
-    yoke_pivot_eye_diameter: float = 12.0  # ESTIMATE  pad around pivot hole (12 hosts the stop slot)
+    yoke_pivot_hole_diameter: float = 4.2  # SET  eye bore = Ø4.0 shoulder + 0.2 running fit (was 3.4 = M3
+                                           #   clearance — BUG: the Ø4 shoulder couldn't enter a Ø3.4 hole).
+    yoke_pivot_eye_diameter: float = 12.5  # SET  eye pad OD — grown 12→12.5 so the web stays ≥4 with the Ø4.2 bore
     pivot_tilt_degrees: float = 20.0      # ESTIMATE  tilt_range (±)
 
     # ---- Yoke↔slider vertical adjustment (Grado HP1000-style: post + thumbscrew) -

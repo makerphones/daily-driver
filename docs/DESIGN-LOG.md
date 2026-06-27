@@ -6,6 +6,36 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Cup↔yoke pivot: fix the eye-bore BUG + tilt-friction washer stack
+
+Maker asked to double-check the tilt pivot mount + whether bushings/spacers are needed. Investigation
+(2 research lenses + eval) confirmed the scheme is sound — M3 SHOULDER SCREW through the yoke eye into
+an M3 heat-set in the cup boss, eye meant to ride the smooth Ø4 shoulder (free ±20°, Grado-style) — but
+found a real **latent BUG**: the eye bore was **Ø3.4** (M3 clearance) while the shoulder is **Ø4.0**, so
+the Ø4 shoulder physically can't enter the hole — the eye couldn't ride the shoulder at all. The gate
+*missed it* (it checked the shoulder LENGTH spans the eye, never the bore-vs-shoulder DIAMETER).
+
+- **Eye-bore fix.** `yoke_pivot_hole_diameter 3.4 → 4.2` (Ø4 shoulder + 0.2 running fit). That drops the
+  eye web to (12−4.2)/2 = 3.9 < the 4.0 structural floor, so grew `yoke_pivot_eye_diameter 12 → 12.5`
+  (web 4.15). Corrected `shoulder_screw_head_diameter 6.5 → 7.0` (ISO 7379-4-M3 actual).
+- **New gate check** `pivot-bore-clears-shoulder` (bore ≥ shoulder + 0.15) — the missing coupled
+  constraint, paired with the eye-web check. Also folded the washer stack into the spans check
+  (`pivot-shoulder-spans-stack`: shoulder 8 ≥ eye 6 + washers 1.6).
+- **Bushings/washers (maker's Q): NO bushing, NO spacer — YES washers.** A bushing is overkill (low-load,
+  occasionally-tilted pivot on polished steel won't wear loose, and it'd force the eye bigger). The
+  shoulder LENGTH is the spacer (captures the eye without clamping). Added a **tilt-friction washer
+  stack**: `[head | M3 wave/Belleville | nylon flat | eye | nylon flat | boss]` — nylon protects the PETG
+  from the steel head + adds drag; the wave washer preloads so the cup HOLDS its tilt angle (friction
+  hinge, no detent). New params `pivot_nylon_washer_thickness 0.5`, `pivot_wave_washer_height 0.6`. BOM:
+  +8 nylon washers, +4 wave washers.
+- **Screw choice (maker's Q: low-profile wide allen + partial thread):** no single M3 part is low-head
+  AND wide AND allen AND partial-thread — pick two. Kept the **ISO 7379 Ø4×M3 shoulder screw** (true
+  partial-thread + ground Ø4 bearing = what matters for the pivot); its taller cap head is hidden by the
+  washer stack. (Low-wide heads — DIN 7984 / ISO 7380 button — are fully threaded; rejected.)
+
+Build 16/16, gate **0 HARD / 0 SOFT**. Washer stack is BOM/gate-spec'd but not yet drawn in the assembly
+viz (a manual nicety for later). The fix is yoke-side only; the cup boss is unchanged.
+
 ## 2026-06-27 — Post → bought SHOULDER SCREW (no rod machining); 3 parts → 1 fastener
 
 Maker: drilling+tapping a tiny Ø6 rod end is fiddly — is there a PRE-MADE part? Yes, and it's
