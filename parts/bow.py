@@ -128,6 +128,23 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
             drill = cq.Solid.makeCylinder(hole_r, 4.0, base0 + cq.Vector(0, y, 0), radial)
             band = band.cut(cq.Workplane(obj=drill))
 
+    # 4. PRONG-TIP ROUNDING — clip the two outer corners of each prong tip (a 45° chamfer per
+    #    corner, via the radial cutter) so the rails end rounded, not square. The clip (tipr)
+    #    is shorter than the hole inset, so the tip hole stays clear. Reference body, but it's
+    #    what the manual/renders show. Only when the band is open into separate prongs.
+    if P.bow_pattern_enabled:
+        tipr = P.bow_prong_tip_r
+        a_lo, a_hi = 90 - half_arc, 90 + half_arc
+        yo = W / 2                              # prong OUTER edge
+        yi = W / 2 - P.bow_rail_width           # prong INNER edge
+        for a_deg, sgn_in in ((a_lo, +1.0), (a_hi, -1.0)):   # +s points toward the band centre
+            for sgn_y in (+1.0, -1.0):                       # the two prongs (±Y rails)
+                yO, yI = sgn_y * yo, sgn_y * yi
+                band = band.cut(_radial_cutter(                # outer corner
+                    [(0, yO), (sgn_in * tipr, yO), (0, yO - sgn_y * tipr)], a_deg, R))
+                band = band.cut(_radial_cutter(                # inner corner
+                    [(0, yI), (sgn_in * tipr, yI), (0, yI + sgn_y * tipr)], a_deg, R))
+
     return band
 
 

@@ -392,6 +392,8 @@ class Params:
     # prong tip — and are braced only by a CENTRAL cut-out (no solid end tab).
     bow_endtab_length: float = 28.0       # ESTIMATE  bare prong region at each end (no pad/bracing there)
     bow_rail_width: float = 7.0           # SET  rail/prong width (Y) — wide enough to host the end hole
+    bow_prong_tip_r: float = 2.0          # SET  45° clip on each prong-tip corner so the rails end rounded, not square
+                                          #   (< bow_endtab_hole_inset 5, so the tip hole stays clear)
     bow_strut_width: float = 3.5          # ESTIMATE  X-brace diagonal strut width
     # Central X cut-out matching the real metal bow (maker's photo): the X cells live
     # in a CENTRAL region (developed length bow_pattern_length), NOT across the whole

@@ -20,6 +20,11 @@ kernel is happy with):
 - **Thumbscrew insert mouth (done):** a small `slider_boss_chamfer 0.8` countersink (kept ≤ the
   1.5 mm boss wall) eases the heat-set start. Built in the same place the boss now lives (no
   chamfer-then-move). Build 1/1, gate **0 HARD / 0 SOFT**.
+- **Bow prong tips (done):** the two rails ended in square radial corners; clipped each prong
+  tip's outer + inner corner with a 45° chamfer (`bow_prong_tip_r 2.0`) via the existing radial
+  cutter, so they end rounded. The clip is shorter than the 5 mm tip-hole inset, so the holes
+  stay clear. Bow is a reference body (STEP-only) but it's what the manual/renders show. Gate
+  **0 HARD / 0 SOFT** (bow-arc/flex unchanged).
 
 ## 2026-06-26 — Slider ERGONOMICS pass (pill kept): head relief, thumbscrew→outboard, grab
 
