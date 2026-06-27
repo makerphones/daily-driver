@@ -6,6 +6,20 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Bow ends: two separate PRONGS (not a solid tab), per the flat-lay photo
+
+The maker's flat-lay photo (finally clear): the real band's END is two SEPARATE prongs —
+the two rails running all the way out — with a big open GAP between them and a screw hole
+near each prong tip. My end was a solid tab with 2 punched holes (wrong, flagged
+repeatedly). Fixed: the between-rails open region now extends to the very ends (no solid
+tab), so each end is two prongs with the gap; the 2 holes moved to the rail CENTRES (the
+prong tips, `bow_endtab_hole_spacing` 22→26 = bow_width − rail_width); rails widened to 7
+to host the holes. The slider clamp + cover + rib follow automatically (the rib registers
+in the big gap between the prongs). Central X bracing unchanged. Build **14/14**, gate
+**0 HARD / 0 SOFT**. Prong-tip rounding (the photo's rounded ends) is a cosmetic follow-up.
+
+---
+
 ## 2026-06-26 — Headband junction corrected to an IN-LINE stack
 
 The first junction pass (entry below) mounted the band OUTBOARD of the post and shifted

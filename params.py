@@ -350,15 +350,16 @@ class Params:
                                           #   (~156 mm cups). The band springs open from the
                                           #   63.5 at-rest; developed length is conserved.
     bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia (M3 clr)
-    bow_endtab_hole_spacing: float = 22.0  # ESTIMATE/REF  pitch of the 2 end holes ACROSS the width.
-                                           #   Widened 14→22 to sit them near the band's OUTER edges
-                                           #   (the real band's holes are outboard, not central) — exact
-                                           #   layout TBD from the photo/measured part. Slider follows this.
-    bow_endtab_width: float = 33.0        # ESTIMATE/REF  end-tab width (= strap width)
-    # X-truss cutout (the maker's reference band): two outer rails braced by
-    # crossing diagonal struts over the central span; solid end tabs carry the holes.
-    bow_endtab_length: float = 28.0       # ESTIMATE  solid end-tab arc length (holds the 2 holes)
-    bow_rail_width: float = 4.0           # ESTIMATE  outer rail width (Y) flanking the truss
+    bow_endtab_hole_spacing: float = 26.0  # SET  pitch of the 2 end holes = the two RAIL CENTRES
+                                           #   (= bow_width − bow_rail_width). The real band's end is two
+                                           #   separate PRONGS (the rails), one hole near each prong tip,
+                                           #   with the big open gap between — NOT a solid tab. Slider follows.
+    bow_endtab_width: float = 33.0        # ESTIMATE/REF  band strap width
+    # End structure (real band, maker's photo): the two outer RAILS run all the way out
+    # to the ends as separate PRONGS — a big open gap between them, a screw hole near each
+    # prong tip — and are braced only by a CENTRAL cut-out (no solid end tab).
+    bow_endtab_length: float = 28.0       # ESTIMATE  bare prong region at each end (no pad/bracing there)
+    bow_rail_width: float = 7.0           # SET  rail/prong width (Y) — wide enough to host the end hole
     bow_strut_width: float = 3.5          # ESTIMATE  X-brace diagonal strut width
     # Central X cut-out matching the real metal bow (maker's photo): the X cells live
     # in a CENTRAL region (developed length bow_pattern_length), NOT across the whole

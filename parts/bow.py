@@ -71,23 +71,23 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     W = P.bow_width
     band = _arc_band(R - th / 2, R + th / 2, half_arc, W)
 
-    # 2. Open the band like the real metal bow (maker's photo): two outer RAILS run the
-    #    full length, the space BETWEEN them is HOLLOW, the solid END TABS carry the
-    #    holes, and a single central X braces the middle. So: (a) cut the between-rails
-    #    space fully open over the spans OUTSIDE the central X, then (b) cut the X's
-    #    four triangular voids in the centre, leaving the crossing struts.
+    # 2. Open the band like the real metal bow (maker's flat-lay photo): two outer RAILS
+    #    run the FULL length and out to the ends as two separate PRONGS — the space
+    #    BETWEEN them is HOLLOW all the way to the tips (a big open gap), one screw hole
+    #    near each prong tip, and a single central X braces the middle. There is NO solid
+    #    end tab. So: (a) cut the between-rails space fully open over the spans outside the
+    #    central X (right out to the ends), then (b) cut the X's four triangular voids.
     if P.bow_pattern_enabled:
         a_start, a_end = 90 - half_arc, 90 + half_arc
-        tab_ang = math.degrees(P.bow_endtab_length / R)          # solid end-tab span
         yin = W / 2 - P.bow_rail_width                           # rail inner edge (y)
         sw = P.bow_strut_width
         half_pat = math.degrees((P.bow_pattern_length / 2) / R)  # central X half-span (length-based)
         x_lo, x_hi = 90 - half_pat, 90 + half_pat
-        btab_lo, btab_hi = a_start + tab_ang, a_end - tab_ang    # span between the end tabs
 
-        # (a) hollow between the rails over the open spans (X centre + tabs excluded),
-        #     cut in short segments so the straight cutter follows the arc.
-        for o_lo, o_hi in ((btab_lo, x_lo), (x_hi, btab_hi)):
+        # (a) hollow between the rails over the open spans — ALL THE WAY OUT to the ends
+        #     (only the central X is left), so each end is two separate prongs with a big
+        #     gap. Cut in short segments so the straight cutter follows the arc.
+        for o_lo, o_hi in ((a_start, x_lo), (x_hi, a_end)):
             if o_hi - o_lo < 0.5:
                 continue
             nseg = max(1, int(math.ceil((o_hi - o_lo) / 7.0)))
@@ -113,11 +113,10 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
             for v in voids:
                 band = band.cut(_radial_cutter(v, a_c, R))
 
-    # 3. End-tab MOUNTING HOLES — the band bolts to the slider's inside face with
-    #    two M3 screws per end. Two holes side-by-side ACROSS the tab width (the
-    #    pair resists the tab twisting, and the slider's two bores then clear its
-    #    central swivel bore), set in from each tip. Drilled radially through the
-    #    band thickness. Layout is ESTIMATE — confirm against the real tab.
+    # 3. PRONG-TIP mounting holes — one near each prong tip (at the two RAIL CENTRES,
+    #    pitch bow_endtab_hole_spacing), set in from the tip, drilled radially through the
+    #    band thickness. The band bolts to the slider clamp with two M3 screws per end; the
+    #    rib registers in the big gap between the prongs. Layout from the maker's flat-lay.
     hole_r = P.bow_endtab_hole_diameter / 2
     s = P.bow_endtab_hole_spacing / 2                    # half-pitch across width (y)
     inset = math.degrees(10.0 / R)                       # holes set in from the tip
