@@ -135,16 +135,16 @@ def make_yoke() -> cq.Workplane:
         piece = eye.union(arm)
         yoke = piece if yoke is None else yoke.union(piece)
 
-    # Junction SOCKET-BOSS for the bought adjustment ROD. The arms tie into a short boss at the
-    # apex; a bought Ø6 304-SS ground SHAFT epoxy-bonds into a blind SOCKET in it and rises as the
-    # post — sliding + swivelling in the slider (Grado HP1000-style). A METAL rod is a smooth,
-    # durable bearing the printed barrel rides on (the plastic is the sacrificial surface), and
-    # separating it lets THIS fork print flat. The boss OD (Ø13) is wider than the slider barrel
-    # (Ø12) so it doubles as the rod's BOTTOM END-STOP — a loosened slider bottoms on it and can't
-    # ride off (the screw-on TOP knob stops it the other way). The SOCKET is bored with the pivots.
+    # Junction MOUNT-BOSS for the bought adjustment post — an ISO 7379 Ø6×M5 SHOULDER SCREW. The
+    # arms tie into a short boss at the apex; an M5 HEAT-SET goes in the boss, the screw's M5 thread
+    # screws into it, and its ground Ø6 SHOULDER rises as the post (the slider slides + swivels on
+    # it — a smooth metal bearing, the plastic barrel is sacrificial; no rod machining). Separating
+    # the post lets THIS fork print flat. The boss OD (Ø13) is wider than the slider barrel (Ø12), so
+    # the shoulder seats on the boss top face and the boss is the BOTTOM END-STOP — a loosened slider
+    # bottoms on it and can't ride off (the screw HEAD stops it the other way). M5 bore cut w/ pivots.
     bd = P.yoke_socket_boss_diameter
-    boss_top = hub_z + 4                          # where the exposed rod starts (unchanged from the old post)
-    boss_bot = boss_top - P.yoke_rod_socket_depth - 2.0   # 2 mm floor below the socket
+    boss_top = hub_z + 4                          # boss top = where the shoulder seats / exposed post starts
+    boss_bot = boss_top - P.yoke_rod_mount_depth
     hub = (
         cq.Workplane("XY").workplane(offset=boss_bot)
         .circle(bd / 2).extrude(boss_top - boss_bot)
@@ -165,13 +165,14 @@ def make_yoke() -> cq.Workplane:
         )
         yoke = yoke.cut(bore)
 
-    # SOCKET — blind bore in the boss for the bought Ø6 rod (epoxy slip-bond). Cut after unions.
-    socket = (
+    # M5 HEAT-SET bore in the boss for the shoulder screw's M5 thread (recessed below the boss top
+    # so the screw's Ø6 shoulder seats on the full-diameter boss face, clear of the thread undercut).
+    insert = (
         cq.Workplane("XY").workplane(offset=hub_z + 4 + 1)
-        .circle((P.yoke_post_diameter + P.yoke_rod_socket_clearance) / 2)
-        .extrude(-(P.yoke_rod_socket_depth + 1))
+        .circle(P.m5_insert_hole_diameter / 2)
+        .extrude(-(P.yoke_rod_thread_length + 2))
     )
-    yoke = yoke.cut(socket)
+    yoke = yoke.cut(insert)
 
     # (Over-rotation stop slot REMOVED 2026-06-26 — the cup now rotates freely in the
     # yoke, Grado-style. The eye is a clean bored cylinder; no notch weakening it.)

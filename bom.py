@@ -32,8 +32,8 @@ def bom_rows():
     m3_inserts = (P.baffle_screw_count + P.driver_clamp_count + P.pivot_boss_count) * EARS
     ts_inserts = EARS                                    # one 8-32 heat-set per slider, for the thumbscrew
     shoes = EARS                                         # one pressure shoe per slider (printed/Delrin)
-    rods = EARS                                          # bought Ø6 ground shaft = the adjustment post (1/side)
-    rod_stops = EARS                                     # rod top-stop knob (1/side)
+    rods = EARS                                          # shoulder screw = the adjustment post (1/side)
+    m5_inserts = EARS                                    # M5 heat-set in the fork → shoulder screw (1/side)
 
     return [
         # item, qty, source, price, flag
@@ -53,12 +53,10 @@ def bom_rows():
          f"{thumbscrews}", "McMaster-Carr (knurled knobs / thumb-screw knobs)", "~$2 ea", "ESTIMATE"),
         ("Slider pressure shoe — printed PETG or Delrin blank (screw → shoe → rod, no marring)",
          f"{shoes}", "own printer / Delrin offcut", "~$0", "ESTIMATE"),
-        ("Yoke adjustment rod — Ø6 × ~65 mm, 304-SS ground shaft (epoxy into the fork socket; top faced + tapped M3)",
-         f"{rods}", "McMaster-Carr (rotary shafts / dowel pins)", "~$2 ea", "ESTIMATE"),
-        ("Rod top-stop knob — small M3 knurled knob/thumb nut (anti-fall-out; screws into the rod top)",
-         f"{rod_stops}", "McMaster-Carr (knurled knobs)", "~$1.50 ea", "ESTIMATE"),
-        ("Epoxy — bond the rod into the fork socket", "small",
-         "hardware", "~$5", "ESTIMATE"),
+        ("Shoulder screw — ISO 7379 Ø6 shoulder × M5 × 50 mm, 18-8 SS — the adjustment post (head = top stop, no rod machining)",
+         f"{rods}", "McMaster-Carr (metric stainless socket shoulder screws)", "~$3 ea", "ESTIMATE"),
+        ("M5 brass heat-set insert — fork → shoulder-screw thread",
+         f"{m5_inserts}", "McMaster-Carr / Amazon", "~$1 (set)", "ESTIMATE"),
         (f"M3 brass heat-set insert (⌀{P.heatset_insert_diameter:.1f} OD × {P.heatset_insert_length:.1f})",
          f"{m3_inserts}", "McMaster-Carr / Amazon", "~$4–5 (set)", "ESTIMATE"),
         ("8-32 brass heat-set insert — slider thumbscrew",

@@ -45,7 +45,7 @@ SUBASSEMBLIES = {
         {"id": "earpad", "label": "Earpads",
          "nodes": ["earpad_R", "earpad_L"]},
         {"id": "gimbal", "label": "Gimbal",
-         "nodes": ["yoke_R", "yoke_L", "yoke_rod_R", "yoke_rod_L", "rod_stop_R", "rod_stop_L",
+         "nodes": ["yoke_R", "yoke_L", "yoke_rod_R", "yoke_rod_L",
                    "insert_p_R", "insert_p_L", "insert_m_R",
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
         {"id": "headband", "label": "Headband",
@@ -135,13 +135,10 @@ def make_assembly() -> cq.Assembly:
     yoke = T_yoke(make_yoke())
     # Bought Ø6 adjustment ROD — epoxy-bonded into the fork socket, rising as the post. Built from
     # its socket floor (z=0); shift up so it seats in the socket, then ride with the yoke.
+    # The post is a bought ISO 7379 shoulder screw: M5 thread into the fork boss, Ø6 shoulder is the
+    # post, head is the top stop. Built from z=0 = the shoulder seat (boss top); ride with the yoke.
     from parts.yoke_rod import make_yoke_rod
-    rod = T_yoke(make_yoke_rod().translate(
-        (0, 0, P.yoke_fork_height + 4 - P.yoke_rod_socket_depth)))
-    # TOP-STOP knob screwed into the rod's tapped top end (anti-fall-out — catches the slider top).
-    from parts.rod_stop import make_rod_stop
-    rod_stop = T_yoke(make_rod_stop().translate(
-        (0, 0, P.yoke_fork_height + 4 + P.yoke_post_length)))
+    rod = T_yoke(make_yoke_rod().translate((0, 0, P.yoke_fork_height + 4)))
     # Slider rides the yoke post; the post slides + swivels the full barrel height and may
     # poke past it (nothing stacks on the post now). Barrel TOP at post_top → barrel CENTRE
     # (the slider frame's z=0, where the clamp sits) at post_top − h/2.
@@ -177,10 +174,8 @@ def make_assembly() -> cq.Assembly:
         asm.add(solid, name=f"{nm}_R", color=col)
         asm.add(mirror_L(solid), name=f"{nm}_L", color=col)
 
-    asm.add(rod, name="yoke_rod_R", color=STEEL)           # bought Ø6 adjustment rod (the post)
+    asm.add(rod, name="yoke_rod_R", color=STEEL)           # bought shoulder screw (post + head top-stop)
     asm.add(mirror_L(rod), name="yoke_rod_L", color=STEEL)
-    asm.add(rod_stop, name="rod_stop_R", color=SCREW_C)    # top-stop knob (anti-fall-out)
-    asm.add(mirror_L(rod_stop), name="rod_stop_L", color=SCREW_C)
     asm.add(bow, name="bow_ref", color=STEEL)              # shared headband (REF)
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
     asm.add(earpad, name="earpad_R", color=PAD_C)          # round pad mockup (bring your own)

@@ -128,6 +128,7 @@ class Params:
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore
+    m5_insert_hole_diameter: float = 6.4  # ESTIMATE  M5 brass heat-set install bore (fork→shoulder-screw; verify vs insert)
     m3_clearance_hole: float = 3.4        # M3 free-fit through-hole (standard)
     insert_boss_diameter: float = 7.0     # ESTIMATE  generic insert-boss OD
     insert_boss_depth: float = 6.0        # ESTIMATE  insert/bore depth
@@ -293,19 +294,20 @@ class Params:
     # locks both height + swivel by friction. (Replaces the old fixed swivel hub/bore;
     # Beyer's friction-clip in the block is the alternative, noted in the LOG.)
     yoke_post_diameter: float = 6.0       # SET  Ø6 BOUGHT 304-SS ground shaft (slide + swivel bearing; was Ø8 — too chunky)
-    yoke_post_length: float = 52.0        # SET  EXPOSED rod length above the boss. >= barrel (18) +
-                                          #   adjust travel (18) + grip margin, so the slider stays fully
-                                          #   engaged across the whole head-size range (kept full — maker's call).
-    # The post is a BOUGHT Ø6 304-SS ground SHAFT epoxy-bonded into a SOCKET in the fork (was a
-    # printed integral post — SEPARATED so the bearing is smooth metal and the fork prints flat).
-    yoke_rod_socket_depth: float = 10.0     # SET  rod engagement bonded into the fork socket
-    yoke_rod_socket_clearance: float = 0.2  # SET  socket bore = rod + this (epoxy slip-bond gap)
-    yoke_socket_boss_diameter: float = 13.0 # SET  boss OD (> barrel Ø12 → doubles as the rod's BOTTOM end-stop)
-    # TOP-STOP knob — a small bought knurled knob (M3 stud) threaded into the rod's tapped TOP end.
-    # Wider than the bore so it catches the slider's top face → the cup can't slide off the rod when
-    # the lock is loose (the boss is the bottom stop; this is the top stop). Slide slider on, then screw.
-    rod_stop_diameter: float = 10.0   # SET  knob OD (> bore Ø6.4 → catches the slider top; < barrel Ø12)
-    rod_stop_height: float = 4.0      # SET  knob head height
+    yoke_post_length: float = 50.0        # SET  EXPOSED shoulder length above the boss (= stock 50 mm ISO 7379
+                                          #   shoulder; gives ~32 mm slide travel over the 18 mm barrel — ample.
+                                          #   Step the screw to 60 mm if more head-size headroom is wanted).
+    # The post is a BOUGHT ISO 7379 SHOULDER SCREW — Ø6 ground shoulder (the bearing) × M5 thread,
+    # 18-8 SS, 50 mm shoulder. NO rod machining: the M5 end threads into an M5 heat-set in the
+    # printed fork, and the screw's HEAD is the built-in TOP STOP (wider than the bore). This
+    # collapses the old tapped-rod + epoxy socket + separate stop-knob into one bought fastener,
+    # and is serviceable (threaded, not epoxied). The ground f9 shoulder ≈ Ø5.96–5.99 in the Ø6.4
+    # bore → ~0.4 mm clearance, matching slider_post_clearance.
+    yoke_socket_boss_diameter: float = 13.0  # SET  boss OD (> barrel Ø12 → the shoulder's BOTTOM end-stop seat)
+    yoke_rod_mount_depth: float = 12.0       # SET  boss depth hosting the M5 heat-set + thread engagement
+    yoke_rod_head_diameter: float = 10.2   # REF  ISO 7379 Ø6-shoulder head dk (> bore Ø6.4 → top stop)
+    yoke_rod_head_height: float = 4.5      # REF  ISO 7379 Ø6-shoulder head k
+    yoke_rod_thread_length: float = 9.5    # REF  M5 thread length (engages the fork heat-set)
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
     # WORN-POSE slider position (assembly viz only — not a printed dim). Where the barrel rides on

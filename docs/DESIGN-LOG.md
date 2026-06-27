@@ -6,6 +6,30 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Post → bought SHOULDER SCREW (no rod machining); 3 parts → 1 fastener
+
+Maker: drilling+tapping a tiny Ø6 rod end is fiddly — is there a PRE-MADE part? Yes, and it's
+exactly his "thread the end + screw into the yoke" idea in one stock fastener: an **ISO 7379
+socket SHOULDER SCREW, Ø6 shoulder × M5 × 50 mm, 18-8 SS**.
+- The ground **Ø6 shoulder IS the post** — the slider slides + swivels on it (f9 ground ≈ Ø5.96–5.99
+  → ~0.4 mm clearance in the Ø6.4 bore, matching `slider_post_clearance`); ground is *what shoulder
+  screws are for* (bearing journals), so it's at least as good a bearing as the loose ground shaft.
+- The **M5 thread screws into an M5 heat-set in the printed fork** (the easy step — tap plastic, not
+  the rod); serviceable, not epoxied.
+- The **head (≈Ø10.2 × 4.5) is the built-in TOP STOP** — wider than the bore, catches the slider.
+- **Nothing is machined on the rod.** This collapses THREE parts (tapped rod + epoxy socket + separate
+  stop-knob) into ONE bought fastener.
+
+Reworked: `yoke.py` boss now hosts an **M5 heat-set** (`m5_insert_hole_diameter`, `yoke_rod_mount_depth`)
+instead of the epoxy socket; `yoke_rod.py` re-spec'd as the shoulder-screw viz (head+shoulder+M5);
+**deleted `parts/rod_stop.py`** (head does its job). `yoke_post_length 52→50` (stock shoulder → ~32 mm
+slide travel, ample; step to 60 mm for more headroom). BOM: shoulder screw ×2 + M5 heat-set ×2 (dropped
+the rod/knob/epoxy lines). **Gate caught a real regression** — my new params reused the name
+`shoulder_screw_thread_length`, which already belongs to the M3 TILT-PIVOT screw; the collision silently
+broke `pivot-thread-engages-insert`. Renamed mine `yoke_rod_*`; gate back to **0 HARD / 0 SOFT**, 16/16.
+Head has a hex socket (industrial look) — fine, or a printed cap can hide it later. Assembly: heat-set
+the fork → slide slider on over the M5 thread → drive the screw into the fork. Captive, serviceable.
+
 ## 2026-06-27 — Post → BOUGHT Ø6 metal rod (socketed), slider shrunk, top-stop knob
 
 The yoke's adjustment post is no longer a printed-integral part — it's a **bought Ø6 304-SS ground
