@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import cadquery as cq
 from assembly import make_assembly
+from params import P
 
 asm = make_assembly()
 LIGHT = np.array([0.3, 0.4, 0.85]); LIGHT = LIGHT / np.linalg.norm(LIGHT)
@@ -24,6 +25,22 @@ for child in asm.children:
     T = np.array(idx)
     rgb = np.array(child.color.toTuple()[:3]) if child.color is not None else np.array([0.6, 0.6, 0.6])
     parts.append((child.name, V[T], rgb))
+
+# The shoulder-screw HEAD (top stop) is a low socket-cap the same steel colour as the shaft, so it
+# blends in. Split it out and colour it distinctly so it READS in the assembly render. The head sits
+# at global z just below the rod top (yoke_fork_height + 4 + shoulder length).
+_HEAD_Z = P.yoke_fork_height + 4 + P.yoke_post_length - 1.0
+_HEAD_RGB = np.array([0.95, 0.55, 0.10])
+_split = []
+for nm, tri, rgb in parts:
+    if nm.startswith("yoke_rod"):
+        zc = tri[:, :, 2].mean(axis=1)
+        if (zc > _HEAD_Z).any():
+            _split.append((nm + "_head", tri[zc > _HEAD_Z], _HEAD_RGB))   # the head — orange
+        _split.append((nm, tri[zc <= _HEAD_Z], rgb))                      # the Ø6 shoulder/shaft
+    else:
+        _split.append((nm, tri, rgb))
+parts = _split
 
 allpts = np.vstack([p[1].reshape(-1, 3) for p in parts])
 
