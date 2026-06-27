@@ -53,8 +53,13 @@ SUBASSEMBLIES = {
                    "slider_shoe_R", "slider_shoe_L", "headband_clamp_R", "headband_clamp_L"]},
         {"id": "headband_pad", "label": "Headband pad",
          "nodes": ["headband_pad"]},
+        {"id": "head", "label": "Reference head",
+         "nodes": ["head_ref"]},
     ],
     "bought": ["bow_ref", "earpad_R", "earpad_L"],
+    # head_ref is a translucent worn-fit REFERENCE: the viewer shows it OFF by default and holds it
+    # OUT of the explode motion (it's context, not a part). Listed here as a public contract.
+    "reference_context": ["head_ref"],
 }
 
 
@@ -176,6 +181,11 @@ def make_assembly() -> cq.Assembly:
 
     asm.add(rod, name="yoke_rod_R", color=STEEL)           # bought shoulder screw (post + head top-stop)
     asm.add(mirror_L(rod), name="yoke_rod_L", color=STEEL)
+    # Translucent worn-fit REFERENCE head (one, centred between the ears). Viewer shows it OFF by
+    # default + out of the explode; ears land at the cups, crown up under the band.
+    from parts.head_reference import make_head_reference
+    head = make_head_reference().translate((0, 0, P.head_ref_z))
+    asm.add(head, name="head_ref", color=cq.Color(0.55, 0.70, 0.90, 0.30))
     asm.add(bow, name="bow_ref", color=STEEL)              # shared headband (REF)
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
     asm.add(earpad, name="earpad_R", color=PAD_C)          # round pad mockup (bring your own)

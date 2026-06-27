@@ -61,11 +61,21 @@
       "nodes": [
         "headband_pad"
       ]
+    },
+    {
+      "id": "head",
+      "label": "Reference head",
+      "nodes": [
+        "head_ref"
+      ]
     }
   ],
   "bought": [
     "bow_ref",
     "earpad_R",
     "earpad_L"
+  ],
+  "reference_context": [
+    "head_ref"
   ]
 }
