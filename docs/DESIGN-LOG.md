@@ -6,6 +6,33 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Pin fastener SKUs + part numbers (BOM gets a part-number column)
+
+First item of the build-readiness batch (see `docs/BUILD-READINESS-PLAN.md`). Researched real,
+**sourceable** part numbers for every fastener against live supplier catalogs — two passes (research +
+adversarial verify), strictly honouring the project rule: *no invented part number, supplier, or price.*
+Every number below was read on a real page; McMaster numbers were deliberately NOT cited (their site
+blocks automated reads — left to "verify live" rather than fabricated).
+
+- **`bom.py` rewritten** with a **Part # — supplier** column (clickable source links), a Spec/length
+  column, and confidence flags (VERIFIED / REF / SPEC / MAKER / ESTIMATE) + a Sourcing-notes section for
+  alternates and caveats. Pinned: post = **Mädler 619806050** (ISO 7379 Ø6×M5×50, $6.65); pivot = **Accu
+  49844-SKH-M3-8-A2** (Ø4×M3×8; read-verified-price US buy = Mädler 619804008 $5.41); knob = **Grand Brass
+  SCK35** (8-32, ½″ head); bow = **Beyerdynamic 917017/973361**; M3/M5/8-32 heat-sets = **Ruthex
+  RX-M3x5.7 / RX-M5x9.5 / RX-8-32x4.7**; M3 SHCS = **FMW 2170021 (×8) / 2170020 (×6)**; wave washer =
+  **BelMetric WW3BSS**; nylon washer = **Accu HPW-3-2-7-0-5-N**; cable = **Parts Express 240-1032**.
+- **Stale BOM rows fixed:** driver → **Kingstate 40 mm (maker-supplied)** (was Parts Express/Peerless
+  candidate); pads → **Beyerdynamic default, Dekoni/Brainwavz premium alt** (was Dekoni default).
+- **Two real fit findings from the research, folded in:** (1) the actual Ruthex 8-32 insert wants a
+  **⌀5.6 mm** install bore, not 5.0 → `slider_thumbscrew_insert_hole 5.0 → 5.6` (use the SHORT 4.7 mm
+  insert to fit the ~5 mm boss). (2) A true **⌀5⁄8″ all-metal 8-32 knurled head is non-stock** — ½″
+  (SCK35) is the practical max; flagged for the maker (a plastic GN82-style knob is the only ≥5⁄8″ 8-32).
+  M3 insert note: Ruthex OD is 4.6; params keep McMaster 4.70 as the conservative wall-check value.
+
+Adversarial verify caught three real errors before they landed: a wrong Amazon ASIN on the M5 insert, a
+404'd BelMetric drawing link, and a false "Accu has no 50 mm" claim (Accu 436268-SSH-M5-6-50-A2 exists).
+Build **16/16**, gate **0 HARD / 0 SOFT** with the new ⌀5.6 bore. Driver/pads stay parametric+maker-gated.
+
 ## 2026-06-27 — Cup↔yoke pivot: fix the eye-bore BUG + tilt-friction washer stack
 
 Maker asked to double-check the tilt pivot mount + whether bushings/spacers are needed. Investigation

@@ -141,7 +141,9 @@ class Params:
     # NOTE: m3_insert_hole_diameter (4.0) is the UNDERSIZED thermal-install bore for
     # this 4.70 OD insert — correct by design (the brass melts/knurls into it), not
     # a mismatch. Boss-wall checks use the 4.70 INSTALLED OD (conservative).
-    heatset_insert_diameter: float = 4.70   # REF  M3 insert installed OD (verified)
+    heatset_insert_diameter: float = 4.70   # REF  M3 insert installed OD. McMaster M3 = 4.70; the BOM's
+                                            #   recommended Ruthex RX-M3x5.7 measures 4.6 — we keep the larger
+                                            #   4.70 as the CONSERVATIVE wall-check value (stricter gate).
     heatset_insert_length: float = 5.70     # REF  M3 insert length (verified)
     # cq_warehouse has NO ShoulderScrew class, so the screw is composed from
     # primitives; these are ESTIMATE / caliper-pending (measure the part you buy).
@@ -339,7 +341,9 @@ class Params:
     # low-load (presses the shoe), so the bigger thread is for the head + a sturdier stud, not
     # strength. 8-32 brass heat-set. Boss parametric so a near-equivalent line still fits.
     slider_thumbscrew_diameter: float = 4.17     # SET  8-32 UNC shaft major Ø (0.164")
-    slider_thumbscrew_insert_hole: float = 5.0   # ESTIMATE  8-32 brass heat-set install bore (verify vs the chosen insert)
+    slider_thumbscrew_insert_hole: float = 5.6   # SET  8-32 brass heat-set install bore = Ruthex 8-32 spec
+                                                 #   (was 5.0 est). Use the SHORT RX-8-32x4.7 insert (4.7 mm) to
+                                                 #   fit the ~5 mm boss; standard 8.1 mm needs a deeper boss. See bom.py.
     slider_thumbscrew_boss: float = 9.0   # SET  boss OD: ~2 mm wall around the 8-32 heat-set bore
     slider_thumbscrew_boss_proud: float = 5.0  # SET  boss stand-off — short 1/4"–3/8" 8-32 screw keeps the big head close in
     slider_thumbscrew_boss_z: float = 0.0      # SET  boss CENTRED on the barrel mid (z=0), dead-centre on the +Y
