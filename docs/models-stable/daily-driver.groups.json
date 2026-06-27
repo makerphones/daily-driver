@@ -1,0 +1,67 @@
+{
+  "groups": [
+    {
+      "id": "earcup",
+      "label": "Earcup",
+      "nodes": [
+        "cup_R",
+        "cup_L",
+        "baffle_R",
+        "baffle_L",
+        "driver_R",
+        "driver_L",
+        "driver_clamp_R",
+        "driver_clamp_L"
+      ]
+    },
+    {
+      "id": "earpad",
+      "label": "Earpads",
+      "nodes": [
+        "earpad_R",
+        "earpad_L"
+      ]
+    },
+    {
+      "id": "gimbal",
+      "label": "Gimbal",
+      "nodes": [
+        "yoke_R",
+        "yoke_L",
+        "insert_p_R",
+        "insert_p_L",
+        "insert_m_R",
+        "insert_m_L",
+        "screw_p_R",
+        "screw_p_L",
+        "screw_m_R",
+        "screw_m_L"
+      ]
+    },
+    {
+      "id": "headband",
+      "label": "Headband",
+      "nodes": [
+        "bow_ref",
+        "slider_R",
+        "slider_L",
+        "thumbscrew_R",
+        "thumbscrew_L",
+        "headband_clamp_R",
+        "headband_clamp_L"
+      ]
+    },
+    {
+      "id": "headband_pad",
+      "label": "Headband pad",
+      "nodes": [
+        "headband_pad"
+      ]
+    }
+  ],
+  "bought": [
+    "bow_ref",
+    "earpad_R",
+    "earpad_L"
+  ]
+}
