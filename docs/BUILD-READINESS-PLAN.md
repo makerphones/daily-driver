@@ -36,7 +36,12 @@ geometry yet. Per-lens: printability 62, fit 52, acoustics 45, hardware/BOM 45.
 1. **Lock the driver** — Kingstate 40 mm; measure OD/dome/excursion/Fs-Qts when in hand.
 2. **Print the coupons** (`driver_coupon`, `pad_coupon`) — *when the printer arrives*. Converts
    slip/friction/heat-set/pad-grip clearances ESTIMATE→MEASURED. Highest-leverage single action.
-3. **Measure the Beyer pad** skirt Ø + depth → set `cup_outer_diameter` + pad depth MEASURED.
+3. ~~Measure the Beyer pad~~ **RESOLVED from published dims** (no caliper needed): Beyer DT770/880/990
+   = Dekoni/Brainwavz interchangeable, **elastic stretch-ring mount** → pad **OD 100, opening ~58,
+   depth ~22–25 mm**. The ring stretches over ~88–95 mm, so **`cup_outer_diameter` 91.44 is fine as-is
+   — keep it** (REF it, no longer a back-solve blocker). Only change: set the pad mockup **depth ~24 mm**
+   (front-cavity acoustics) — fold into the acoustic-geometry task. (Optional later: caliper the cup-rim
+   snug fit; not gating.)
 4. **Fix the worn headband fit** (band floats ~35 mm above the crown) — via the head-models +
    sprung-bow + slider-range work below.
 5. **Pin fastener SKUs** — doing now.
