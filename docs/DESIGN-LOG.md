@@ -33,6 +33,14 @@ presses the pill, the pill grips the rod, positive lock *without* damaging it. W
   to kill the last of the protrusion) and confirm the insert bore. Head counterbore deferred until
   then (a big knurled head needs a wider boss than the Ø14 barrel comfortably gives — decide with
   real numbers). Saddle depth/contact to be print-validated.
+- **Off-the-shelf check (McMaster), maker asked.** Confirmed the bought "thumbscrew + non-marring
+  pad" — McMaster **Swivel-Pad Thumb Screws** — starts at **1/4-20** (too big/proud for our 4-40
+  scale, and chunkier = the opposite of the protrusion goal). Press-on **Swivel Pads** (~Ø4.7 mm
+  acetal) need a special turned/grooved screw end and start ~#8–10 — they don't fit a plain 4-40.
+  The only 4-40 off-the-shelf non-marring option is a **nylon-tip SET screw**, but it's HEADLESS
+  (hex-key adjust, no finger grip). So the printed shoe + the maker's 4-40 knurled thumbscrew is the
+  deliberate call: it keeps a small, finger-adjustable lock, and the saddle wraps the round post
+  (area contact) better than a flat bought pad. **Maker confirmed: keep the shoe.**
 
 ## 2026-06-26 — Slider: PROVE + enforce L/R symmetry (one print both ears) + centre the thumbscrew
 
