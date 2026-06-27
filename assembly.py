@@ -37,6 +37,25 @@ from parts.headband_clamp import make_headband_clamp
 # (they match the asm.add(name=...) calls in make_assembly). Renaming a part there
 # means updating this too (and the manual). build.py emits this to
 # docs/models/daily-driver.groups.json next to the GLB; the viewer fetches it.
+def _head_fit_offsets():
+    """Vertical shift (model +z, mm) of the HEADBAND group to land the band on each S/M/L head,
+    relative to the default (M) pose — clamped to the actual slider travel. The viewer applies
+    these when a head is toggled, so the headphone 'auto-adjusts' to the selected head (the cups
+    stay put → the width/clamp difference still reads). Pure params math, so it tracks the design."""
+    post_base = P.yoke_fork_height + 4
+    sz_hi = post_base + P.yoke_post_length - P.slider_collar_height / 2   # band block, extended
+    sz_lo = post_base + P.slider_collar_height / 2                        # band block, retracted
+    sz_default = sz_hi - P.assembly_worn_slider_frac * (sz_hi - sz_lo)
+    crown_m = P.head_ref_z + P.head_ref_height_half
+    out = {}
+    for key, eh in (("s", P.head_s_ear_half), ("m", P.head_ref_ear_half), ("l", P.head_l_ear_half)):
+        crown = P.head_ref_z + P.head_ref_height_half * (eh / P.head_ref_ear_half)
+        ideal = sz_default + (crown - crown_m)                # move the band by the crown delta
+        clamped = max(sz_lo, min(sz_hi, ideal))               # within the real travel (small heads clamp)
+        out[key] = round(clamped - sz_default, 2)
+    return out
+
+
 SUBASSEMBLIES = {
     "groups": [
         {"id": "earcup", "label": "Earcup",
@@ -61,6 +80,14 @@ SUBASSEMBLIES = {
     # The S/M/L reference heads are translucent worn-fit CONTEXT: the viewer shows them OFF by
     # default and holds them OUT of the explode motion (context, not parts). Public contract.
     "reference_context": ["head_ref_s", "head_ref_m", "head_ref_l"],
+    # AUTO-FIT: when a single head is toggled on, the viewer shifts the headband group along the
+    # model's vertical by dz[size] mm so the band lands on THAT head (cups stay → clamp still reads).
+    "head_fit": {
+        "band_nodes": ["slider_R", "slider_L", "bow_ref", "headband_pad",
+                       "slider_shoe_R", "slider_shoe_L", "thumbscrew_R", "thumbscrew_L",
+                       "headband_clamp_R", "headband_clamp_L"],
+        "dz": _head_fit_offsets(),   # {"s","m","l"} → model +z mm from the default (M) pose
+    },
 }
 
 
