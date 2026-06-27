@@ -28,12 +28,52 @@ for child in asm.children:
 allpts = np.vstack([p[1].reshape(-1, 3) for p in parts])
 
 
-def draw(out, views, lim=None, title="", use=None):
+def _ellipsoid(center, axes, nu=30, nv=18):
+    """Triangulated ellipsoid (Mx3x3) — an abstract 'glass blob' head reference."""
+    cx, cy, cz = center
+    axx, axy, axz = axes
+    u = np.linspace(0, 2 * np.pi, nu)
+    v = np.linspace(0, np.pi, nv)
+
+    def P(i, j):
+        return (cx + axx * np.cos(u[i]) * np.sin(v[j]),
+                cy + axy * np.sin(u[i]) * np.sin(v[j]),
+                cz + axz * np.cos(v[j]))
+    tris = []
+    for i in range(nu - 1):
+        for j in range(nv - 1):
+            a, b, c2, d = P(i, j), P(i + 1, j), P(i + 1, j + 1), P(i, j + 1)
+            tris += [[a, b, c2], [a, c2, d]]
+    return np.array(tris)
+
+
+# Abstract reference HEAD (not real-looking — a translucent ovoid) so the worn fit reads at a
+# glance: ears ≈ the cups, crown under the band. Sized to an average adult head and placed from
+# the cup geometry (ear level = cup-centre z); deliberately NON-anatomical.
+_cup = np.vstack([p[1].reshape(-1, 3) for p in parts if p[0] in ("cup_R", "cup_L")])
+_ear_y, _ear_z = _cup[:, 1].mean(), _cup[:, 2].mean()
+# Average adult head: bitragion (ear-to-ear) ~147 mm, head length ~195 mm, ear→crown ~120 mm.
+HEAD = _ellipsoid((0.0, _ear_y, _ear_z + 6), (73.5, 97.0, 114.0))  # ear-half, depth-half, height-half
+HEAD_RGB = np.array([0.55, 0.68, 0.85])   # cool glass tint
+
+
+def draw(out, views, lim=None, title="", use=None, head=None):
     plist = parts if use is None else use
     n = len(views)
     fig = plt.figure(figsize=(7 * n, 7), dpi=110)
     for i, (vname, elev, azim) in enumerate(views):
         ax = fig.add_subplot(1, n, i + 1, projection="3d")
+        if head is not None:
+            # Draw the glass head FIRST (behind the opaque parts) so it fills the gaps without
+            # muddying the hardware. Low alpha + a cool tint reads as a non-real reference blob.
+            hn = np.cross(head[:, 1] - head[:, 0], head[:, 2] - head[:, 0])
+            hnl = np.linalg.norm(hn, axis=1, keepdims=True)
+            hn = np.divide(hn, hnl, out=np.zeros_like(hn), where=hnl != 0)
+            hsh = np.clip(0.55 + 0.45 * (hn @ LIGHT), 0.35, 1.0)
+            hfc = np.clip(hsh[:, None] * HEAD_RGB, 0, 1)
+            ax.add_collection3d(Poly3DCollection(
+                head, facecolors=np.c_[hfc, np.full(len(hfc), 0.16)],
+                edgecolors=(0.45, 0.55, 0.7, 0.05), linewidths=0.1))
         for _, tri, rgb in plist:
             nrm = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
             nl = np.linalg.norm(nrm, axis=1, keepdims=True)
@@ -43,7 +83,8 @@ def draw(out, views, lim=None, title="", use=None):
             ax.add_collection3d(Poly3DCollection(tri, facecolors=fc,
                                 edgecolors=(0, 0, 0, 0.05), linewidths=0.15))
         if lim is None:
-            c = allpts.mean(0); s = (allpts.max(0) - allpts.min(0)).max() / 2 * 1.05
+            base = allpts if head is None else np.vstack([allpts, head.reshape(-1, 3)])
+            c = base.mean(0); s = (base.max(0) - base.min(0)).max() / 2 * 1.05
             ax.set_xlim(c[0]-s, c[0]+s); ax.set_ylim(c[1]-s, c[1]+s); ax.set_zlim(c[2]-s, c[2]+s)
         else:
             (xl, xh), (yl, yh), (zl, zh) = lim
@@ -60,6 +101,11 @@ def draw(out, views, lim=None, title="", use=None):
 # Full assembly: front (look along Y, shows inner↔outer), side (along X), iso.
 draw("renders/asm_full.png",
      [("front", 0, -90), ("side", 0, 0), ("iso", 22, -60)], title="assembly ·")
+
+# WORN FIT on the abstract glass-head reference — does the cup land at the ear and the band on the
+# crown? (front + side + iso). The head is a non-real translucent ovoid, just a sanity gauge.
+draw("renders/asm_worn.png",
+     [("front", 0, -90), ("side", 0, 0), ("iso", 18, -62)], title="worn ·", head=HEAD)
 
 # Junction zoom on the RIGHT ear (band inner / tube outer). Find the slider bbox.
 sl = [p for p in parts if p[0] == "slider_R"][0][1].reshape(-1, 3)

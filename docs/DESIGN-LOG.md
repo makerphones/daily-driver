@@ -15,6 +15,14 @@ exposed rod showed BELOW the slider. Added `assembly_worn_slider_frac` (viz only
 cups (worn look) and the rod pokes ~17 mm UP through the slider (as a Grado-style rod does when
 adjusted in). Renders read far more worn.
 
+**Glass-head reference (render aid).** Added a translucent, deliberately non-real ovoid head to
+`render_asm.py` (`renders/asm_worn.png`) sized to an average adult head (ear-to-ear ~147 mm, ear→crown
+~120 mm), placed from the cup geometry (ears = cup-centre level). Cups land at the ears nicely — but it
+surfaces that the **band floats ~35 mm above the crown** at the mid pose (and still ~18 mm at full
+retraction). The worn band radius/pose is an ESTIMATE (band is posed representatively), so this is a flag
+to validate the headband fit, not a confirmed flaw — but the head can't reach the band in the current
+travel, so the worn fit needs a look (band radius, or how far the cups hang below the band).
+
 **Ergonomic note / design question:** the exposed rod = `post_length − barrel = 52 − 18 = 34 mm`,
 and that total is FIXED — sliding the barrel only moves where it shows (below vs above). At mid it's
 ~17 below + ~17 above. The 17 mm poking up reads OK but is the trade-off. If a cleaner look (less
