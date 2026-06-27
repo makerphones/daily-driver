@@ -35,6 +35,9 @@ from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
 from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
+from parts.slider_shoe import make_slider_shoe
+from parts.headband_clamp import make_headband_clamp
+from parts.coupon import make_driver_coupon, make_pad_coupon
 from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
 # ---- Thresholds (named + transparent; not new checks, just the limits) -------
@@ -45,6 +48,7 @@ OPEN_MIN = 0.30         # grille open-area band (acoustic + structural) ...
 OPEN_MAX = 0.50         # ... around the 0.40 target; outside = out of range
 MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
+SHOE_SADDLE_CONFORMAL_MAX = 0.6  # mm — saddle radius may exceed post radius by ≤ this (area cradle, not a point load)
 # The yoke is LOAD-BEARING, so its load-path sections are held to the 4 mm
 # STRUCTURAL floor (params.wall_thickness_structural), not the 2 mm wall floor —
 # per the spec's "4 mm at structural points" and Openmod's v1→Mk2 thin-section fix.
@@ -159,9 +163,15 @@ def main():
     headband_pad = make_headband_pad()
     grille_dot = make_grille_dot()
     driver_clamp = make_driver_clamp()
+    slider_shoe = make_slider_shoe()
+    headband_clamp = make_headband_clamp()
+    driver_coupon = make_driver_coupon()
+    pad_coupon = make_pad_coupon()
     parts = {"cup": cup, "baffle": baffle, "yoke": yoke,
              "slider": slider, "driver_clamp": driver_clamp, "adapter_ring": adapter,
-             "headband_pad": headband_pad, "grille_dot": grille_dot}
+             "headband_pad": headband_pad, "grille_dot": grille_dot,
+             "slider_shoe": slider_shoe, "headband_clamp": headband_clamp,
+             "driver_coupon": driver_coupon, "pad_coupon": pad_coupon}
 
     r = Report()
 
@@ -294,6 +304,27 @@ def main():
            f"pitch {P.bow_endtab_hole_spacing} + bore {P.m3_insert_hole_diameter} "
            f"<= clamp width {P.slider_clamp_width} mm")
 
+    # --- Captive pressure SHOE ↔ slider pocket ↔ post (the no-gouge height lock) ----
+    # The screw never touches the post: it presses a conformal shoe whose concave saddle
+    # cradles the post over an AREA. Validate the three things that makes work: the pocket
+    # reaches the post, the saddle conforms (no point-load), and the shoe fits the pocket.
+    # Geometry mirrors parts/slider.py's pocket (p_lo = post_r − 0.5 .. p_hi = barrel R).
+    shoe_bore_r = (P.yoke_post_diameter + P.slider_post_clearance) / 2
+    shoe_pkt_lo = P.yoke_post_diameter / 2 - 0.5
+    shoe_pkt_depth = P.slider_collar_diameter / 2 - shoe_pkt_lo
+    shoe_saddle_gap = P.slider_shoe_saddle_r - P.yoke_post_diameter / 2
+    shoe_pkt_height = P.slider_shoe_height + 2 * P.slider_shoe_clearance
+
+    r.hard(shoe_pkt_lo < shoe_bore_r, "shoe-saddle-reaches-post",
+           f"pocket inner edge y{shoe_pkt_lo:.1f} < bore r{shoe_bore_r:.1f} (saddle opens into the bore → reaches the post)")
+    r.hard(0 <= shoe_saddle_gap <= SHOE_SADDLE_CONFORMAL_MAX, "shoe-saddle-cradles-post",
+           f"saddle r − post r = {shoe_saddle_gap:.2f} mm in [0, {SHOE_SADDLE_CONFORMAL_MAX}] "
+           f"(conformal area cradle — wraps the post, no marring point-load)")
+    r.hard(shoe_pkt_depth >= P.slider_shoe_thickness + P.slider_shoe_clearance
+           and shoe_pkt_height < P.slider_collar_height, "shoe-fits-pocket",
+           f"pocket depth {shoe_pkt_depth:.1f} ≥ shoe {P.slider_shoe_thickness}+clr {P.slider_shoe_clearance}; "
+           f"pocket height {shoe_pkt_height:.1f} < barrel {P.slider_collar_height} mm")
+
     # 7. Baffle boss reaches the inner wall → blended, not free-standing.
     boss_reach = P.baffle_screw_radius + P.baffle_boss_diameter / 2
     inner_r = P.cup_interior_diameter / 2
@@ -343,12 +374,15 @@ def main():
 
     # Driver dome DYNAMIC clearance: the grille must clear the dome's forward-most
     # (excursed) position, not just its rest height, or the diaphragm rubs at high
-    # SPL. Both dome figures are ESTIMATES (MEASURE) → SOFT, not HARD, for now.
+    # SPL. driver_od/body_depth are MEASURED now, but driver_dome_excursion is still an
+    # ESTIMATE (and dome_proud is REF). So this stays SOFT — PROMOTE TO HARD once
+    # driver_dome_excursion is measured on the Kingstate driver (that is the last estimate
+    # in this inequality). See params.driver_dome_excursion + BUILD-READINESS-PLAN item 2.
     dome_dynamic = P.driver_recess_depth + P.driver_dome_proud + P.driver_dome_excursion
     dome_need = dome_dynamic + P.guard_dome_clearance + 0.8   # + min printable guard rib
     r.soft(dome_need <= P.baffle_thickness, "guard-dome-excursion",
            f"excursed dome z{dome_dynamic:.1f} (seat+proud+excursion) + {P.guard_dome_clearance} clr "
-           f"+ 0.8 rib = z{dome_need:.1f} ≤ baffle front z{P.baffle_thickness} (dome figures are estimates — MEASURE)")
+           f"+ 0.8 rib = z{dome_need:.1f} ≤ baffle front z{P.baffle_thickness} (excursion still an estimate — MEASURE)")
 
 
     print(f"\n{'='*60}")

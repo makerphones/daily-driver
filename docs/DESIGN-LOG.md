@@ -6,6 +6,26 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Close gate coverage gaps (shoe + coupons + clamp now validated)
+
+Second readiness-batch item. The gate built 8 parts but left four printable parts UNCHECKED and the
+captive shoe interface unvalidated. Closed both:
+
+- **+4 parts in the manifold loop:** `slider_shoe`, `headband_clamp`, `driver_coupon`, `pad_coupon`.
+  All build as exactly one valid solid — the two **fit coupons** (the highest-leverage print-verify
+  tools) were never gate-checked before; now they can't regress silently.
+- **+3 shoe-interface HARD checks** (the no-gouge height lock — screw → conformal shoe → post, never
+  metal-on-post): `shoe-saddle-reaches-post` (pocket breaches the bore so the saddle contacts the post),
+  `shoe-saddle-cradles-post` (saddle radius wraps the post yet stays within 0.6 mm → area cradle, not a
+  marring point-load), `shoe-fits-pocket` (pocket deep enough for shoe+clearance, shorter than the barrel).
+  New named threshold `SHOE_SADDLE_CONFORMAL_MAX = 0.6`.
+- **guard-dome-excursion stays SOFT, precondition sharpened:** driver_od/body_depth are MEASURED, but
+  `driver_dome_excursion` is still an estimate — that is the one term gating this check, so it flips to
+  HARD only when the Kingstate dome excursion is measured (documented in the check + params).
+
+Gate now covers **12 parts + the shoe interface**, **0 HARD / 0 SOFT**. No geometry changed (gate-only),
+so the published model is untouched.
+
 ## 2026-06-27 — Pin fastener SKUs + part numbers (BOM gets a part-number column)
 
 First item of the build-readiness batch (see `docs/BUILD-READINESS-PLAN.md`). Researched real,

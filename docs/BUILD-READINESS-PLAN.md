@@ -50,14 +50,18 @@ geometry yet. Per-lens: printability 62, fit 52, acoustics 45, hardware/BOM 45.
 
 Ordered; tick as done. Each = build→gate→log→commit→push, sync promote until v1.0.
 
-- [ ] **1. Fastener SKUs + part numbers** — real names + numbers + lengths for: ISO 7379 Ø6×M5×50
-  shoulder screw (post), M3 ISO 7379 Ø4 pivot shoulder screw, 8-32 knurled knob (lock), M5 / M3 /
-  8-32 brass heat-sets, M3 nylon flat + M3 wave washers, the bow (Beyerdynamic Metal Head Bow),
-  cable + 3.5 mm plug. Add a **part-number column** to `bom.py`. Flag any not-yet-confirmed.
-- [ ] **2. Close gate gaps** — add `slider_shoe`, `headband_clamp`, `driver_coupon`, `pad_coupon`
-  to `gate.py` (manifold/one-solid). Add a **shoe-pocket-clearance** check (shoe + 2×clr fits the
-  milled pocket) and **shoe-saddle-reaches-post**. Promote **guard-dome-excursion SOFT→HARD** once
-  the driver is measured.
+- [x] **1. Fastener SKUs + part numbers** — DONE (16c1b10). `bom.py` rewritten with a linked
+  **Part #** column + flags; every number read off a live supplier page (no invented McMaster
+  numbers). Post=Mädler 619806050, pivot=Accu 49844-SKH-M3-8-A2, knob=Grand Brass SCK35,
+  bow=Beyer 917017/973361, heat-sets=Ruthex RX-M3x5.7/M5x9.5/8-32x4.7, SHCS=FMW 2170021/2170020,
+  wave=BelMetric WW3BSS, nylon=Accu HPW-3-2-7-0-5-N, cable=Parts Express 240-1032. Fit fixes:
+  8-32 bore 5.0→5.6; 5⁄8″ all-metal knob is non-stock (½″ SCK35, flagged). Driver→Kingstate,
+  pads→Beyer default.
+- [x] **2. Close gate gaps** — DONE. Added `slider_shoe`, `headband_clamp`, `driver_coupon`,
+  `pad_coupon` to the manifold loop (all 1 valid solid). Added 3 shoe checks
+  (`shoe-saddle-reaches-post`, `shoe-saddle-cradles-post`, `shoe-fits-pocket`). guard-dome stays
+  SOFT — precondition sharpened to `driver_dome_excursion` measured (the one remaining estimate).
+  Gate covers 12 parts + shoe interface, 0 HARD / 0 SOFT.
 - [ ] **3. Stale-doc sweep + AUTO-UPDATE.** Fix now: `print-guide.md` (removed over-rotation stop,
   '8/8'→16 build, Ø8→Ø6 post, dead SOFT-warn ref), `slider_shoe.py` + params Ø8→Ø6 comments,
   `hardware.py` "M4 thumbscrew"→8-32, and the **published manual spec** (`daily-driver-design-spec.mdx`,
