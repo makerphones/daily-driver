@@ -6,6 +6,39 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Headband junction: OFFSET-OUTER (band inside, rod + tube outside)
+
+The maker's correction on the in-line stack (entry below): the rod and the tube that holds
+it should sit on the **OUTSIDE** of the metal band + slider block (not stacked directly
+under the band), the band should drop into a **recess** in the slider, and the prong-tip
+holes were set too far from the ends. Rebuilt the junction to match:
+
+- **Slider (v0.7, offset-outer):** the post-bore TUBE (the barrel) is now the OUTER body.
+  The band attaches on the barrel's INNER (−Y, head-side) face via a clamp plate, so the
+  rod + tube ride OUTSIDE the band. The band's two prongs drop into a milled RECESS
+  (`bow_width + 1.5` wide, `thickness + 0.6` deep) that registers them laterally; the
+  anti-rotation RIB protrudes from the recess floor into the bow's open channel (overlapped
+  deep into the plate so the union stays one solid — a tangent kiss split it into two, the
+  usual kernel trap). Clamp is centred on the barrel mid (z=0); the post slides the full
+  barrel height and may poke past it (nothing stacks on the post now). Thumbscrew on +X.
+- **Cover** (`headband_clamp.py`) flipped to the INNER (head-side) face — it sits on the
+  band's inner face and bolts through the prong holes into the plate's inserts; rib slot on
+  its outer face.
+- **Prong-tip holes** moved to the very ends: new `bow_endtab_hole_inset` (10 mm → **5 mm**
+  from the tip).
+- **Assembly:** the cups step OUTBOARD by `barrel R + plate depth` (≈16 mm) so the post
+  lands under the band's clamp while the plate's inner face returns to the band end Xe; the
+  bow is posed so the prong-tip hole lands at the clamp centre. Stack reads (head→out):
+  cover │ band │ clamp-plate + rib │ barrel + post.
+
+Build **14/14**, gate **0 HARD / 0 SOFT**. Rendered colored junction views
+(`render_asm.py`) to confirm the band-inside / tube-outside arrangement. Open follow-ups:
+the post pokes a short stub above the barrel at this size setting (cosmetic / adjustment
+range), and whether the maker wants the tube as a *separate* outboard piece vs. integrated
+into the clamp block as built. Prong-tip rounding still pending.
+
+---
+
 ## 2026-06-26 — Bow ends: two separate PRONGS (not a solid tab), per the flat-lay photo
 
 The maker's flat-lay photo (finally clear): the real band's END is two SEPARATE prongs —

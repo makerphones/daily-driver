@@ -119,7 +119,7 @@ def make_bow(radius: float = None, arc_degrees: float = None) -> cq.Workplane:
     #    rib registers in the big gap between the prongs. Layout from the maker's flat-lay.
     hole_r = P.bow_endtab_hole_diameter / 2
     s = P.bow_endtab_hole_spacing / 2                    # half-pitch across width (y)
-    inset = math.degrees(10.0 / R)                       # holes set in from the tip
+    inset = math.degrees(P.bow_endtab_hole_inset / R)    # holes set in from the prong TIP
     for end_sign in (+1, -1):
         a = math.radians(90 + end_sign * (half_arc - inset))
         radial = cq.Vector(math.cos(a), 0, math.sin(a))

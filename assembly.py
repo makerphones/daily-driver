@@ -74,9 +74,11 @@ def make_assembly() -> cq.Assembly:
     band's ends land (~156 mm). The bow's relaxed dims are MEASURED off the Beyer
     part; the worn radius (head fit) is still ESTIMATE (see params/bow).
 
-    FLAGGED: the over-rotation stop pin/slot are still clocked for the old pad-up
-    rest pose, so they read ~90° off in this view — cosmetic here (the gate verifies
-    the stop at the part level). Re-clocking them to this rest pose is a follow-up.
+    HEADBAND JUNCTION (v0.7, offset-outer): the metal band rides INSIDE (head-side) and
+    the slider's post-bore tube rides OUTSIDE it, so the cups step outboard by
+    (barrel R + clamp-plate depth) to keep the post under the band's clamp. Band end →
+    recess in the slider's clamp plate → cover (inner) + 2 screws; rib through the bow
+    channel; thumbscrew locks the post in the tube.
     """
     CHARCOAL = cq.Color(0.30, 0.32, 0.35)
     ORANGE = cq.Color(0.92, 0.45, 0.10)
@@ -96,9 +98,15 @@ def make_assembly() -> cq.Assembly:
     end_a = 90 - P.bow_worn_arc_degrees / 2
     Xe = P.bow_worn_radius * math.cos(math.radians(end_a))  # bow END x (where the band clamps)
     ez = P.bow_worn_radius * math.sin(math.radians(end_a))
-    # IN-LINE stack: the band clamps on TOP of the slider and the post slides into the
-    # BOTTOM, both centred at the ear — post directly under the band, no sideways offset.
-    Xe_cup = Xe
+    # Prong-tip HOLE position, set in from the tip up the arc (where the band bolts down).
+    inset_deg = math.degrees(P.bow_endtab_hole_inset / P.bow_worn_radius)
+    zh = P.bow_worn_radius * math.sin(math.radians(end_a + inset_deg))  # hole height (pre-pose)
+    # OFFSET-OUTER junction: the metal band rides INSIDE (head-side) and the post-bore TUBE
+    # rides OUTSIDE it. The barrel/post sit OUTBOARD of the band by (barrel R + clamp-plate
+    # depth), so the cups step out that far and the clamp plate's inner face lands back at
+    # the band end Xe.
+    clamp_off = P.slider_collar_diameter / 2 + P.slider_clamp_standoff
+    Xe_cup = Xe + clamp_off
 
     def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe_cup,0,0)
         return (w.rotate((0, 0, 0), (0, 1, 0), -90)
@@ -124,23 +132,23 @@ def make_assembly() -> cq.Assembly:
     # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X).
     earpad = T_cup(make_earpad().translate((0, 0, P.cup_total_height)))
     yoke = T_yoke(make_yoke())
-    # Slider rides the yoke post at a mid head-size position (the post slides through
-    # it; the thumbscrew locks the height).
-    # The post top sits just under the band: the post fills the slider's lower bore and
-    # stops at the barrel top; the band clamps above (in line). post_top = hub top + post.
+    # Slider rides the yoke post; the post slides + swivels the full barrel height and may
+    # poke past it (nothing stacks on the post now). Barrel TOP at post_top → barrel CENTRE
+    # (the slider frame's z=0, where the clamp sits) at post_top − h/2.
     post_top = P.yoke_fork_height + 4 + P.yoke_post_length
-    slider_base_z = post_top - P.slider_collar_height       # slider bottom (post enters here)
-    slider = T_yoke(make_slider().translate((0, 0, slider_base_z)))
+    slider_z = post_top - P.slider_collar_height / 2        # barrel / clamp centre
+    slider = T_yoke(make_slider().translate((0, 0, slider_z)))
 
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
-    bow_xf = (0, 0, post_top - ez)                         # band TIP lands at the clamp bottom (post_top)
+    # Pose so the band's prong-tip HOLE lands at the clamp centre (slider z=0 + hole_z=0).
+    bow_xf = (0, 0, slider_z - zh)
     bow = make_bow(radius=P.bow_worn_radius,
                    arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
     pad = make_headband_pad(radius=P.bow_worn_radius,
                             arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
-    # Headband CLAMP cover (outer +Y piece) — built in the slider frame, posed with the
-    # slider so its bolts/slot align with the slider's clamp.
-    cover = T_yoke(make_headband_clamp().translate((0, 0, slider_base_z)))
+    # Headband CLAMP cover (INNER head-side piece) — built in the slider frame, posed with
+    # the slider so its bolts/slot align with the slider's clamp.
+    cover = T_yoke(make_headband_clamp().translate((0, 0, slider_z)))
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
@@ -182,8 +190,8 @@ def make_assembly() -> cq.Assembly:
         from parts.hardware import make_thumbscrew
         ts = (make_thumbscrew()
               .rotate((0, 0, 0), (0, 1, 0), 90)                # shaft → +X (front), tip at origin
-              .translate((P.yoke_post_diameter / 2, 0, P.slider_collar_height / 2))  # tip on the post, barrel mid
-              .translate((0, 0, slider_base_z)))               # ride with the slider
+              .translate((P.yoke_post_diameter / 2, 0, 0))     # tip on the post, barrel mid (z=0)
+              .translate((0, 0, slider_z)))                    # ride with the slider
         ts_R = T_yoke(ts)
         asm.add(ts_R, name="thumbscrew_R", color=SCREW_C)
         asm.add(mirror_L(ts_R), name="thumbscrew_L", color=SCREW_C)

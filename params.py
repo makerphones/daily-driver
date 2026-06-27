@@ -316,21 +316,23 @@ class Params:
     slider_collar_diameter: float = 18.0      # SET  barrel OD around the post bore
     slider_collar_height: float = 26.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
-    # Headband CLAMP (Beyer-style two-piece, IN-LINE stack). The post slides in the
-    # slider's LOWER barrel; the band clamps on TOP, directly above the post (both
-    # centred at the ear — post directly under the band, no inboard offset). The clamp's
-    # INNER wall (the −Y plastic piece) seats the band; a RIB enters the bow's open
-    # CHANNEL (between the rails) for anti-rotation; and a separate COVER plate
-    # (parts/headband_clamp.py) is the +Y piece, sandwiching the metal with two M3 screws
-    # through the band's end-tab holes. slider_collar_height = the lower post-bore depth.
+    # Headband CLAMP (Beyer-style two-piece, OFFSET-OUTER layout). The post-bore TUBE
+    # (the barrel) is the OUTER body — the band attaches on the barrel's INNER (−Y,
+    # head-side) face, so the rod + tube ride OUTSIDE the metal band (maker's call). The
+    # band's two prongs drop into a RECESS in the clamp plate; a RIB enters the bow's open
+    # CHANNEL (between the rails) for anti-rotation; a separate COVER plate
+    # (parts/headband_clamp.py) sits on the band's inner face and sandwiches the metal with
+    # two M3 screws through the prong-tip holes. The clamp is centred on the barrel mid
+    # (z=0); the post slides the full barrel height and may poke past it (nothing stacks on
+    # the post). slider_clamp_hole_z / rib_z are now relative to the barrel mid.
     slider_clamp_width: float = 36.0       # SET  clamp width (X) — seats the 33 mm band + the bolts
-    slider_clamp_height: float = 28.0      # SET  clamp height (Z, above the barrel) — spans tab + channel
-    slider_clamp_standoff: float = 7.0     # SET  inner-wall depth (Y) behind the band; hosts the inserts
-    slider_clamp_hole_z: float = 10.0      # SET  Z of the 2 bolt inserts ABOVE the barrel top (= band holes)
-    slider_clamp_rib_z: float = 20.0       # SET  Z of the anti-rotation rib above the barrel top (in the channel)
+    slider_clamp_height: float = 28.0      # SET  clamp height (Z) — spans the prong holes + channel rib
+    slider_clamp_standoff: float = 7.0     # SET  clamp-plate depth (Y) proud of the barrel; hosts the inserts
+    slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes), rel. barrel mid
+    slider_clamp_rib_z: float = 6.0        # SET  Z of the anti-rotation rib (in the channel), rel. barrel mid
     slider_clamp_rib_height: float = 12.0  # SET  rib Z extent (runs along the open channel)
-    slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (+Y past the seat)
-    slider_clamp_cover_thickness: float = 4.0  # SET  the outer cover plate thickness
+    slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
+    slider_clamp_cover_thickness: float = 4.0  # SET  the inner cover plate thickness
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first
@@ -350,6 +352,7 @@ class Params:
                                           #   (~156 mm cups). The band springs open from the
                                           #   63.5 at-rest; developed length is conserved.
     bow_endtab_hole_diameter: float = 3.2  # ESTIMATE/REF  end-tab mounting-hole dia (M3 clr)
+    bow_endtab_hole_inset: float = 5.0     # SET  hole set-in from the prong TIP (near the very end, per photo)
     bow_endtab_hole_spacing: float = 26.0  # SET  pitch of the 2 end holes = the two RAIL CENTRES
                                            #   (= bow_width − bow_rail_width). The real band's end is two
                                            #   separate PRONGS (the rails), one hole near each prong tip,
