@@ -135,26 +135,21 @@ def make_yoke() -> cq.Workplane:
         piece = eye.union(arm)
         yoke = piece if yoke is None else yoke.union(piece)
 
-    # Junction hub + vertical adjustment POST (replaces the fixed swivel hub). The
-    # arms tie into a short junction hub at the apex; a round POST rises from it and
-    # SLIDES in the slider for height (head-size) adjustment, locked by the slider
-    # thumbscrew (Grado HP1000-style). Round → the cup also swivels when unlocked.
-    # The post MUST stay a clean Ø8 cylinder its full length — it slides + swivels
-    # in the slider collar bore (Ø8.4); do NOT taper or flute it.
-    # The Ø12 hub is wider than the slider's Ø8.4 bore, so it doubles as the post's BOTTOM
-    # END-STOP: a loosened slider can slide down the post but bottoms out on the hub (~16 mm
-    # below full adjust travel) — the block can't leave the post off the bottom. (Top removal
-    # is over the open post tip, deliberate.) See DESIGN-LOG slider-ergonomics adjust note.
-    hub_d = P.yoke_post_diameter + 4.0          # short junction hub, wider than the post
+    # Junction SOCKET-BOSS for the bought adjustment ROD. The arms tie into a short boss at the
+    # apex; a bought Ø6 304-SS ground SHAFT epoxy-bonds into a blind SOCKET in it and rises as the
+    # post — sliding + swivelling in the slider (Grado HP1000-style). A METAL rod is a smooth,
+    # durable bearing the printed barrel rides on (the plastic is the sacrificial surface), and
+    # separating it lets THIS fork print flat. The boss OD (Ø13) is wider than the slider barrel
+    # (Ø12) so it doubles as the rod's BOTTOM END-STOP — a loosened slider bottoms on it and can't
+    # ride off (the screw-on TOP knob stops it the other way). The SOCKET is bored with the pivots.
+    bd = P.yoke_socket_boss_diameter
+    boss_top = hub_z + 4                          # where the exposed rod starts (unchanged from the old post)
+    boss_bot = boss_top - P.yoke_rod_socket_depth - 2.0   # 2 mm floor below the socket
     hub = (
-        cq.Workplane("XY").workplane(offset=hub_z - 4)
-        .circle(hub_d / 2).extrude(8)
+        cq.Workplane("XY").workplane(offset=boss_bot)
+        .circle(bd / 2).extrude(boss_top - boss_bot)
     )
-    post = (
-        cq.Workplane("XY").workplane(offset=hub_z - 4)
-        .circle(P.yoke_post_diameter / 2).extrude(8 + P.yoke_post_length)
-    )
-    yoke = yoke.union(hub).union(post)
+    yoke = yoke.union(hub)
 
     # bores: pivot holes (axis X) through each eye. (The adjustment post is SOLID —
     # no bore; it slides in the slider and the slider thumbscrew locks it.) Cut LAST,
@@ -169,6 +164,14 @@ def make_yoke() -> cq.Workplane:
             .extrude(arm_t + 2)
         )
         yoke = yoke.cut(bore)
+
+    # SOCKET — blind bore in the boss for the bought Ø6 rod (epoxy slip-bond). Cut after unions.
+    socket = (
+        cq.Workplane("XY").workplane(offset=hub_z + 4 + 1)
+        .circle((P.yoke_post_diameter + P.yoke_rod_socket_clearance) / 2)
+        .extrude(-(P.yoke_rod_socket_depth + 1))
+    )
+    yoke = yoke.cut(socket)
 
     # (Over-rotation stop slot REMOVED 2026-06-26 — the cup now rotates freely in the
     # yoke, Grado-style. The eye is a clean bored cylinder; no notch weakening it.)

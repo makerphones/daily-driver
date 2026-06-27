@@ -6,6 +6,36 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Post → BOUGHT Ø6 metal rod (socketed), slider shrunk, top-stop knob
+
+The yoke's adjustment post is no longer a printed-integral part — it's a **bought Ø6 304-SS ground
+shaft** epoxy-bonded into a socket in the fork. Three connected decisions (maker's calls, McMaster
+research informed):
+
+- **Separate the post (maker's Q: one-piece vs split).** A printed slender post is a poor
+  slide/swivel BEARING (layer lines, wear) and forces a bad print orientation (the fork wants to
+  print flat, a post wants to print vertical — one part can't do both, and a flat-printed Ø-post
+  snaps at a layer line). Splitting it into a **metal rod** gives a smooth durable bearing (the
+  printed barrel is the sacrificial surface), lets the fork print flat, and won't gouge. Fits the
+  project (the bow is already bought metal). `yoke.py`: the integral post is gone; the apex hub is
+  now a **Ø13 SOCKET BOSS** (`yoke_socket_boss_diameter`) with a blind `yoke_rod_socket_depth 10`
+  bore (`+clearance 0.2` epoxy slip-bond). Boss Ø13 > barrel Ø12 so it stays the **bottom end-stop**.
+  New reference part `parts/yoke_rod.py` (the shaft); shown in the assembly, in the Gimbal group.
+- **Ø8 → Ø6 (maker's Q: is 8 too big).** Research: Ø8 is overkill for the few-N clamp load (steel
+  stiffness ∝ d⁴) and chunky. **Ø6 304-SS ground shaft** is the pick — dead-rigid, planted swivel
+  (bore L/D ~3:1), most-common stock, non-rusting, and soft enough to face + **tap M3** for the top
+  knob (a hardened dowel pin can't be tapped — that's why a ground SHAFT, not a pin). Scaled the
+  slider off it: bore Ø6.4, **barrel OD Ø14 → Ø12** (same 2.8 wall — sleeker/lighter), shoe saddle
+  r 4.4 → 3.4. Gate collar-wall still 2.8 ≥ 2.0; slider one solid, symmetric.
+- **Top-stop knob (maker's Q: anti-fall-out).** The rod top is faced + tapped M3; a small bought
+  **knurled knob** (`parts/rod_stop.py`, Ø10 × 4) screws in. It's wider than the bore, so a loosened
+  slider can't slide off the rod top — the cup can't drop out (boss = bottom stop, knob = top stop).
+  Assembly: slide the slider on, THEN screw the knob. Full adjust range KEPT (post not trimmed).
+
+Build **17/17**, gate **0 HARD / 0 SOFT**. BOM adds: Ø6 304-SS rod ×2, M3 top-stop knob ×2, epoxy.
+Renders show the slimmer rod + the top knob; the metal rod also makes the marring concern near-moot
+(the shoe stays as belt-and-suspenders). To validate: print the fork, bond a rod, feel the swivel/lock.
+
 ## 2026-06-27 — Worn pose: slider at mid-travel (rod up in the slider, cups up)
 
 Maker: the assembly looked unworn — cups hanging low on a long exposed rod. Right call: the pose had

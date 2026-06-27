@@ -28,6 +28,10 @@
       "nodes": [
         "yoke_R",
         "yoke_L",
+        "yoke_rod_R",
+        "yoke_rod_L",
+        "rod_stop_R",
+        "rod_stop_L",
         "insert_p_R",
         "insert_p_L",
         "insert_m_R",

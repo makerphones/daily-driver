@@ -17,7 +17,10 @@ project rule: never present a guessed price as confirmed).
 | M3 socket-head screw, ~6–10 mm — baffle → frame | 8 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | Knurled knob / large-head thumb screw, 8-32, ⌀5/8" head — slider height lock (presses the shoe) | 2 | McMaster-Carr (knurled knobs / thumb-screw knobs) | ~$2 ea | ESTIMATE |
-| Slider pressure shoe — printed PETG or Delrin blank (screw → shoe → post, no marring) | 2 | own printer / Delrin offcut | ~$0 | ESTIMATE |
+| Slider pressure shoe — printed PETG or Delrin blank (screw → shoe → rod, no marring) | 2 | own printer / Delrin offcut | ~$0 | ESTIMATE |
+| Yoke adjustment rod — Ø6 × ~65 mm, 304-SS ground shaft (epoxy into the fork socket; top faced + tapped M3) | 2 | McMaster-Carr (rotary shafts / dowel pins) | ~$2 ea | ESTIMATE |
+| Rod top-stop knob — small M3 knurled knob/thumb nut (anti-fall-out; screws into the rod top) | 2 | McMaster-Carr (knurled knobs) | ~$1.50 ea | ESTIMATE |
+| Epoxy — bond the rod into the fork socket | small | hardware | ~$5 | ESTIMATE |
 | M3 brass heat-set insert (⌀4.7 OD × 5.7) | 18 | McMaster-Carr / Amazon | ~$4–5 (set) | ESTIMATE |
 | 8-32 brass heat-set insert — slider thumbscrew | 2 | McMaster-Carr / Amazon | ~$1 (set) | ESTIMATE |
 | Foam gasket tape (driver seal) | small roll | hardware | ~$1 | ESTIMATE |

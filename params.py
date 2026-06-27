@@ -292,10 +292,20 @@ class Params:
     # lets the cup SWIVEL (fore-aft seal conform) when the screw is loose; tightening
     # locks both height + swivel by friction. (Replaces the old fixed swivel hub/bore;
     # Beyer's friction-clip in the block is the alternative, noted in the LOG.)
-    yoke_post_diameter: float = 8.0       # SET  round adjustment post OD (slide + swivel)
-    yoke_post_length: float = 52.0        # SET  post length above the arm junction. >= slider block (26) +
+    yoke_post_diameter: float = 6.0       # SET  Ø6 BOUGHT 304-SS ground shaft (slide + swivel bearing; was Ø8 — too chunky)
+    yoke_post_length: float = 52.0        # SET  EXPOSED rod length above the boss. >= barrel (18) +
                                           #   adjust travel (18) + grip margin, so the slider stays fully
-                                          #   engaged across the whole head-size range (34 was too short).
+                                          #   engaged across the whole head-size range (kept full — maker's call).
+    # The post is a BOUGHT Ø6 304-SS ground SHAFT epoxy-bonded into a SOCKET in the fork (was a
+    # printed integral post — SEPARATED so the bearing is smooth metal and the fork prints flat).
+    yoke_rod_socket_depth: float = 10.0     # SET  rod engagement bonded into the fork socket
+    yoke_rod_socket_clearance: float = 0.2  # SET  socket bore = rod + this (epoxy slip-bond gap)
+    yoke_socket_boss_diameter: float = 13.0 # SET  boss OD (> barrel Ø12 → doubles as the rod's BOTTOM end-stop)
+    # TOP-STOP knob — a small bought knurled knob (M3 stud) threaded into the rod's tapped TOP end.
+    # Wider than the bore so it catches the slider's top face → the cup can't slide off the rod when
+    # the lock is loose (the boss is the bottom stop; this is the top stop). Slide slider on, then screw.
+    rod_stop_diameter: float = 10.0   # SET  knob OD (> bore Ø6.4 → catches the slider top; < barrel Ø12)
+    rod_stop_height: float = 4.0      # SET  knob head height
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
     # WORN-POSE slider position (assembly viz only — not a printed dim). Where the barrel rides on
@@ -327,7 +337,7 @@ class Params:
     slider_shoe_width: float = 6.0        # SET  shoe X (along the lozenge long axis)
     slider_shoe_height: float = 7.0       # SET  shoe Z (up the post — taller = more post contact line)
     slider_shoe_thickness: float = 2.2    # SET  shoe Y (radial, screw-face → saddle); fits the thin barrel wall + boss base
-    slider_shoe_saddle_r: float = 4.4     # SET  concave saddle radius (post r 4 + clearance) → conformal area cradle
+    slider_shoe_saddle_r: float = 3.4     # SET  concave saddle radius (Ø6 rod r 3 + clearance) → conformal area cradle
     slider_shoe_saddle_depth: float = 0.8 # SET  how deep the saddle dishes the shoe face
     slider_shoe_clearance: float = 0.3    # SET  shoe↔pocket sliding fit (drop-in via the bore, post traps it)
     # Thumbscrew MOCKUP (parts/hardware.py) — viz of the big ⌀5/8" knurled KNOB on the 8-32 stud.
@@ -342,7 +352,7 @@ class Params:
     # is the SWIVEL + height bearing in ONE robust interface (no separate weak joint);
     # the thumbscrew clamps both. Far less bulk than the old 42×26×18 block. The bow
     # end tab (33 mm, 2 holes at bow_endtab_hole_spacing) bolts to the mount tab.
-    slider_collar_diameter: float = 14.0      # SET  barrel OD around the post bore (Ø8.4 bore + 2.8 wall)
+    slider_collar_diameter: float = 12.0      # SET  barrel OD around the post bore (Ø6.4 bore + 2.8 wall) — sleeker on Ø6 rod
     slider_collar_height: float = 18.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # constructed 45° chamfer on the barrel end rims (fillet pass)
     slider_bore_chamfer: float = 1.0          # countersink lead-in at each post-bore mouth (post entry + clean print)
