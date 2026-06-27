@@ -334,8 +334,8 @@ class Params:
     # on the bare post — a metal point gouges the printed PETG bearing). The screw → conformal
     # shoe → post: keeps the HP1000 positive lock, distributes the load (no marring), and the
     # shoe takes up the gap so a SHORT screw works (less protrusion). Mirrors the aftermarket
-    # Grado aluminium rod-block's silicone 'slider pill'. Screw = 4-40 (the maker's knurled
-    # thumbscrews) — exact head/length pending his caliper (flagged ESTIMATE/MEASURE below).
+    # Grado aluminium rod-block's silicone 'slider pill'. The lock screw is a stock 8-32 knurled
+    # KNOB / large-head thumb screw (below) — it presses the shoe, not the post.
     # STANDARDIZED on a stock McMaster knurled KNOB / large-head thumb screw — 8-32 thread with a
     # big ⌀5/8" (≈15.9 mm) GRIPPABLE knurled head (maker's call: easy to twist). The lock is
     # low-load (presses the shoe), so the bigger thread is for the head + a sturdier stud, not
@@ -352,7 +352,7 @@ class Params:
                                           #   centreline → the slider stays L/R symmetric (one print both ears).
     # CAPTIVE SHOE — a small conformal pad (printed PETG or a Delrin blank, ×2) that sits in a
     # pocket in the barrel wall, trapped between the post and the screw tip. Its concave face
-    # cradles the Ø8 post over an AREA so the lock never marks it.
+    # cradles the Ø6 post over an AREA so the lock never marks it.
     slider_shoe_width: float = 6.0        # SET  shoe X (along the lozenge long axis)
     slider_shoe_height: float = 7.0       # SET  shoe Z (up the post — taller = more post contact line)
     slider_shoe_thickness: float = 2.2    # SET  shoe Y (radial, screw-face → saddle); fits the thin barrel wall + boss base

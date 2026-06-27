@@ -169,8 +169,10 @@ The **slider** clamps and **rides the bow** for height adjustment and provides t
 - **Envelope** — interior **ID 78 mm × depth 30 mm**; **OD 90 mm** — a **pad-driven** outer
   diameter set to the earpad's cup-mount opening, so the cup's actual wall falls out at **6 mm**
   (`wall_thickness` 3 mm is now just the min-wall floor). The interior is unchanged at 78 mm —
-  this is a pad/mounting change, not an acoustic one — so the ~90 cc internal volume holds.
-  Parameterized; **OD ~90 mm is ESTIMATE/TBD** pending a caliper read of the Dekoni pad's mount.
+  this is a pad/mounting change, not an acoustic one — so the ~143 cc internal volume holds
+  (⌀78 × 30 mm ≈ π·39²·30 ≈ 143 cc; the old "~90 cc" was an arithmetic slip).
+  Parameterized; **cup OD is now SET at 91.44 mm** (4 in overall − 2× pad lip), back-solved from the
+  Beyer/Dekoni stretch-ring grip range — no caliper needed (see the build-readiness plan).
 - **Symmetric** — identical left and right; L/R marked in the surface only.
 - **Print orientation** — open face down / grille flat, no supports.
 - **Material** — PLA+ for prototyping, PETG for durable/kit parts.

@@ -56,7 +56,7 @@ These live outside `params.py` and won't error — they just come out wrong:
 
 ## 4. First build
 
-`python build.py` (8/8) → `python gate.py` (0 HARD) → first DESIGN-LOG entry →
+`python build.py` (N/N) → `python gate.py` (0 HARD) → first DESIGN-LOG entry →
 commit → **push**. Treat the first print as a measurement jig for the Tier-1
 unknowns (`measurement-priorities.md`).
 

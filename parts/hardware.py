@@ -89,7 +89,7 @@ def make_shoulder_screw() -> cq.Workplane:
 
 
 def make_thumbscrew() -> cq.Workplane:
-    """M4 thumbscrew MOCKUP — knurled hand-grip head + threaded shaft, axis +Z.
+    """8-32 knurled-knob thumbscrew MOCKUP — knurled hand-grip head + threaded shaft, axis +Z.
 
     Datum z=0 is the shaft TIP (the face that presses the post); the shaft runs +Z
     out through the slider boss to the head on top. Assembly-viz only — the slider's

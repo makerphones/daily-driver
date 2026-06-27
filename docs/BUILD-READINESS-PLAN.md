@@ -62,12 +62,16 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
   (`shoe-saddle-reaches-post`, `shoe-saddle-cradles-post`, `shoe-fits-pocket`). guard-dome stays
   SOFT — precondition sharpened to `driver_dome_excursion` measured (the one remaining estimate).
   Gate covers 12 parts + shoe interface, 0 HARD / 0 SOFT.
-- [ ] **3. Stale-doc sweep + AUTO-UPDATE.** Fix now: `print-guide.md` (removed over-rotation stop,
-  '8/8'→16 build, Ø8→Ø6 post, dead SOFT-warn ref), `slider_shoe.py` + params Ø8→Ø6 comments,
-  `hardware.py` "M4 thumbscrew"→8-32, and the **published manual spec** (`daily-driver-design-spec.mdx`,
-  still v0.2 → v0.3: pads→Beyer default + Dekoni alt, vents, "~90 cc"→**143 cc**). THEN make the
-  drift-prone bits **auto-generated** (build count, part list, orientation table from PartsGallery,
-  the BOM) so they can't go stale — a `gen-docs` step run by build.py.
+- [x] **3. Stale-doc sweep + AUTO-UPDATE.** DONE. Fixed active-code comments (Ø8→Ø6 in slider_shoe.py
+  + params; M4/4-40→8-32 in hardware.py/slider.py/assembly.py). `print-guide.md`: removed the
+  over-rotation stop, build-count→"all green (see PARTS.md)", M3→M3/M5/8-32 inserts, dead SOFT ref
+  → driver-excursion note, +orientation rows for the new parts. Template docs '8/8'→'N/N'.
+  **Auto-gen:** new `gen_parts_doc()` in build.py writes `docs/PARTS.md` (live inventory + 16/16 count,
+  derived from the part dicts) alongside the already-auto-gen BOM.md. Website spec + local design-spec:
+  corrected the actively-wrong facts (90→**143 cc**, pads→Beyer default) + an honest status note.
+  **Parked:** a FULL website/local design-spec architecture refresh (it still describes the old
+  spring-steel-arc/old-pivot architecture) — do after items 4-5 settle acoustics + headband, so it's
+  rewritten once. (DESIGN-LOG could one day be auto-summarized too, but it's append-only history.)
 - [ ] **4. Acoustic geometry as params + shown in model.** Add: a removable **felt/damping seat**
   (ledge behind the grille), a **dimensioned front-seal gasket** + a **seal-squeeze gate check**
   (30–50 % compression), a few **pluggable rear/baffle vents** (openness = a measurable, reversible
@@ -88,6 +92,10 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
 
 ## Parking lot (revisit)
 
+- **Full design-spec refresh (website `.mdx` + local `design-spec.md`)** — both still describe the
+  pre-bow "spring-steel-arc" architecture, the old pivot, Dekoni-default pads. Item 3 fixed only the
+  actively-wrong facts (143 cc, pad default) + a status note. Do the full v0.4 reconciliation AFTER
+  items 4-5 land (acoustics + headband), so it's rewritten once, not three times.
 - Print-verify everything (printer pending) — coupons first, then one full cup + a baseline REW sweep.
 - Kingstate driver specs — measure when bench-testing.
 - Dekoni pads — incoming; premium/tuning alternative.

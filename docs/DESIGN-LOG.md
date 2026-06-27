@@ -6,6 +6,30 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Stale-doc sweep + auto-generated parts inventory
+
+Third readiness-batch item: kill the doc drift, then make the drift-prone facts generate themselves.
+
+- **Active-code comments reconciled** to the current design: Ø8→Ø6 (slider_shoe.py + params), and the
+  lock screw M4/4-40 → **8-32** (hardware.py docstring, slider.py, assembly.py). The DESIGN-LOG itself is
+  left as-is — it's append-only history; "Ø8" in a June-24 entry was true then.
+- **`print-guide.md`** refreshed: dropped the removed over-rotation stop (2 places), build-count "8/8" →
+  "all green (see PARTS.md)", inserts M3 → **M3/M5/8-32** (+BOM link), the dead "over-rotation SOFT" item
+  → the live driver-excursion note, and **orientation rows added** for the parts it was missing
+  (slider_shoe, driver_clamp, headband_clamp, coupons). Template docs (`starting-a-new-product`,
+  `decision-tree`, `new-build-intake`, `measurement-priorities`) '8/8' → **'N/N'** (count-agnostic).
+- **AUTO-GENERATION (the real fix):** new `gen_parts_doc()` in build.py writes **`docs/PARTS.md`** — the
+  live part inventory (16 parts: 4 printed / 6 accessory / 2 coupon / 4 reference) + the **16/16** count,
+  all DERIVED from the part-category dicts (only a one-line role per part is hand-kept). Emitted next to
+  the already-auto-gen `BOM.md`. So the "N parts" figure can't go stale again.
+- **Published specs** (website `.mdx` + local `design-spec.md`): corrected the actively-wrong facts —
+  the "~90 cc" arithmetic slip → **~143 cc** (⌀78×30 ≈ π·39²·30), pads → **Beyer default** — plus a
+  status note. A FULL spec architecture refresh (both still describe the old spring-steel-arc layout) is
+  **parked** until items 4-5 settle acoustics + headband, so it's rewritten once.
+
+Gate **0 HARD / 0 SOFT**, 16/16, build.py imports clean. No geometry changed (comments + docs + a
+generated doc), so the published model is untouched.
+
 ## 2026-06-27 — Close gate coverage gaps (shoe + coupons + clamp now validated)
 
 Second readiness-batch item. The gate built 8 parts but left four printable parts UNCHECKED and the

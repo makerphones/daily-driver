@@ -145,7 +145,7 @@ def make_slider() -> cq.Workplane:
         collar = collar.cut(cq.Workplane(obj=bore))
 
     # THUMBSCREW boss + CAPTIVE-SHOE POCKET on the +Y OUTBOARD face, CENTRED on the barrel mid
-    # (boss_z, on the x=0 centreline → keeps the slider L/R symmetric). The 4-40 screw threads a
+    # (boss_z, on the x=0 centreline → keeps the slider L/R symmetric). The 8-32 knob threads a
     # heat-set in the boss and its tip presses a conformal SHOE (parts/slider_shoe.py) that
     # cradles the post — the metal never touches the printed post, so the bearing isn't gouged.
     # In the worn pose local +Y → global +X (straight out the side of the head) = the natural
@@ -169,7 +169,7 @@ def make_slider() -> cq.Workplane:
                               cq.Vector(-pkt_w / 2, p_lo, bz - pkt_h / 2))
     collar = collar.cut(cq.Workplane(obj=pocket))
 
-    # 4-40 heat-set in the boss, ABOVE the pocket (so the thread engages solid material); the
+    # 8-32 heat-set in the boss, ABOVE the pocket (so the thread engages solid material); the
     # screw tip protrudes past it into the pocket to press the shoe. Screw NEVER reaches the post.
     ins = cq.Solid.makeCylinder(P.slider_thumbscrew_insert_hole / 2, boss_h,
                                 cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))

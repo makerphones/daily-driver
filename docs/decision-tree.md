@@ -27,7 +27,7 @@ Reusable for any new headphone (it's about dependencies, not this product).
             → yoke wraps cup     ← bow width
                   │                  │
 4. BUILD CHAIN    └──► cup → baffle → yoke → slider → bow → ASSEMBLY
-                       (gate every part: build 8/8, gate 0 HARD)
+                       (gate every part: build N/N, gate 0 HARD)
                             │
 5. STYLE          ────────► grille / accents / edge treatments / signature
    (taste pass)             ◄── LAST, after fit + function are right

@@ -13,7 +13,7 @@ below and writes a `BRIEF.md`), or fill the template by hand.
 
 ```
 INTAKE  →  BRIEF.md  →  params.py + parts/  →  build.py → gate.py → DESIGN-LOG  →  iterate  →  release
-(ask)      (decisions)   (single source)        (8/8)      (0 HARD)   (one entry)    (re-measure)  (tag)
+(ask)      (decisions)   (single source)        (N/N)      (0 HARD)   (one entry)    (re-measure)  (tag)
 ```
 
 - **Intake**: answer the questionnaire; gather reference photos + any measurements.
@@ -21,7 +21,7 @@ INTAKE  →  BRIEF.md  →  params.py + parts/  →  build.py → gate.py → DE
 - **Brief**: the frozen-enough set of decisions + targets. Lives in the build dir.
 - **Build**: translate the brief into `params.py` values (the single source of
   truth) and any new part geometry. Reuse the Daily Driver skeleton + ritual.
-- **Gate every change**: `python build.py` (8/8) then `python gate.py` (0 HARD).
+- **Gate every change**: `python build.py` (N/N) then `python gate.py` (0 HARD).
 - **Log + commit + push** every real decision/iteration (newest DESIGN-LOG entry
   on top; one commit per task; **always push**).
 - **Iterate on real parts**: measurements from printed parts / the actual pad/bow

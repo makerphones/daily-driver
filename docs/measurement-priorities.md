@@ -45,5 +45,5 @@ so likely shrinks once the real groove is measured), `bow_worn_radius=78` (Tier 
   catch what you forgot to measure.
 - **Record the number AND its confidence** in the brief / params comment:
   `MEASURED` / `ESTIMATE` / `TBD`. Never invent a number to make geometry "work".
-- After measuring: set the param → `build.py` (8/8) → `gate.py` (0 HARD) →
+- After measuring: set the param → `build.py` (N/N) → `gate.py` (0 HARD) →
   DESIGN-LOG entry → commit → push. The ESTIMATE is overwritten cleanly.

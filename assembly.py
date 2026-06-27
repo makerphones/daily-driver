@@ -214,7 +214,7 @@ def make_assembly() -> cq.Assembly:
     except Exception as e:  # noqa: BLE001 — viz only; never block the build
         print(f"  [warn] assembly: pivot hardware skipped ({e}).")
 
-    # Thumbscrew (short 4-40) — the height lock, shown so the post+SHOE+thumbscrew mechanism
+    # Thumbscrew (8-32 knurled knob) — the height lock, shown so the post+SHOE+thumbscrew mechanism
     # reads. Rides with the slider on the +Y OUTBOARD boss; its tip presses the SHOE (not the
     # post). T_yoke maps local +Y → global +X, so in the worn pose the knurled head faces
     # straight out the side of the head (the natural two-finger reach with the phones ON).

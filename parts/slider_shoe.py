@@ -4,7 +4,7 @@
 """
 Slider pressure SHOE — the conformal pad the slider thumbscrew presses against the post.
 
-The height lock must NOT drive a metal screw point onto the round Ø8 PRINTED PETG post: a
+The height lock must NOT drive a metal screw point onto the round Ø6 PRINTED PETG post: a
 point load ploughs a divot and, over repeated adjustment, destroys the very surface that has
 to keep sliding + swivelling cleanly. So the screw presses THIS small pad instead, and the
 pad's concave face cradles the post over an AREA — the lock holds firm (HP1000-style) without
@@ -32,7 +32,7 @@ def make_slider_shoe() -> cq.Workplane:
     shoe = cq.Workplane("XY").box(sw, st, sh)
 
     # Concave SADDLE on the −Y face: cut a Z-axis cylinder positioned so it dishes the face by
-    # `sd`. Radius sr (≈ post radius) → the cradle conforms to the Ø8 post over an area.
+    # `sd`. Radius sr (≈ post radius) → the cradle conforms to the Ø6 post over an area.
     cyl = cq.Solid.makeCylinder(
         sr, sh + 4, cq.Vector(0, -st / 2 - sr + sd, -(sh + 4) / 2), cq.Vector(0, 0, 1))
     shoe = shoe.cut(cq.Workplane(obj=cyl))
