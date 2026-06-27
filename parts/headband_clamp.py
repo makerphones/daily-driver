@@ -4,36 +4,58 @@
 """
 Headband clamp COVER — the INNER (head-side, −Y) plastic piece of the band junction.
 
-Two plastic pieces sandwich the metal bow's end. The OUTER piece is the slider's lofted
-clamp WING (parts/slider.py) — it carries the recess + rib + inserts and the post-bore
-barrel behind it. This COVER is the INNER (−Y) piece: it sits on the band's head-side
-face and bolts down with two M3 screws (through the prong-tip holes into the wing's
-inserts). It only spans the GRIP region (around the bolts) — the band sweeps out freely
-above it, so nothing on the inner side fights the band's exit. A SLOT on its outer (+Y)
-face receives the slider's anti-rotation rib.
+Two plastic pieces sandwich the metal bow's end. The OUTER piece is the slider's rounded
+clamp LOZENGE (parts/slider.py) — it carries the recess + rib + inserts and the post-bore
+barrel behind it. This COVER is the INNER (−Y) piece: a small ROUNDED plate over the GRIP
+region only, bolted through the prong-tip holes into the lozenge's inserts. Spanning just
+the grip lets the band sweep out freely above it. A SLOT on its outer (+Y) face takes the
+slider's anti-rotation rib.
 
 Frame matches the slider (z=0 at the barrel mid); shares the slider's bolt/rib positions
-(P.slider_clamp_*). All dimensions ESTIMATES (params.py).
+(P.slider_clamp_*). Rounded outline is a hand-built arc wire (fillets fail on this OCC build).
 """
 
 import cadquery as cq
 from params import P
 
 
+def _rounded_rect_wire(plane, width, thick, r):
+    """Rounded-rectangle WIRE on `plane` (local-x = width, local-y = thick, corner r)."""
+    hw = width / 2.0
+    ht = thick / 2.0
+    r = min(r, hw - 1e-3, ht - 1e-3)
+    sx, sy = hw - r, ht - r
+    k = r * 0.70710678
+    wp = (cq.Workplane(plane).moveTo(-sx, -ht)
+          .lineTo(sx, -ht).threePointArc((hw - r + k, -ht + r - k), (hw, -sy))
+          .lineTo(hw, sy).threePointArc((hw - r + k, ht - r + k), (sx, ht))
+          .lineTo(-sx, ht).threePointArc((-hw + r - k, ht - r + k), (-hw, sy))
+          .lineTo(-hw, -sy).threePointArc((-hw + r - k, -ht + r - k), (-sx, -ht))
+          .close())
+    return wp.val()
+
+
 def make_headband_clamp() -> cq.Workplane:
     R = P.slider_collar_diameter / 2
     pd = P.slider_clamp_standoff
-    cw = P.slider_clamp_width
     ct = P.slider_clamp_cover_thickness
     s = P.bow_endtab_hole_spacing / 2
     z_lo = P.slider_clamp_z_lo
     z_top = P.slider_clamp_hole_z + 4.0                  # ends just above the bolts; band exits above
-    clamp_face = -R - pd                                 # recess opening (band's inner face ≈ here)
+    z_mid = (z_lo + z_top) / 2
+    clamp_face = -R - pd                                 # recess opening (band's inner face)
 
-    # Plate on the band's INNER (−Y) side over the grip region only, its +Y face at the
-    # recess opening.
-    cover = (cq.Workplane("XY").workplane(offset=(z_lo + z_top) / 2)
-             .center(0, clamp_face - ct / 2).box(cw, ct, z_top - z_lo))
+    # Small ROUNDED plate over the grip, sitting on the band's inner (−Y) face. Loft two
+    # equal stadium wires for a clean rounded outline.
+    cw = P.slider_clamp_width - 6.0                      # a touch narrower than the lozenge
+    ch = (z_top - z_lo) + 4.0
+    rr = min(P.slider_clamp_corner_r - 1.0, ch / 2 - 0.5)
+
+    def wire(y):
+        plane = cq.Plane(origin=(0, y, z_mid), xDir=(1, 0, 0), normal=(0, 1, 0))
+        return _rounded_rect_wire(plane, cw, ch, rr)
+
+    cover = cq.Workplane(obj=cq.Solid.makeLoft([wire(clamp_face - ct), wire(clamp_face)]))
 
     # Two M3 clearance holes (axis Y) at the prong-tip hole pitch + bolt height.
     for x in (+s, -s):

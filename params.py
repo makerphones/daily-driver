@@ -326,15 +326,17 @@ class Params:
     # two M3 screws through the prong-tip holes. The clamp is centred on the barrel mid
     # (z=0); the post slides the full barrel height and may poke past it (nothing stacks on
     # the post). slider_clamp_hole_z / rib_z are now relative to the barrel mid.
-    # The clamp WING is LOFTED: full width at the bolts (z_lo), tapering NARROWER and the
-    # inner face RECEDING (+Y) toward the top so the band sweeps out cleanly and corner mass
-    # is shed. All Z values are relative to the barrel mid (z=0).
-    slider_clamp_width: float = 36.0       # SET  wing width (X) at the bolts — seats the 33 mm band
-    slider_clamp_top_width: float = 26.0   # SET  wing width (X) at the top (tapers up: sleeker, lighter)
-    slider_clamp_z_lo: float = -6.0        # SET  wing bottom Z (holds the prong tip)
-    slider_clamp_z_hi: float = 8.0         # SET  wing top Z (band sweeps out above this)
-    slider_clamp_top_recede: float = 5.0   # SET  inner face pulls back (+Y) by this at the top → clean exit
-    slider_clamp_standoff: float = 6.0     # SET  clamp-plate depth (Y) proud of the barrel; hosts the inserts
+    # The clamp body is a flat rounded LOZENGE (Beyerdynamic end-cap look): a stadium outline
+    # (rounded ends) BEVELED toward the barrel, sitting on the barrel's INNER (head-side) face
+    # so the rod + tube ride OUTSIDE the band. Sleek + low-profile. The band's prongs drop
+    # into a RECESS in its inner face; a short COVER (grip region only) lets the band sweep out
+    # cleanly above. Z values are relative to the barrel mid (z=0).
+    slider_clamp_width: float = 44.0       # SET  lozenge length (X) — band width + rounded ends
+    slider_clamp_height: float = 22.0      # SET  lozenge height (Z)
+    slider_clamp_corner_r: float = 9.0     # SET  lozenge corner radius (the rounded ends)
+    slider_clamp_bevel: float = 2.0        # SET  perimeter bevel inner→outer face (the sleek "angle")
+    slider_clamp_standoff: float = 6.0     # SET  lozenge depth (Y) proud of the barrel; hosts the inserts
+    slider_clamp_z_lo: float = -6.0        # SET  recess/cover bottom Z (holds the prong tip)
     slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes)
     slider_clamp_rib_z: float = 1.5        # SET  Z of the anti-rotation rib (in the channel)
     slider_clamp_rib_height: float = 3.0   # SET  rib Z extent (short — registers, doesn't block the exit)

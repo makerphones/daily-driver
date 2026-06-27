@@ -6,6 +6,31 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider v0.9: flat rounded LOZENGE (Beyerdynamic end-cap form)
+
+Maker: the v0.8 block was "closer but a little clunky." Reference = the real Beyerdynamic
+headband end-cap (and a 3D-printed clone): a flat, rounded, low-profile LOZENGE with a
+central band channel, two screws, and beveled edges. Ours differs only in that our riser is
+an external post, so the tube protrudes from the outer wall — plus material for the
+thumbscrew. "Notice the sleekness and size and angles."
+
+- **Clamp body is now a flat rounded LOZENGE**, not a trapezoid slab. A stadium outline
+  (`slider_clamp_width 44 × height 22`, `corner_r 9`) built as a hand-made arc wire
+  (`_rounded_rect_wire`, since this OCC build won't fillet) and **lofted** from a full inner
+  face to a smaller outer face — giving the perimeter **bevel** (`bevel 2`, the sleek
+  "angle"). The band channel/recess + rib + two screw holes sit on the big inner face, just
+  like the Beyer cap.
+- **Post tube on the outer wall:** the Ø14 barrel rides on the lozenge's outer (+Y) face —
+  the external rod housing — with the M3 thumbscrew boss in its front.
+- **Cover** is now a small **rounded** plate (lofted stadium) over the grip region only.
+- Recess widened-band-safe inside the rounded ends; bolts/rib unchanged.
+
+Build **14/14**, gate **0 HARD / 0 SOFT** (slider one solid, wall 2.8 ≥ 2.0). The part
+render reads like the Beyer end-cap; junction renders confirm the band seats + sweeps out.
+Next form choices to offer: flatter still / teardrop taper, then the deferred fillet pass.
+
+---
+
 ## 2026-06-26 — Slider v0.8: sleek lofted wing, clean band exit, smaller boss
 
 Maker: the band should exit the recess/block cleanly (the tall flat clamp + cover were
