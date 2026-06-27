@@ -136,7 +136,13 @@ def make_assembly() -> cq.Assembly:
     # poke past it (nothing stacks on the post now). Barrel TOP at post_top → barrel CENTRE
     # (the slider frame's z=0, where the clamp sits) at post_top − h/2.
     post_top = P.yoke_fork_height + 4 + P.yoke_post_length
-    slider_z = post_top - P.slider_collar_height / 2        # barrel / clamp centre
+    post_base = P.yoke_fork_height + 4                      # hub top = the barrel's bottom stop
+    # WORN pose: slide the barrel down the post to a realistic mid-travel position (average head),
+    # not the fully-extended extreme. frac 0 → barrel at the post top (biggest head); frac 1 →
+    # barrel at the hub stop (smallest head, rod pokes up most). The band/cover/knob ride with it.
+    sz_hi = post_top - P.slider_collar_height / 2           # barrel at the post top (extended)
+    sz_lo = post_base + P.slider_collar_height / 2          # barrel at the hub (retracted)
+    slider_z = sz_hi - P.assembly_worn_slider_frac * (sz_hi - sz_lo)   # barrel / clamp centre
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
     # Pressure SHOE — rides in the slider's +Y pocket, saddle cradling the post (the thumbscrew
     # presses it, not the post). Built at the origin, shifted +Y so its saddle is post-coaxial.

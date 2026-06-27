@@ -298,6 +298,11 @@ class Params:
                                           #   engaged across the whole head-size range (34 was too short).
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
+    # WORN-POSE slider position (assembly viz only — not a printed dim). Where the barrel rides on
+    # the post: 0 = fully EXTENDED (barrel at the post top = biggest head, longest exposed rod);
+    # 1 = fully RETRACTED (barrel at the hub stop = smallest head, rod pokes furthest above). 0.5 =
+    # an average head — the realistic worn look (band pulled down toward the cups, rod up in the slider).
+    assembly_worn_slider_frac: float = 0.5  # SET  mid-travel (worn average head); tune for the render
     # Lock = a CAPTIVE PRESSURE SHOE the thumbscrew presses against the post (NOT the screw tip
     # on the bare post — a metal point gouges the printed PETG bearing). The screw → conformal
     # shoe → post: keeps the HP1000 positive lock, distributes the load (no marring), and the

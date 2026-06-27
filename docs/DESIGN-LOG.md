@@ -6,6 +6,22 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Worn pose: slider at mid-travel (rod up in the slider, cups up)
+
+Maker: the assembly looked unworn — cups hanging low on a long exposed rod. Right call: the pose had
+the barrel at the very TOP of the post (fully-extended / biggest-head extreme), so all of the
+exposed rod showed BELOW the slider. Added `assembly_worn_slider_frac` (viz only) and set it **0.5**
+— the barrel now rides at MID-travel (an average head): the band/cover/knob drop ~17 mm toward the
+cups (worn look) and the rod pokes ~17 mm UP through the slider (as a Grado-style rod does when
+adjusted in). Renders read far more worn.
+
+**Ergonomic note / design question:** the exposed rod = `post_length − barrel = 52 − 18 = 34 mm`,
+and that total is FIXED — sliding the barrel only moves where it shows (below vs above). At mid it's
+~17 below + ~17 above. The 17 mm poking up reads OK but is the trade-off. If a cleaner look (less
+rod showing) is wanted, the lever is `yoke_post_length`: it's 52 but the minimum for the full 18 mm
+adjust range is barrel 18 + travel 18 = ~36–40, so it could trim ~10 mm. Shorter post = less exposed
+rod, same range. Flagged for the maker — keep mid-pose as the render default for now.
+
 ## 2026-06-27 — Slider lock: CAPTIVE PRESSURE SHOE (don't gouge the post) + 4-40 spec
 
 Maker: a metal thumbscrew pressing straight on the round post will destroy it — and the screw
