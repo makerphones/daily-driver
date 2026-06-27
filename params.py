@@ -302,11 +302,13 @@ class Params:
     slider_thumbscrew_insert_hole: float = 4.0   # SET  M3 brass heat-set bore (the lock)
     slider_thumbscrew_boss: float = 7.0   # SET  boss OD hosting the M3 insert (1.5 wall; small on the Ø14 barrel)
     slider_thumbscrew_boss_proud: float = 6.0  # SET  how far the boss/head stands proud of the barrel (finger purchase)
-    slider_thumbscrew_boss_z: float = 5.0      # SET  boss lifted toward the crown so the Ø12 head clears the gusset
-                                          #   band (z±7) for a clean two-finger side-pinch. On the +Y OUTBOARD face: in
-                                          #   the worn pose local +Y → global +X (straight out the side of the head) =
-                                          #   the natural reach with the phones ON, and it drives the post into the FULL
-                                          #   lozenge backing (firm lock) vs the thin 2.8 mm barrel ring on the old +X.
+    slider_thumbscrew_boss_z: float = 0.0      # SET  boss CENTRED on the barrel mid (z=0), dead-centre on the +Y
+                                          #   OUTBOARD face. In the worn pose local +Y → global +X (straight out the side
+                                          #   of the head) = the natural two-finger reach with the phones ON, and it drives
+                                          #   the post into the FULL lozenge backing (firm lock) vs the thin 2.8 mm barrel
+                                          #   ring on the old +X/front. On the x=0 centreline → the slider stays L/R
+                                          #   symmetric (one print both ears). The boss face is well outboard of the
+                                          #   head-side gussets, so no need to lift it (the earlier z+5 lift is dropped).
     # Thumbscrew MOCKUP (parts/hardware.py) — the height lock, shown in the assembly so the
     # Grado-style post+thumbscrew mechanism reads. BIG knurled head (grip) on the small M3
     # shaft — keeps the hand grip while the boss stays slim.

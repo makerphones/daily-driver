@@ -6,6 +6,29 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider: PROVE + enforce L/R symmetry (one print both ears) + centre the thumbscrew
+
+Maker: the thumbscrew should sit on the OUTSIDE, 90° to the block face, so each slider is
+symmetric and you print ONE part, not two. The thumbscrew was already on the +Y outboard face
+on the x=0 centreline (that part was fine) — but checking the geometry surfaced a real ~0.8 mm
+asymmetry the eye missed. Pinned it down by building incrementally and measuring the optimal
+(tight) bbox + a vertex mirror-residual: barrel + lozenge + gussets + recess + rib + bores +
+boss are all perfectly symmetric (sum 0.000) — the **grip-scallop cuts** were the sole culprit.
+The two cuts are mirror-image cylinders, but this OCC kernel trims the lofted lozenge ends a hair
+unevenly (a single fused tool didn't help → it's the cut-vs-loft B-rep, not cut order).
+
+- **Enforced symmetry (done):** fold the finished part onto its own YZ mirror — keep the +X
+  half (half-space cut) and union its mirror. Drives the **mirror residual to exactly 0.00000 mm**
+  (was 1.99); bbox X now ±21.61 symmetric, COM.x 0. (`intersect(part, mirror(part))` silently
+  no-ops on this build; the half-space-keep + mirror-union is the reliable route.) Part stays
+  ONE valid solid (`manifold:slider` PASS). So `make_slider()` is achiral → the **same print
+  serves both ears**; the assembly's `mirror_L` is pure posing, not a second part.
+- **Thumbscrew centred (done):** dropped the earlier +5 lift — `slider_thumbscrew_boss_z 0`, dead
+  centre on the outboard face. The lift was to "clear the gusset band," but the gussets are on the
+  opposite (head, −Y) face, so it bought nothing; centred reads cleaner and is the natural pinch.
+- Verified with a side-by-side render of slider_R vs slider_L — congruent (same part, rotated
+  180° for the other ear). Build 1/1, gate **0 HARD / 0 SOFT**.
+
 ## 2026-06-26 — Slider POLISH pass: constructed chamfers + bow prong-tip rounding
 
 The deferred fillet/chamfer pass, done AFTER the ergonomics (so nothing eased then re-cut). This

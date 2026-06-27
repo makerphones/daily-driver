@@ -144,11 +144,11 @@ def make_slider() -> cq.Workplane:
             cq.Vector(x, seat_y, P.slider_clamp_hole_z), cq.Vector(0, 1, 0))
         collar = collar.cut(cq.Workplane(obj=bore))
 
-    # THUMBSCREW boss on the +Y OUTBOARD face of the barrel — small M3 lock. In the worn
-    # pose local +Y → global +X (straight out the side of the head), so the knurled head
-    # faces the natural two-finger reach with the phones ON; it's LIFTED in +Z (boss_z) so
-    # that head clears the gusset band. Pressing the post toward −Y jams it into the FULL
-    # lozenge backing (firm friction lock), not the thin barrel ring the old +X screw drove.
+    # THUMBSCREW boss on the +Y OUTBOARD face of the barrel — small M3 lock, CENTRED on the
+    # barrel mid (boss_z, on the x=0 centreline → keeps the slider L/R symmetric). In the worn
+    # pose local +Y → global +X (straight out the side of the head), so the knurled head faces
+    # the natural two-finger reach with the phones ON. Pressing the post toward −Y jams it into
+    # the FULL lozenge backing (firm friction lock), not the thin barrel ring the old +X drove.
     boss_h = P.slider_thumbscrew_boss_proud
     bovl = 4.0
     bz = P.slider_thumbscrew_boss_z
@@ -182,6 +182,16 @@ def make_slider() -> cq.Workplane:
             sc_r, LZ + 8, cq.Vector(sx * (LX / 2 + sc_r - sc_d), y_mid, -(LZ + 8) / 2),
             cq.Vector(0, 0, 1))
         collar = collar.cut(cq.Workplane(obj=dish))
+
+    # GUARANTEE L/R SYMMETRY → the SAME print serves both ears (no mirrored second part). The
+    # part is symmetric BY CONSTRUCTION (every feature is centred or in a ±x pair, thumbscrew
+    # on x=0) EXCEPT the two grip-scallop cuts, which this OCC kernel resolves a hair unevenly
+    # against the lofted lozenge ends (~0.8 mm). So fold the finished part onto its own YZ
+    # mirror: keep the +X half (half-space cut) and union its mirror. This drives the residual
+    # to exactly 0. (intersect(part, mirror(part)) silently no-ops on this build; keeping a
+    # half-space half then mirror-unioning is the reliable route.)
+    half = collar.intersect(cq.Workplane("XY").transformed(offset=(200, 0, 0)).box(400, 400, 400))
+    collar = half.union(half.mirror("YZ"))
     return collar
 
 
