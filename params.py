@@ -313,8 +313,8 @@ class Params:
     # is the SWIVEL + height bearing in ONE robust interface (no separate weak joint);
     # the thumbscrew clamps both. Far less bulk than the old 42×26×18 block. The bow
     # end tab (33 mm, 2 holes at bow_endtab_hole_spacing) bolts to the mount tab.
-    slider_collar_diameter: float = 18.0      # SET  barrel OD around the post bore
-    slider_collar_height: float = 26.0        # SET  barrel height (post grip + travel feel)
+    slider_collar_diameter: float = 14.0      # SET  barrel OD around the post bore (Ø8.4 bore + 2.8 wall)
+    slider_collar_height: float = 22.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
     # Headband CLAMP (Beyer-style two-piece, OFFSET-OUTER layout). The post-bore TUBE
     # (the barrel) is the OUTER body — the band attaches on the barrel's INNER (−Y,
@@ -326,13 +326,13 @@ class Params:
     # (z=0); the post slides the full barrel height and may poke past it (nothing stacks on
     # the post). slider_clamp_hole_z / rib_z are now relative to the barrel mid.
     slider_clamp_width: float = 36.0       # SET  clamp width (X) — seats the 33 mm band + the bolts
-    slider_clamp_height: float = 28.0      # SET  clamp height (Z) — spans the prong holes + channel rib
-    slider_clamp_standoff: float = 7.0     # SET  clamp-plate depth (Y) proud of the barrel; hosts the inserts
+    slider_clamp_height: float = 22.0      # SET  clamp height (Z) — spans the prong holes + channel rib
+    slider_clamp_standoff: float = 6.0     # SET  clamp-plate depth (Y) proud of the barrel; hosts the inserts
     slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes), rel. barrel mid
-    slider_clamp_rib_z: float = 6.0        # SET  Z of the anti-rotation rib (in the channel), rel. barrel mid
-    slider_clamp_rib_height: float = 12.0  # SET  rib Z extent (runs along the open channel)
+    slider_clamp_rib_z: float = 4.0        # SET  Z of the anti-rotation rib (in the channel), rel. barrel mid
+    slider_clamp_rib_height: float = 8.0   # SET  rib Z extent (runs along the open channel)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
-    slider_clamp_cover_thickness: float = 4.0  # SET  the inner cover plate thickness
+    slider_clamp_cover_thickness: float = 3.0  # SET  the inner cover plate thickness
 
     # ---- Bow (BOUGHT Beyer Metal Head Bow / DIY 1095 — INTERFACE ONLY) ------
     # Reference body for assembly + a DIY template. NOT a printed part. The first

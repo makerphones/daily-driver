@@ -6,6 +6,26 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slim + shorten the slider block
+
+Maker: the slider block is too thick and too tall. The offset-outer layout (band inside,
+tube outside) inherently puts the block's depth at `2·barrelR + standoff + cover`, which
+was heavy. Trimmed all the padding (no design change — just dimensions in `params.py`):
+
+- **Thinner (head→out):** barrel OD `18 → 14` (wall 4.8 → 2.8 mm, gate floor 2.0),
+  clamp-plate standoff `7 → 6`, cover `4 → 3`. Block depth **29 → 23 mm**.
+- **Shorter (Z):** barrel height `26 → 22`, clamp height `28 → 22` (now flush with the
+  barrel), rib `z 6→4 / height 12→8` so it still fits the shorter clamp. Block height
+  **28 → 22 mm**.
+- **Bonus:** the cup outboard step is `barrelR + standoff`, so it dropped `16 → 13 mm` —
+  cups sit a touch closer.
+
+Build **14/14**, gate **0 HARD / 0 SOFT** (slider wall 2.8 ≥ 2.0). Still pending before
+the cosmetic fillet/chamfer pass: any further form work on the block (taper/sculpt), the
+thumbscrew boss now reads large on the smaller barrel (Ø9 on Ø14), and prong-tip rounding.
+
+---
+
 ## 2026-06-26 — Headband junction: OFFSET-OUTER (band inside, rod + tube outside)
 
 The maker's correction on the in-line stack (entry below): the rod and the tube that holds
