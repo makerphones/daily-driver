@@ -6,6 +6,21 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider POLISH pass: constructed chamfers + bow prong-tip rounding
+
+The deferred fillet/chamfer pass, done AFTER the ergonomics (so nothing eased then re-cut). This
+OCC build's edge `.fillet` fails, so every ease is built BY CONSTRUCTION (cones/lofts, which the
+kernel is happy with):
+
+- **Barrel end rims (done):** replaced the silently-skipped `.fillet` with a 4-circle LOFT —
+  a smaller ring at each end face flares to full R one `slider_collar_rim_round 2` in, giving a
+  real 45° chamfer top and bottom. Mid-wall stays full R (gate's collar-wall = 2.8 ≥ 2.0).
+- **Post-bore mouths (done):** a `slider_bore_chamfer 1.0` countersink cone at each bore end —
+  a lead-in for the post and a clean printed edge.
+- **Thumbscrew insert mouth (done):** a small `slider_boss_chamfer 0.8` countersink (kept ≤ the
+  1.5 mm boss wall) eases the heat-set start. Built in the same place the boss now lives (no
+  chamfer-then-move). Build 1/1, gate **0 HARD / 0 SOFT**.
+
 ## 2026-06-26 — Slider ERGONOMICS pass (pill kept): head relief, thumbscrew→outboard, grab
 
 The ergonomics-before-polish work the last entry queued. A critique panel (frame-verify +

@@ -67,12 +67,16 @@ def make_slider() -> cq.Workplane:
     y_in = -R - pd                                       # lozenge inner (head-side) face
     y_out = -R + ovl                                     # lozenge outer face (buried in the barrel)
 
-    # BARREL = post-bore TUBE, centred z=0 — the rod housing on the OUTER wall.
-    collar = cq.Workplane("XY").workplane(offset=-h / 2).circle(R).extrude(h)
-    try:
-        collar = collar.edges(">Z or <Z").fillet(P.slider_collar_rim_round)
-    except Exception as e:  # noqa: BLE001 — kernel may refuse on this OCC build
-        print(f"  [warn] slider: barrel rim roundover skipped ({e}).")
+    # BARREL = post-bore TUBE, centred z=0 — the rod housing on the OUTER wall. The end rims
+    # are CHAMFERED by construction (this OCC build's edge .fillet silently fails): loft a
+    # smaller circle at each end face out to full R one rim-width in, giving a 45° eased rim
+    # top and bottom. Mid-wall stays full R (the gate's collar-wall reads the nominal wall).
+    rim = P.slider_collar_rim_round
+    collar = cq.Workplane(obj=cq.Solid.makeLoft([
+        cq.Wire.makeCircle(R - rim, cq.Vector(0, 0, -h / 2), cq.Vector(0, 0, 1)),
+        cq.Wire.makeCircle(R, cq.Vector(0, 0, -h / 2 + rim), cq.Vector(0, 0, 1)),
+        cq.Wire.makeCircle(R, cq.Vector(0, 0, h / 2 - rim), cq.Vector(0, 0, 1)),
+        cq.Wire.makeCircle(R - rim, cq.Vector(0, 0, h / 2), cq.Vector(0, 0, 1))]))
 
     # CLAMP LOZENGE — flat rounded stadium, a shallow LENS in section: it eases to BOTH
     # faces from a widest mid-band, so neither face presents a proud square lip. Three arc
@@ -125,6 +129,14 @@ def make_slider() -> cq.Workplane:
     collar = collar.cut(
         cq.Workplane("XY").workplane(offset=-h / 2 - 1).circle(bore_r).extrude(h + 2))
 
+    # Eased post-bore MOUTHS — a shallow countersink cone at each end gives the post a lead-in
+    # and a clean printed edge (constructed; the kernel won't fillet the bore rim).
+    bc = P.slider_bore_chamfer
+    for zc, dz in ((h / 2, -1.0), (-h / 2, 1.0)):
+        cone = cq.Solid.makeCone(bore_r + bc, bore_r, bc,
+                                 cq.Vector(0, 0, zc), cq.Vector(0, 0, dz))
+        collar = collar.cut(cq.Workplane(obj=cone))
+
     # Two M3 inserts in the lozenge (axis +Y from the recess floor) at the prong-hole pitch.
     for x in (+s, -s):
         bore = cq.Solid.makeCylinder(
@@ -146,6 +158,13 @@ def make_slider() -> cq.Workplane:
     ins = cq.Solid.makeCylinder(P.slider_thumbscrew_insert_hole / 2, P.insert_boss_depth,
                                 cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=ins))
+    # Small countersink lead-in at the insert mouth (eases the heat-set start; kept ≤ the
+    # thin 1.5 mm boss wall).
+    sbc = P.slider_boss_chamfer
+    icone = cq.Solid.makeCone(P.slider_thumbscrew_insert_hole / 2 + sbc,
+                              P.slider_thumbscrew_insert_hole / 2, sbc,
+                              cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
+    collar = collar.cut(cq.Workplane(obj=icone))
     clrc = cq.Solid.makeCylinder(P.slider_thumbscrew_diameter / 2 + 0.2, R + boss_h,
                                  cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=clrc))

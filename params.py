@@ -322,7 +322,9 @@ class Params:
     # end tab (33 mm, 2 holes at bow_endtab_hole_spacing) bolts to the mount tab.
     slider_collar_diameter: float = 14.0      # SET  barrel OD around the post bore (Ø8.4 bore + 2.8 wall)
     slider_collar_height: float = 18.0        # SET  barrel height (post grip + travel feel)
-    slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
+    slider_collar_rim_round: float = 2.0      # constructed 45° chamfer on the barrel end rims (fillet pass)
+    slider_bore_chamfer: float = 1.0          # countersink lead-in at each post-bore mouth (post entry + clean print)
+    slider_boss_chamfer: float = 0.8          # small countersink at the thumbscrew insert-bore mouth (1.5 mm boss wall)
     slider_tube_gusset: float = 5.0           # SET  gusset run that fairs the tube into the lozenge (grown-in)
     slider_tube_gusset_z: float = 14.0        # SET  gusset extent along the tube height (Z)
     # Headband CLAMP (Beyer-style two-piece, OFFSET-OUTER layout). The post-bore TUBE
