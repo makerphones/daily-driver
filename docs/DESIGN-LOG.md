@@ -25,6 +25,13 @@ kernel is happy with):
   cutter, so they end rounded. The clip is shorter than the 5 mm tip-hole inset, so the holes
   stay clear. Bow is a reference body (STEP-only) but it's what the manual/renders show. Gate
   **0 HARD / 0 SOFT** (bow-arc/flex unchanged).
+- **Website slider card (done):** the PartsGallery card still described the *pre-lozenge* block
+  ("bolts to the bow end tab… carries the fork swivel"). Rewrote it for the lozenge clamp +
+  post-bore barrel + thumbscrew lock + band sandwich, at a level accurate for BOTH the stable
+  and beta channels (the card text is shared; kept it off the beta-only specifics so the
+  promoted page stays correct). Also recorded that the **slider is fully symmetric about x=0**
+  (lozenge, recess, rib, gussets, inserts, the +Y boss at x=0, scallops) — so the **same print
+  serves both ears** (×2 identical; the assembly just mirror-poses it). Lives in the website repo.
 
 ## 2026-06-26 — Slider ERGONOMICS pass (pill kept): head relief, thumbscrew→outboard, grab
 
