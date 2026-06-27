@@ -31,6 +31,7 @@ from parts.cup import make_cup
 from parts.baffle import make_baffle
 from parts.yoke import make_yoke
 from parts.slider import make_slider
+from parts.slider_shoe import make_slider_shoe
 from parts.bow import make_bow
 from parts.adapter_ring import make_adapter_ring
 from parts.headband_pad import make_headband_pad
@@ -65,6 +66,7 @@ ACCESSORY = {
     "headband_pad": make_headband_pad,
     "grille_dot": make_grille_dot,
     "headband_clamp": make_headband_clamp,
+    "slider_shoe": make_slider_shoe,
 }
 # Fit coupons → STL + STEP (printed for QA), but NOT in the reference assembly and
 # NOT in the web parts gallery: they isolate a toleranced interface so it can be

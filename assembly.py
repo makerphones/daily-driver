@@ -49,7 +49,7 @@ SUBASSEMBLIES = {
                    "insert_m_L", "screw_p_R", "screw_p_L", "screw_m_R", "screw_m_L"]},
         {"id": "headband", "label": "Headband",
          "nodes": ["bow_ref", "slider_R", "slider_L", "thumbscrew_R", "thumbscrew_L",
-                   "headband_clamp_R", "headband_clamp_L"]},
+                   "slider_shoe_R", "slider_shoe_L", "headband_clamp_R", "headband_clamp_L"]},
         {"id": "headband_pad", "label": "Headband pad",
          "nodes": ["headband_pad"]},
     ],
@@ -138,6 +138,10 @@ def make_assembly() -> cq.Assembly:
     post_top = P.yoke_fork_height + 4 + P.yoke_post_length
     slider_z = post_top - P.slider_collar_height / 2        # barrel / clamp centre
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
+    # Pressure SHOE — rides in the slider's +Y pocket, saddle cradling the post (the thumbscrew
+    # presses it, not the post). Built at the origin, shifted +Y so its saddle is post-coaxial.
+    from parts.slider_shoe import make_slider_shoe, shoe_offset_y
+    shoe = T_yoke(make_slider_shoe().translate((0, shoe_offset_y(), slider_z)))
 
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
     # Pose so the band's prong-tip HOLE lands at the clamp centre (slider z=0 + hole_z=0).
@@ -163,6 +167,8 @@ def make_assembly() -> cq.Assembly:
     asm.add(mirror_L(earpad), name="earpad_L", color=PAD_C)
     asm.add(cover, name="headband_clamp_R", color=SLIDER_C)   # outer clamp plate
     asm.add(mirror_L(cover), name="headband_clamp_L", color=SLIDER_C)
+    asm.add(shoe, name="slider_shoe_R", color=ORANGE)         # pressure pad (screw → shoe → post)
+    asm.add(mirror_L(shoe), name="slider_shoe_L", color=ORANGE)
 
     # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:
@@ -183,17 +189,18 @@ def make_assembly() -> cq.Assembly:
     except Exception as e:  # noqa: BLE001 — viz only; never block the build
         print(f"  [warn] assembly: pivot hardware skipped ({e}).")
 
-    # Thumbscrew (M3) — the height lock, shown so the Grado/HP1000-style post+thumbscrew
-    # mechanism reads. Rides with the slider, LIFTED by the boss_z offset: tip on the post
-    # surface, head out the slider's +Y OUTBOARD boss. T_yoke maps local +Y → global +X, so
-    # in the worn pose the knurled head faces straight out the side of the head (the natural
-    # two-finger reach with the phones ON), not front/back along the temple as the old +X did.
+    # Thumbscrew (short 4-40) — the height lock, shown so the post+SHOE+thumbscrew mechanism
+    # reads. Rides with the slider on the +Y OUTBOARD boss; its tip presses the SHOE (not the
+    # post). T_yoke maps local +Y → global +X, so in the worn pose the knurled head faces
+    # straight out the side of the head (the natural two-finger reach with the phones ON).
     try:
         from parts.hardware import make_thumbscrew
+        from parts.slider_shoe import shoe_offset_y
+        shoe_face_y = shoe_offset_y() + P.slider_shoe_thickness / 2     # +Y face of the shoe
         ts = (make_thumbscrew()
               .rotate((0, 0, 0), (1, 0, 0), -90)                       # shaft → +Y (outboard), tip at origin
-              .translate((0, P.yoke_post_diameter / 2, 0))             # tip on the post surface
-              .translate((0, 0, slider_z + P.slider_thumbscrew_boss_z)))  # ride + lift with the boss
+              .translate((0, shoe_face_y, 0))                          # tip on the shoe's +Y face
+              .translate((0, 0, slider_z + P.slider_thumbscrew_boss_z)))  # ride with the boss
         ts_R = T_yoke(ts)
         asm.add(ts_R, name="thumbscrew_R", color=SCREW_C)
         asm.add(mirror_L(ts_R), name="thumbscrew_L", color=SCREW_C)

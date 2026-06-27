@@ -28,9 +28,10 @@ def bom_rows():
     baffle_screws = P.baffle_screw_count * EARS          # M3, baffle → frame bosses
     clamp_screws = P.driver_clamp_count * EARS           # M3, driver clamp ring → baffle back
     pivot_screws = P.pivot_boss_count * EARS             # M3 shoulder screws (the tilt joint)
-    thumbscrews = EARS                                   # M4 thumbscrew, slider height lock (1/side)
+    thumbscrews = EARS                                   # 4-40 knurled thumbscrew, slider height lock (1/side)
     m3_inserts = (P.baffle_screw_count + P.driver_clamp_count + P.pivot_boss_count) * EARS
-    m4_inserts = EARS                                    # one per slider, for the thumbscrew
+    ts_inserts = EARS                                    # one 4-40 heat-set per slider, for the thumbscrew
+    shoes = EARS                                         # one pressure shoe per slider (printed/Delrin)
 
     return [
         # item, qty, source, price, flag
@@ -46,19 +47,21 @@ def bom_rows():
          f"{baffle_screws}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
         ("M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle",
          f"{clamp_screws}", "McMaster-Carr / hardware", "~$1 (set)", "ESTIMATE"),
-        ("M4 thumbscrew — slider height lock (Grado-style)",
-         f"{thumbscrews}", "McMaster-Carr / Amazon", "~$1.50 ea", "ESTIMATE"),
+        ("4-40 knurled thumbscrew — slider height lock (short; presses the pressure shoe, not the post)",
+         f"{thumbscrews}", "McMaster-Carr / lab stock", "~$1.50 ea", "ESTIMATE"),
+        ("Slider pressure shoe — printed PETG or Delrin blank (screw → shoe → post, no marring)",
+         f"{shoes}", "own printer / Delrin offcut", "~$0", "ESTIMATE"),
         (f"M3 brass heat-set insert (⌀{P.heatset_insert_diameter:.1f} OD × {P.heatset_insert_length:.1f})",
          f"{m3_inserts}", "McMaster-Carr / Amazon", "~$4–5 (set)", "ESTIMATE"),
-        ("M4 brass heat-set insert — slider thumbscrew",
-         f"{m4_inserts}", "McMaster-Carr / Amazon", "~$1 (set)", "ESTIMATE"),
+        ("4-40 brass heat-set insert — slider thumbscrew",
+         f"{ts_inserts}", "McMaster-Carr / Amazon", "~$1 (set)", "ESTIMATE"),
         ("Foam gasket tape (driver seal)", "small roll",
          "hardware", "~$1", "ESTIMATE"),
         ("Damping pack (felt + open-cell foam + fiberfill)", "1",
          "Parts Express", "$3–5", "ESTIMATE"),
         ("Cable + Y-split + 3.5 mm TRS plug", "1",
          "online", "$8–15", "ESTIMATE"),
-        ("Printed parts (2× cup, baffle, yoke, slider, driver clamp per side)", "1 set",
+        ("Printed parts (2× cup, baffle, yoke, slider, driver clamp, shoe per side)", "1 set",
          "own printer or print service", "$3–25", "ESTIMATE"),
     ]
 

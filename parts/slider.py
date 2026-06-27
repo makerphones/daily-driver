@@ -144,30 +144,42 @@ def make_slider() -> cq.Workplane:
             cq.Vector(x, seat_y, P.slider_clamp_hole_z), cq.Vector(0, 1, 0))
         collar = collar.cut(cq.Workplane(obj=bore))
 
-    # THUMBSCREW boss on the +Y OUTBOARD face of the barrel — small M3 lock, CENTRED on the
-    # barrel mid (boss_z, on the x=0 centreline → keeps the slider L/R symmetric). In the worn
-    # pose local +Y → global +X (straight out the side of the head), so the knurled head faces
-    # the natural two-finger reach with the phones ON. Pressing the post toward −Y jams it into
-    # the FULL lozenge backing (firm friction lock), not the thin barrel ring the old +X drove.
+    # THUMBSCREW boss + CAPTIVE-SHOE POCKET on the +Y OUTBOARD face, CENTRED on the barrel mid
+    # (boss_z, on the x=0 centreline → keeps the slider L/R symmetric). The 4-40 screw threads a
+    # heat-set in the boss and its tip presses a conformal SHOE (parts/slider_shoe.py) that
+    # cradles the post — the metal never touches the printed post, so the bearing isn't gouged.
+    # In the worn pose local +Y → global +X (straight out the side of the head) = the natural
+    # two-finger reach with the phones ON.
     boss_h = P.slider_thumbscrew_boss_proud
     bovl = 4.0
     bz = P.slider_thumbscrew_boss_z
     boss = cq.Solid.makeCylinder(P.slider_thumbscrew_boss / 2, boss_h + bovl,
                                  cq.Vector(0, R - bovl, bz), cq.Vector(0, 1, 0))
     collar = collar.union(cq.Workplane(obj=boss))
-    ins = cq.Solid.makeCylinder(P.slider_thumbscrew_insert_hole / 2, P.insert_boss_depth,
+
+    # SHOE POCKET — a rectangular slot in the barrel wall that hosts the pressure shoe. It opens
+    # to the bore on −Y (the saddle reaches the post) and meets the insert on +Y (the screw tip
+    # enters to push the shoe). The shoe drops in through the bore at assembly; the post traps it.
+    pc = P.slider_shoe_clearance
+    pkt_w = P.slider_shoe_width + 2 * pc
+    pkt_h = P.slider_shoe_height + 2 * pc
+    p_lo = P.yoke_post_diameter / 2 - 0.5            # ~3.5: opens into the bore so the saddle reaches the post
+    p_hi = R                                          # barrel OD: the insert/screw sits just outboard of here
+    pocket = cq.Solid.makeBox(pkt_w, p_hi - p_lo, pkt_h,
+                              cq.Vector(-pkt_w / 2, p_lo, bz - pkt_h / 2))
+    collar = collar.cut(cq.Workplane(obj=pocket))
+
+    # 4-40 heat-set in the boss, ABOVE the pocket (so the thread engages solid material); the
+    # screw tip protrudes past it into the pocket to press the shoe. Screw NEVER reaches the post.
+    ins = cq.Solid.makeCylinder(P.slider_thumbscrew_insert_hole / 2, boss_h,
                                 cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=ins))
-    # Small countersink lead-in at the insert mouth (eases the heat-set start; kept ≤ the
-    # thin 1.5 mm boss wall).
+    # Countersink lead-in at the insert mouth (eases the heat-set start).
     sbc = P.slider_boss_chamfer
     icone = cq.Solid.makeCone(P.slider_thumbscrew_insert_hole / 2 + sbc,
                               P.slider_thumbscrew_insert_hole / 2, sbc,
                               cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=icone))
-    clrc = cq.Solid.makeCylinder(P.slider_thumbscrew_diameter / 2 + 0.2, R + boss_h,
-                                 cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
-    collar = collar.cut(cq.Workplane(obj=clrc))
 
     # FINGER SCALLOPS — a shallow concave channel down each ±X END of the lozenge gives the
     # hand a defined pinch to slide the block on the post (the height-adjust motion). A tall

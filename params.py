@@ -298,23 +298,34 @@ class Params:
                                           #   engaged across the whole head-size range (34 was too short).
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
-    slider_thumbscrew_diameter: float = 3.0      # SET  M3 LOCK shaft — friction-locks the post (no load → small)
-    slider_thumbscrew_insert_hole: float = 4.0   # SET  M3 brass heat-set bore (the lock)
-    slider_thumbscrew_boss: float = 7.0   # SET  boss OD hosting the M3 insert (1.5 wall; small on the Ø14 barrel)
-    slider_thumbscrew_boss_proud: float = 6.0  # SET  how far the boss/head stands proud of the barrel (finger purchase)
+    # Lock = a CAPTIVE PRESSURE SHOE the thumbscrew presses against the post (NOT the screw tip
+    # on the bare post — a metal point gouges the printed PETG bearing). The screw → conformal
+    # shoe → post: keeps the HP1000 positive lock, distributes the load (no marring), and the
+    # shoe takes up the gap so a SHORT screw works (less protrusion). Mirrors the aftermarket
+    # Grado aluminium rod-block's silicone 'slider pill'. Screw = 4-40 (the maker's knurled
+    # thumbscrews) — exact head/length pending his caliper (flagged ESTIMATE/MEASURE below).
+    slider_thumbscrew_diameter: float = 2.84     # SET  4-40 UNC shaft major Ø (the maker's knurled thumbscrews)
+    slider_thumbscrew_insert_hole: float = 3.8   # ESTIMATE  4-40 brass heat-set install bore (MEASURE the actual insert)
+    slider_thumbscrew_boss: float = 7.6   # SET  boss OD hosting the 4-40 insert (~1.9 mm wall around the Ø3.8 bore)
+    slider_thumbscrew_boss_proud: float = 5.0  # SET  boss stand-off (was 6 — with the shoe the screw is short, so trim it)
     slider_thumbscrew_boss_z: float = 0.0      # SET  boss CENTRED on the barrel mid (z=0), dead-centre on the +Y
                                           #   OUTBOARD face. In the worn pose local +Y → global +X (straight out the side
-                                          #   of the head) = the natural two-finger reach with the phones ON, and it drives
-                                          #   the post into the FULL lozenge backing (firm lock) vs the thin 2.8 mm barrel
-                                          #   ring on the old +X/front. On the x=0 centreline → the slider stays L/R
-                                          #   symmetric (one print both ears). The boss face is well outboard of the
-                                          #   head-side gussets, so no need to lift it (the earlier z+5 lift is dropped).
-    # Thumbscrew MOCKUP (parts/hardware.py) — the height lock, shown in the assembly so the
-    # Grado-style post+thumbscrew mechanism reads. BIG knurled head (grip) on the small M3
-    # shaft — keeps the hand grip while the boss stays slim.
-    thumbscrew_head_diameter: float = 12.0   # REF  knurled hand-grip head OD (mockup)
-    thumbscrew_head_height: float = 5.0      # REF  head height
-    thumbscrew_shaft_length: float = 14.0    # REF  shaft from the post surface out through the boss
+                                          #   of the head) = the natural two-finger reach with the phones ON. On the x=0
+                                          #   centreline → the slider stays L/R symmetric (one print both ears).
+    # CAPTIVE SHOE — a small conformal pad (printed PETG or a Delrin blank, ×2) that sits in a
+    # pocket in the barrel wall, trapped between the post and the screw tip. Its concave face
+    # cradles the Ø8 post over an AREA so the lock never marks it.
+    slider_shoe_width: float = 6.0        # SET  shoe X (along the lozenge long axis)
+    slider_shoe_height: float = 7.0       # SET  shoe Z (up the post — taller = more post contact line)
+    slider_shoe_thickness: float = 2.2    # SET  shoe Y (radial, screw-face → saddle); fits the thin barrel wall + boss base
+    slider_shoe_saddle_r: float = 4.4     # SET  concave saddle radius (post r 4 + clearance) → conformal area cradle
+    slider_shoe_saddle_depth: float = 0.8 # SET  how deep the saddle dishes the shoe face
+    slider_shoe_clearance: float = 0.3    # SET  shoe↔pocket sliding fit (drop-in via the bore, post traps it)
+    # Thumbscrew MOCKUP (parts/hardware.py) — viz of the SHORT 4-40 knurled thumbscrew. Head OD
+    # is an ESTIMATE pending the maker's caliper on his actual screws (drives any head counterbore).
+    thumbscrew_head_diameter: float = 10.0   # ESTIMATE/MEASURE  knurled head OD of the maker's 4-40
+    thumbscrew_head_height: float = 4.0      # ESTIMATE/MEASURE  head height
+    thumbscrew_shaft_length: float = 9.0     # ESTIMATE  short shaft (tip presses the shoe, not the post)
 
     # ---- Slider = CLAMP COLLAR (replaced the box block) ----------------------
     # A slim rounded BARREL around the post + a slim 2-bolt mount tab for the bow's

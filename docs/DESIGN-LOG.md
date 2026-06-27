@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Slider lock: CAPTIVE PRESSURE SHOE (don't gouge the post) + 4-40 spec
+
+Maker: a metal thumbscrew pressing straight on the round post will destroy it — and the screw
+sticks out too far; he wants the screw to press *something* that clamps the rod, and to use his
+4-40 knurled thumbscrews. A research pass (Beyer sprung clip, Grado HP1000, McMaster tip styles)
+confirmed it: our post is **printed PETG**, so a metal point ploughs a progressive divot in the
+very surface that must keep sliding + swivelling. The best-match precedent is the aftermarket
+aluminium Grado rod-block, which puts a **silicone 'slider pill'** between screw and rod — screw
+presses the pill, the pill grips the rod, positive lock *without* damaging it. We're copying that.
+
+- **Captive pressure SHOE (new part, `parts/slider_shoe.py`, ×2).** A small pad (printed PETG or a
+  Delrin blank) with a concave **saddle** (`slider_shoe_saddle_r 4.4`) that cradles the Ø8 post over
+  an AREA. It sits in a rectangular **pocket** milled in the barrel wall on the +Y outboard face; the
+  4-40 screw threads a heat-set in the boss ABOVE the pocket and its tip presses the shoe — **metal
+  never touches the post**. Keeps the HP1000 positive lock; no marring. Assembly: drop the shoe in
+  through the bore, then insert the post to trap it. Shoe ~6×7×2.2 mm; slider stays one valid solid,
+  L/R symmetric (pocket on the x=0 centreline). Build 15/15, gate **0 HARD / 0 SOFT**.
+- **4-40 spec + less protrusion.** Switched the lock screw M3 → **4-40** (the maker's knurled lab
+  thumbscrews; `slider_thumbscrew_diameter 2.84`, a **4-40** brass heat-set `_insert_hole 3.8`
+  ESTIMATE — MEASURE the real insert), boss → Ø7.6. With the shoe taking up the gap the screw is
+  SHORT, so trimmed `_boss_proud 6 → 5` and shortened the mockup shaft — the head sits much closer
+  to the barrel. BOM reconciled (was wrongly M4): **4-40 thumbscrew + 4-40 heat-set + shoe ×2**.
+- **STILL PENDING the maker's caliper** (flagged ESTIMATE/MEASURE in params): the 4-40 **head Ø +
+  height** and **shortest shank** he owns — these size a head **counterbore** (socket the knurled head
+  to kill the last of the protrusion) and confirm the insert bore. Head counterbore deferred until
+  then (a big knurled head needs a wider boss than the Ø14 barrel comfortably gives — decide with
+  real numbers). Saddle depth/contact to be print-validated.
+
 ## 2026-06-26 — Slider: PROVE + enforce L/R symmetry (one print both ears) + centre the thumbscrew
 
 Maker: the thumbscrew should sit on the OUTSIDE, 90° to the block face, so each slider is
