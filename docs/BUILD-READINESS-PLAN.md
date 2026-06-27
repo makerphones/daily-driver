@@ -95,6 +95,11 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
 
 ## Parking lot (revisit)
 
+- **Worn-fit STACK TRIM (closes the band-float blocker).** Measured: bow apex floats ~34 mm above the
+  crown, > the 32 mm slider travel → the yoke+post stack is ~2 cm too tall. Trim `yoke_fork_height`
+  (and/or a shorter post) ~20 mm so the band reaches the head, then map slider travel S↔L (full
+  extension = largest head). Its own pass — ripples through the yoke geometry + gate + renders. The
+  S/M/L heads (done) make the gap visible to calibrate against.
 - **Full design-spec refresh (website `.mdx` + local `design-spec.md`)** — both still describe the
   pre-bow "spring-steel-arc" architecture, the old pivot, Dekoni-default pads. Item 3 fixed only the
   actively-wrong facts (143 cc, pad default) + a status note. Do the full v0.4 reconciliation AFTER
