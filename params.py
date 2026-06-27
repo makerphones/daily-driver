@@ -480,6 +480,42 @@ class Params:
     earpad_outer_diameter: float = 100.0  # ESTIMATE  cushion OD
     earpad_inner_diameter: float = 60.0   # ESTIMATE  ear-opening ID
     earpad_base_flat: float = 1.5         # SET  flat mounting base (seats on the cup front rim)
+    earpad_depth: float = 24.0            # SET  pad height = the FRONT-CAVITY depth. Beyer DT 770/880/990
+                                          #   family ≈ 22–25 mm (published, no caliper needed — see plan);
+                                          #   the mockup torus is Z-scaled to this. Drives front_cavity_volume_cc.
+
+    # ---- Acoustic geometry (v0.3 acoustic pass) ------------------------------
+    # OPEN vs CLOSED back is ONE toggle, so the SAME architecture yields both variants
+    # (the closed-back conversion designed in from the start). True = the open rear grille
+    # (the Daily Driver default — forgiving, airy). False = a SOLID back + a ring of
+    # PLUGGABLE tuning PORTS, so the closed-back is a regenerate, not a redesign. Shared
+    # across both: the damping disc + the front-seal gasket.
+    cup_open_back: bool = True             # SET  open rear grille (False = closed-back variant)
+    # Closed-back TUNING PORTS — a ring of holes that appear ONLY in closed-back mode, each
+    # sized to press-fit a printed PLUG (parts/vent_plug.py), so openness is a MEASURABLE,
+    # REVERSIBLE knob: plug N of M to tune. Port circle sits inside the grille zone, clear of
+    # the baffle bosses (r35) and the pivot bosses.
+    cup_port_count: int = 6                # ESTIMATE  closed-back tuning ports
+    cup_port_diameter: float = 6.0         # ESTIMATE  port Ø (a vent_plug press-fits here)
+    cup_port_circle_diameter: float = 50.0 # ESTIMATE  port bolt-circle (r25 — inside the grille zone + bosses)
+    vent_plug_clearance: float = 0.2       # SET  plug↔port press fit (radial, per side)
+    vent_plug_flange: float = 1.5          # SET  plug head lip (won't push through) + a pull grip
+    # Rear DAMPING — a felt / open-cell disc over the grille's INNER face that tames cone
+    # breakup + reflections (light, tune by ear). Located by a thin printed RETAINING RING on
+    # the interior back floor (the felt drops inside it). Felt itself is a soft good (BOM). The
+    # ring stays INSIDE the baffle-boss circle (r35) so it never fouls a boss.
+    damping_felt_diameter: float = 38.0    # ESTIMATE  felt disc OD (covers the central grille; ring stays
+                                           #   inside the closed-back port circle r25 + the bosses r35)
+    damping_felt_thickness: float = 3.0    # ESTIMATE  felt / open-cell thickness
+    damping_ring_wall: float = 1.5         # SET  retaining-ring wall
+    damping_ring_height: float = 3.0       # SET  ring height proud of the interior floor (≈ felt thickness)
+    # FRONT-SEAL GASKET — a foam ring between the driver frame rim and the baffle seat,
+    # compressed by the clamp ring so the driver↔baffle joint seals (no front air leak that
+    # would short the front cavity). Soft good (BOM); dimensioned here so the SQUEEZE is
+    # explicit and gate-checked into the 30–50 % band (too little = leak, too much = bottomed).
+    front_gasket_thickness: float = 1.5    # ESTIMATE  free (uncompressed) foam thickness
+    front_gasket_compressed: float = 1.0   # ESTIMATE  seated gap the clamp leaves → ~33 % squeeze
+    front_gasket_width: float = 2.5        # ESTIMATE  radial width of the seal ring (on the frame rim)
 
     # ---- Fit coupons (printable QA pieces; lock tolerances vs real hardware) --
     # Small parts that ISOLATE a toleranced interface so it's checked against the
@@ -531,6 +567,23 @@ class Params:
         # the cup's ACTUAL radial wall = (od − id)/2; thicker than wall_thickness
         # because the OD is pad-driven (gives the pad seat + houses the pivot bosses).
         return (self.cup_outer_diameter - self.cup_interior_diameter) / 2
+
+    @property
+    def cup_interior_volume_cc(self) -> float:
+        # REAR acoustic void = the interior cylinder (ID × interior depth), in cc.
+        # ≈ π·39²·30 ≈ 143 cc — the figure the old spec mis-stated as "~90 cc".
+        return math.pi * (self.cup_interior_diameter / 2) ** 2 * self.cup_depth / 1000.0
+
+    @property
+    def front_cavity_volume_cc(self) -> float:
+        # FRONT cavity = the pad's enclosed space at the ear (ear-opening area × pad depth).
+        # Tracks earpad_depth, so the main tuning lever (pad choice) is reflected in cc.
+        return math.pi * (self.earpad_inner_diameter / 2) ** 2 * self.earpad_depth / 1000.0
+
+    @property
+    def front_gasket_squeeze(self) -> float:
+        # fractional compression of the front-seal foam (gate-checked into 0.30–0.50).
+        return (self.front_gasket_thickness - self.front_gasket_compressed) / self.front_gasket_thickness
 
     @property
     def cup_total_height(self) -> float:

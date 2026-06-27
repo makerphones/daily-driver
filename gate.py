@@ -37,6 +37,7 @@ from parts.grille_dot import make_grille_dot
 from parts.driver_clamp import make_driver_clamp
 from parts.slider_shoe import make_slider_shoe
 from parts.headband_clamp import make_headband_clamp
+from parts.vent_plug import make_vent_plug
 from parts.coupon import make_driver_coupon, make_pad_coupon
 from parts.hardware import shoulder_screw_envelope, heatset_insert_envelope
 
@@ -49,6 +50,8 @@ OPEN_MAX = 0.50         # ... around the 0.40 target; outside = out of range
 MIN_THREAD_ENGAGE = 0.95  # frac of screw thread that must sit inside the insert
 MAX_TILT_EXTRA_FRAC = 0.20  # tilted cup∩yoke may exceed the 0° bearing overlap by ≤20%
 SHOE_SADDLE_CONFORMAL_MAX = 0.6  # mm — saddle radius may exceed post radius by ≤ this (area cradle, not a point load)
+GASKET_SQUEEZE_MIN = 0.30        # front-seal foam compression band: too little = air leak ...
+GASKET_SQUEEZE_MAX = 0.50        # ... too much = bottomed/over-compressed (no spring left to seal)
 # The yoke is LOAD-BEARING, so its load-path sections are held to the 4 mm
 # STRUCTURAL floor (params.wall_thickness_structural), not the 2 mm wall floor —
 # per the spec's "4 mm at structural points" and Openmod's v1→Mk2 thin-section fix.
@@ -165,12 +168,14 @@ def main():
     driver_clamp = make_driver_clamp()
     slider_shoe = make_slider_shoe()
     headband_clamp = make_headband_clamp()
+    vent_plug = make_vent_plug()
     driver_coupon = make_driver_coupon()
     pad_coupon = make_pad_coupon()
     parts = {"cup": cup, "baffle": baffle, "yoke": yoke,
              "slider": slider, "driver_clamp": driver_clamp, "adapter_ring": adapter,
              "headband_pad": headband_pad, "grille_dot": grille_dot,
              "slider_shoe": slider_shoe, "headband_clamp": headband_clamp,
+             "vent_plug": vent_plug,
              "driver_coupon": driver_coupon, "pad_coupon": pad_coupon}
 
     r = Report()
@@ -362,6 +367,23 @@ def main():
            f"clamp boss↔vent gap {gap:.1f}° > 0 (bosses 0/120/240 vs vents offset 30°)")
     r.hard(P.driver_clamp_inner_diameter < P.driver_od, "driver-clamp-catches-flange",
            f"clamp inner Ø{P.driver_clamp_inner_diameter} < driver Ø{P.driver_od} (lip catches the flange)")
+
+    # --- Acoustic geometry (v0.3 acoustic pass) -----------------------------------
+    # Front-seal foam squeeze in the 30–50% band: enough to seal, not so much it bottoms.
+    r.hard(GASKET_SQUEEZE_MIN <= P.front_gasket_squeeze <= GASKET_SQUEEZE_MAX, "front-seal-squeeze",
+           f"gasket squeeze {P.front_gasket_squeeze*100:.0f}% (free {P.front_gasket_thickness} → "
+           f"seated {P.front_gasket_compressed}) in [{int(GASKET_SQUEEZE_MIN*100)}, {int(GASKET_SQUEEZE_MAX*100)}]%")
+
+    # Closed-back variant coherence (validated even though the default build is open-back):
+    # the tuning ports must clear the baffle bosses (radially) AND the damping ring, so the
+    # cup_open_back=False regenerate is geometrically sound, not a surprise at conversion time.
+    port_outer_r = P.cup_port_circle_diameter / 2 + P.cup_port_diameter / 2
+    port_inner_r = P.cup_port_circle_diameter / 2 - P.cup_port_diameter / 2
+    boss_inner_r = P.baffle_screw_radius - P.baffle_boss_diameter / 2
+    ring_outer_r = P.damping_felt_diameter / 2 + P.damping_ring_wall
+    r.hard(port_outer_r < boss_inner_r and ring_outer_r < port_inner_r, "closed-back-ports-clear",
+           f"ports r{port_inner_r:.0f}–{port_outer_r:.0f} between damping ring r{ring_outer_r:.0f} "
+           f"and baffle bosses r{boss_inner_r:.0f} (closed-back variant is coherent)")
 
     print("\n— SOFT checks (warn, do not fail) —")
 

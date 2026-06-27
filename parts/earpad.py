@@ -24,11 +24,16 @@ def make_earpad() -> cq.Workplane:
     od = P.earpad_outer_diameter
     idd = P.earpad_inner_diameter
     rm = (od + idd) / 4.0          # torus mean radius (ring centre)
-    tr = (od - idd) / 4.0          # tube radius → spans ID..OD, height 2·tr
+    tr = (od - idd) / 4.0          # tube radius → spans ID..OD (radial); height set below
     bf = P.earpad_base_flat
 
-    # Torus, axis +Z, centred at origin (z ∈ [-tr, tr]); lift so the base tangents z=0.
-    pad = cq.Workplane(obj=cq.Solid.makeTorus(rm, tr)).translate((0, 0, tr))
+    # Torus, axis +Z. The bare torus would be 2·tr tall; the real pad DEPTH is earpad_depth
+    # (the front-cavity dimension), so Z-scale the solid to that height (transformGeometry —
+    # revolve/loft of a true profile is unusable on this OCC build). z ∈ [-tr·sz, tr·sz].
+    sz = P.earpad_depth / (2.0 * tr)
+    torus = cq.Solid.makeTorus(rm, tr).transformGeometry(
+        cq.Matrix([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, sz, 0]]))
+    pad = cq.Workplane(obj=torus).translate((0, 0, tr * sz))   # base tangents z=0
 
     # Flatten the mounting base so it seats on the cup front rim, then drop the
     # flattened face to z=0 (cushion above, ear opening down the centre).

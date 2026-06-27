@@ -90,7 +90,29 @@ def make_cup() -> cq.Workplane:
     keep = keep.union(_ring(r_out, P.grille_outer_ring_width))
     keep = keep.union(_disc(hub_r))             # centre dot (logo)
 
-    cup = cup.cut(zone.cut(keep))
+    # OPEN grille (default) or CLOSED back + pluggable tuning ports — ONE toggle, two
+    # variants (the closed-back conversion). The grille solids above are built either way
+    # (cheap, discarded when closed); only the back treatment differs here.
+    if P.cup_open_back:
+        cup = cup.cut(zone.cut(keep))                       # open the grille gaps
+    else:
+        pcr = P.cup_port_circle_diameter / 2                # CLOSED: solid back + tuning ports
+        for i in range(P.cup_port_count):
+            a = math.radians(i * 360.0 / P.cup_port_count)
+            px, py = pcr * math.cos(a), pcr * math.sin(a)
+            port = (cq.Workplane("XY").workplane(offset=z0)
+                    .center(px, py).circle(P.cup_port_diameter / 2).extrude(cut_h))
+            cup = cup.cut(port)
+
+    # 3c. DAMPING retaining RING — a thin ring on the interior back floor that locates a
+    #     felt / open-cell disc over the grille (light rear damping; the felt is a soft good,
+    #     BOM). Sits inside the baffle-boss circle (r35) so it never fouls a boss; embedded
+    #     0.5 mm into the floor so it fuses to the solid lattice members in open-back mode.
+    dfr = P.damping_felt_diameter / 2
+    ring = (cq.Workplane("XY").workplane(offset=P.cup_interior_floor_z - 0.5)
+            .circle(dfr + P.damping_ring_wall).circle(dfr)
+            .extrude(P.damping_ring_height + 0.5))
+    cup = cup.union(ring)
 
     # 4. Baffle-mounting bosses — BUTTRESSED columns (the maker flagged the bare
     #    columns as fragile / snap-off-able). Each is a column at the bolt circle

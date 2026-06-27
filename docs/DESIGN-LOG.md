@@ -6,6 +6,36 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — Acoustic geometry as params + the closed-back conversion designed in
+
+Fourth readiness-batch item — the weakest-scoring area (acoustics was intention, not geometry). Turned
+the acoustic story into real, gated geometry, and built the **closed-back conversion in from the start**
+so it's a regenerate, not a redesign.
+
+- **`cup_open_back` toggle.** ONE param yields both variants: True = the open rear grille (default);
+  False = a **solid back + a ring of pluggable tuning PORTS**. Verified the closed-back cup builds as a
+  single valid solid (104 cm³ material). Shared across both: the damping disc + the front-seal gasket.
+- **Pluggable tuning ports + `parts/vent_plug.py`.** A press-fit printed plug per port → rear openness
+  becomes a **measurable, reversible** knob (plug N of `cup_port_count`), no reprint. New printable part
+  (17/17 build).
+- **Rear DAMPING seat.** A thin retaining RING on the cup's interior back floor locates a felt disc over
+  the grille (⌀38 × 3 mm, soft good). Embedded 0.5 mm so it fuses to the lattice in open-back mode; sized
+  inside the port circle + the baffle bosses (gate-checked).
+- **Front-seal GASKET + gate check.** Dimensioned foam ring (driver↔baffle), `front_gasket_*` params, and
+  a HARD `front-seal-squeeze` check holding the compression in **30–50 %** (33 % now) — too little leaks,
+  too much bottoms.
+- **Acoustic-VOLUME helpers (fix the 143 cc in CODE).** `cup_interior_volume_cc` (= π·39²·30 ≈ **143.4
+  cc** — the figure the old spec mis-stated as ~90) and `front_cavity_volume_cc` (= ear-opening × pad
+  depth ≈ **67.9 cc**), both derived so they can't drift. `front_gasket_squeeze` likewise.
+- **Pad depth = front cavity.** New `earpad_depth = 24 mm` (Beyer DT-family, published — no caliper); the
+  pad mockup torus is Z-scaled to it, so the assembly shows the true front-cavity depth + it drives the
+  front-cavity volume.
+- **New gate checks:** `front-seal-squeeze`, `closed-back-ports-clear` (the variant is coherent even
+  though the default build is open), + `vent_plug` in the manifold loop.
+
+Build **17/17**, gate **0 HARD / 0 SOFT**. Deferred (parked): drawing the gasket/damping discs in the
+assembly viz, and tuning the real vent open-area against a REW sweep (needs the printer + driver).
+
 ## 2026-06-27 — Stale-doc sweep + auto-generated parts inventory
 
 Third readiness-batch item: kill the doc drift, then make the drift-prone facts generate themselves.

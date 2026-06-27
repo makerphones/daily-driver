@@ -26,8 +26,9 @@ bought-part reference · **SPEC** spec pinned, SKU is builder's choice ·
 | M5 brass heat-set insert (install bore ⌀6.4) — fork → post shoulder screw | 2 | M5×0.8, OD ~7.1, L 9.5 mm | [RX-M5x9.5 (GE-M5x95-001)](https://www.3djake.com/ruthex/threaded-inserts-m5-50-pieces) — Ruthex / 3DJake | ~$9.5 / 50 | VERIFIED |
 | 8-32 brass heat-set insert (SHORT, install bore ⌀5.6) — slider knob | 2 | 8-32 UNC, ~4.7 mm long (fits the 5 mm boss) | [RX-8-32x4.7](https://www.ruthex.de/en/products/ruthex-8-32-short-gewindeeinsatz-unc-50-stuck-ge-8-32x47-001) — Ruthex | ~$9 / 50 | VERIFIED |
 | Cable + 3.5 mm TRS plug (builder's choice) | 1 | any cable terminated in a 3.5 mm (1⁄8″) TRS plug, ~1.2–1.8 m | [240-1032](https://www.parts-express.com/3.5mm-Stereo-Male-to-Male-Audio-Cable-Dual-Shielded-with-Gold-Plated-Connectors-6-ft.-240-1032) — Parts Express | ~$2 | SPEC |
-| Foam gasket tape (driver seal) | small roll | front-seal / driver-rim gasket (refined in the acoustic pass) | hardware store | ~$1 | ESTIMATE |
-| Damping pack (felt + open-cell foam + fiberfill) | 1 | acoustic damping (refined in the acoustic pass) | Parts Express / craft felt | $3–5 | ESTIMATE |
+| Front-seal foam gasket — driver↔baffle (33% squeeze) | 2 | ~1.5 mm foam ring, ~2.5 mm wide (clamp compresses to 1.0 mm) | foam tape — builder-cut | ~$1 | ESTIMATE |
+| Rear damping felt disc (⌀38 × 3 mm) | 2 | acoustic felt / open-cell — drops into the cup's damping ring over the grille | Parts Express / craft felt | $3–5 | ESTIMATE |
+| Vent plug — printed, CLOSED-BACK variant only (reversible openness tuning) | as needed | press-fit ⌀6 mm port; plug N of 6 | own printer (parts/vent_plug.py) | ~$0 | SPEC |
 | Printed parts (2× cup, baffle, yoke, slider, driver clamp, shoe per side) | 1 set | PETG recommended | own printer or print service | $3–25 | ESTIMATE |
 
 ## Sourcing notes

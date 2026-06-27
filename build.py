@@ -41,6 +41,7 @@ from parts.driver import make_driver
 from parts.earpad import make_earpad
 from parts.headband_clamp import make_headband_clamp
 from parts.yoke_rod import make_yoke_rod
+from parts.vent_plug import make_vent_plug
 from parts.coupon import make_driver_coupon, make_pad_coupon
 
 # render.py is RENDER-ONLY (matplotlib). Guarded so the core build never depends
@@ -68,6 +69,7 @@ ACCESSORY = {
     "grille_dot": make_grille_dot,
     "headband_clamp": make_headband_clamp,
     "slider_shoe": make_slider_shoe,
+    "vent_plug": make_vent_plug,
 }
 # Fit coupons → STL + STEP (printed for QA), but NOT in the reference assembly and
 # NOT in the web parts gallery: they isolate a toleranced interface so it can be
@@ -100,6 +102,7 @@ PART_ROLES = {
     "grille_dot": "press-in accent cap at the grille centre (the mark's orange dot)",
     "headband_clamp": "inner cover plate that sandwiches the metal bow end",
     "slider_shoe": "captive pressure shoe — knob presses it onto the post (no marring)",
+    "vent_plug": "press-fit plug for the closed-back tuning ports (reversible openness knob)",
     "driver_coupon": "FIT COUPON — driver seat/collar + clamp standoff interface (QA)",
     "pad_coupon": "FIT COUPON — pad-skirt grip on the cup OD (QA)",
     "bow": "bought Beyer metal head bow (917017/973361) or DIY spring-steel blank (reference)",

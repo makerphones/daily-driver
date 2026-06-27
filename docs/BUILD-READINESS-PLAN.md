@@ -72,13 +72,13 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
   **Parked:** a FULL website/local design-spec architecture refresh (it still describes the old
   spring-steel-arc/old-pivot architecture) — do after items 4-5 settle acoustics + headband, so it's
   rewritten once. (DESIGN-LOG could one day be auto-summarized too, but it's append-only history.)
-- [ ] **4. Acoustic geometry as params + shown in model.** Add: a removable **felt/damping seat**
-  (ledge behind the grille), a **dimensioned front-seal gasket** + a **seal-squeeze gate check**
-  (30–50 % compression), a few **pluggable rear/baffle vents** (openness = a measurable, reversible
-  knob), and an **acoustic-volume helper** (fix the 143 cc; front-cavity tied to measured pad depth).
-  **DESIGN FOR THE CLOSED-BACK CONVERSION NEXT:** the cup back + venting should toggle solid↔open
-  (a `cup_open_back` param), so the same architecture yields the closed-back variant — keep the
-  damping seat + gasket shared, the rear openings the only delta.
+- [x] **4. Acoustic geometry as params + shown in model.** DONE. `cup_open_back` toggle (open grille /
+  solid back + pluggable tuning ports — closed-back verified to build as 1 solid). New `parts/vent_plug.py`
+  (reversible openness knob). Damping retaining ring (felt-disc seat) in the cup. Dimensioned front-seal
+  gasket + HARD `front-seal-squeeze` check (30–50 %). Acoustic-volume helpers fix the 143 cc IN CODE
+  (`cup_interior_volume_cc` 143.4, `front_cavity_volume_cc` 67.9). `earpad_depth 24` (pad mockup
+  Z-scaled). New gate checks `front-seal-squeeze` + `closed-back-ports-clear`; vent_plug in manifold.
+  Build 17/17, gate 0/0. Parked: gasket/damping in the assembly VIZ; real vent open-area vs a REW sweep.
 - [ ] **5. Head models S/M/L + sprung bow + slider range.** Three toggleable reference heads
   (parametrize `head_reference` by size: ear-to-ear ~140 / 147 / 155, height set); **bow flexes to
   each head** (re-pose worn radius/arc per head, conserve developed length — clamp shows); **full
