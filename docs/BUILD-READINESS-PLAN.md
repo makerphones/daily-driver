@@ -98,11 +98,13 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
 
 ## Parking lot (revisit)
 
-- **Worn-fit STACK TRIM (closes the band-float blocker).** Measured: bow apex floats ~34 mm above the
-  crown, > the 32 mm slider travel → the yoke+post stack is ~2 cm too tall. Trim `yoke_fork_height`
-  (and/or a shorter post) ~20 mm so the band reaches the head, then map slider travel S↔L (full
-  extension = largest head). Its own pass — ripples through the yoke geometry + gate + renders. The
-  S/M/L heads (done) make the gap visible to calibrate against.
+- ~~Worn-fit STACK TRIM~~ **BAND-FLOAT RESOLVED 2026-06-27 — it was the head model + pose, not the
+  stack.** The ovoid had the ear at its centre (ear→crown 114, ~15 mm short) and the slider was posed
+  mid-travel. Fixed: `head_ref_height_half 121` + `head_ref_z 8` (ear→crown 129, S/M/L 123/129/135) and
+  `assembly_worn_slider_frac 0.9` (near-retracted = average head; big cup forces the block high). The
+  stock 9.3″ Beyer bow now LANDS (pad contacts the M crown). Stack trim NOT needed. *Optional minor
+  polish remaining:* the post travel is biased to the retracted end (average ≈ near-retracted) — a small
+  post/fork trim could centre it so M sits mid-travel, but it's cosmetic, not a blocker.
 - **Assembly viz polish** — (a) draw the pivot washer stack `[head|wave|nylon|eye|nylon|boss]` in the
   render (assembly.py currently shows insert+screw only); (b) refine the explode tool to step through
   the `ASSEMBLY.md` stages in order and clamp the per-part offsets so nothing flies out of frame.

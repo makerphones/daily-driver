@@ -18,6 +18,29 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-27 — Band-float RESOLVED (it was the head model + pose, not the bow)
+
+The maker pushed back on the "shorten the headband" framing: real DT880s fit fine with this exact 9.3″
+bow + ~91 mm cup, so the model had to be wrong. He was right — the ~34 mm "float" was TWO modeling
+errors, neither in the band:
+
+1. **The reference head was ~15 mm too short.** The ovoid put the ear at its vertical CENTRE → ear→crown
+   only 114 mm. Real tragion→vertex is ~129 mm (the ear sits *below* centre). Fix: `head_ref_height_half
+   114 → 121`, `head_ref_z 5 → 8` → ear→crown **129 mm**, and S/M/L now land at **123 / 129 / 135 mm**
+   (matching 5th/50th/95th-pct anthropometry). `render_asm.py`'s own head now READS these params
+   (drift-proof) instead of hardcoding 114.
+2. **The worn pose was at mid-travel.** An average head should sit near-RETRACTED — the 91 mm cup (a disc
+   spanning ±51 mm) forces the band block high, so an average head rides near the bottom of the post
+   travel, with extension for bigger heads. Fix: `assembly_worn_slider_frac 0.5 → 0.9`.
+
+Result: bow apex is now **+5 mm over the L crown / +11 over M**, and the 8 mm headband pad hanging under
+the bow closes that — **the pad contacts the M (average) crown (~+2 mm). The stock 9.3″ Beyer bow LANDS.
+No shorter/DIY band, no cutting + bending.** The worn render shows the band sitting on the head. The S/M/L
+toggle now reads true: M fits the default pose, S wants a touch of retraction, L fills the pad / wants
+extension — the real per-head adjustment. Confirmed the bow model is faithful to the measured part
+(236.2 mm = 9.30″, 5″ at-rest circle, 33 mm wide). Gate 0/0, build 17/17, viz-only params (no printed
+geometry changed). The earlier "stack trim" theory was a red herring — the stack is fine; the head was short.
+
 ## 2026-06-27 — S/M/L reference heads + sprung-bow helper (worn-fit made visible)
 
 Fifth readiness-batch item, and the start of the worn-fit blocker. The maker asked for three head

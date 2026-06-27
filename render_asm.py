@@ -71,8 +71,11 @@ def _ellipsoid(center, axes, nu=30, nv=18):
 # the cup geometry (ear level = cup-centre z); deliberately NON-anatomical.
 _cup = np.vstack([p[1].reshape(-1, 3) for p in parts if p[0] in ("cup_R", "cup_L")])
 _ear_y, _ear_z = _cup[:, 1].mean(), _cup[:, 2].mean()
-# Average adult head: bitragion (ear-to-ear) ~147 mm, head length ~195 mm, ear→crown ~120 mm.
-HEAD = _ellipsoid((0.0, _ear_y, _ear_z + 6), (73.5, 97.0, 114.0))  # ear-half, depth-half, height-half
+# Average adult head: bitragion (ear-to-ear) ~147 mm, head length ~195 mm, ear→crown ~129 mm.
+# Read from params (drift-proof) so this poster's head matches the assembly's M reference head:
+# the ear (cup centre) sits ~head_ref_z below the ovoid centre → realistic ear→crown.
+HEAD = _ellipsoid((0.0, _ear_y, _ear_z + P.head_ref_z),
+                  (P.head_ref_ear_half, P.head_ref_depth_half, P.head_ref_height_half))
 HEAD_RGB = np.array([0.55, 0.68, 0.85])   # cool glass tint
 
 

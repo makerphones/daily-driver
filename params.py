@@ -323,7 +323,10 @@ class Params:
     # the post: 0 = fully EXTENDED (barrel at the post top = biggest head, longest exposed rod);
     # 1 = fully RETRACTED (barrel at the hub stop = smallest head, rod pokes furthest above). 0.5 =
     # an average head — the realistic worn look (band pulled down toward the cups, rod up in the slider).
-    assembly_worn_slider_frac: float = 0.5  # SET  mid-travel (worn average head); tune for the render
+    assembly_worn_slider_frac: float = 0.9  # SET  near-RETRACTED = an average head. The 91 mm cup forces the
+                                            #   band block high, so an average head sits near the bottom of the
+                                            #   post travel (band as low as it goes), with EXTENSION for bigger
+                                            #   heads. Was 0.5 (mid) — which floated the band ~16 mm too high.
     # Reference HEAD (assembly viz only — a translucent average-head ovoid for worn-fit context in
     # the 3D viewer: toggleable, OFF by default, excluded from the explode; NOT a printed part).
     # THREE sizes (S/M/L) so the maker can compare how the band lands + how the cups clamp
@@ -335,8 +338,11 @@ class Params:
     head_s_ear_half: float = 70.0       # SET  SMALL  (~140 mm — ~5th pct adult)
     head_l_ear_half: float = 77.5       # SET  LARGE  (~155 mm — ~95th pct adult)
     head_ref_depth_half: float = 97.0   # SET  front-back half (~194 mm head length, at MEDIUM)
-    head_ref_height_half: float = 114.0 # SET  crown-to-jaw half (ear→crown ~120 mm, at MEDIUM)
-    head_ref_z: float = 5.0             # SET  head-centre (≈ ear) Z above the pivot level
+    head_ref_height_half: float = 121.0 # SET  half head-height. With head_ref_z below, the EAR sits
+                                        #   ~8 mm BELOW the ovoid centre (real ears do) → ear→crown ≈ 129 mm
+                                        #   (tragion→vertex, 50th pct), ear→chin ≈ 113 mm. Was 114 (ear at
+                                        #   centre → ear→crown only 114, ~15 mm too short → faked the band-float).
+    head_ref_z: float = 8.0             # SET  ovoid centre Z above the ear/pivot (cups touch ~8 mm below centre)
     # Lock = a CAPTIVE PRESSURE SHOE the thumbscrew presses against the post (NOT the screw tip
     # on the bare post — a metal point gouges the printed PETG bearing). The screw → conformal
     # shoe → post: keeps the HP1000 positive lock, distributes the load (no marring), and the
