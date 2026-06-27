@@ -28,6 +28,8 @@
       "nodes": [
         "yoke_R",
         "yoke_L",
+        "yoke_rod_R",
+        "yoke_rod_L",
         "insert_p_R",
         "insert_p_L",
         "insert_m_R",
@@ -47,6 +49,8 @@
         "slider_L",
         "thumbscrew_R",
         "thumbscrew_L",
+        "slider_shoe_R",
+        "slider_shoe_L",
         "headband_clamp_R",
         "headband_clamp_L"
       ]
@@ -57,11 +61,21 @@
       "nodes": [
         "headband_pad"
       ]
+    },
+    {
+      "id": "head",
+      "label": "Reference head",
+      "nodes": [
+        "head_ref"
+      ]
     }
   ],
   "bought": [
     "bow_ref",
     "earpad_R",
     "earpad_L"
+  ],
+  "reference_context": [
+    "head_ref"
   ]
 }
