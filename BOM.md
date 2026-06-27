@@ -16,7 +16,7 @@ project rule: never present a guessed price as confirmed).
 | M3 shoulder screw — yoke↔cup pivot (shoulder ⌀4 mm) | 4 | McMaster-Carr / hardware | ~$1.50 ea (~$6) | ESTIMATE |
 | M3 socket-head screw, ~6–10 mm — baffle → frame | 8 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
 | M3 socket-head screw, ~6–8 mm — driver clamp ring → baffle | 6 | McMaster-Carr / hardware | ~$1 (set) | ESTIMATE |
-| 4-40 knurled thumbscrew — slider height lock (short; presses the pressure shoe, not the post) | 2 | McMaster-Carr / lab stock | ~$1.50 ea | ESTIMATE |
+| Knurled-head thumb screw, 4-40 × 1/4", 18-8 SS — slider height lock (presses the shoe, not the post) | 2 | McMaster-Carr (knurled-head thumb screws) | ~$1.50 ea | ESTIMATE |
 | Slider pressure shoe — printed PETG or Delrin blank (screw → shoe → post, no marring) | 2 | own printer / Delrin offcut | ~$0 | ESTIMATE |
 | M3 brass heat-set insert (⌀4.7 OD × 5.7) | 18 | McMaster-Carr / Amazon | ~$4–5 (set) | ESTIMATE |
 | 4-40 brass heat-set insert — slider thumbscrew | 2 | McMaster-Carr / Amazon | ~$1 (set) | ESTIMATE |

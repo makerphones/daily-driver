@@ -28,11 +28,15 @@ presses the pill, the pill grips the rod, positive lock *without* damaging it. W
   ESTIMATE — MEASURE the real insert), boss → Ø7.6. With the shoe taking up the gap the screw is
   SHORT, so trimmed `_boss_proud 6 → 5` and shortened the mockup shaft — the head sits much closer
   to the barrel. BOM reconciled (was wrongly M4): **4-40 thumbscrew + 4-40 heat-set + shoe ×2**.
-- **STILL PENDING the maker's caliper** (flagged ESTIMATE/MEASURE in params): the 4-40 **head Ø +
-  height** and **shortest shank** he owns — these size a head **counterbore** (socket the knurled head
-  to kill the last of the protrusion) and confirm the insert bore. Head counterbore deferred until
-  then (a big knurled head needs a wider boss than the Ø14 barrel comfortably gives — decide with
-  real numbers). Saddle depth/contact to be print-validated.
+- **STANDARDIZED the screw (2026-06-27, maker's call: pick one, move forward).** Rather than fit his
+  mixed pile, the design now targets a **stock McMaster knurled-head thumb screw, 4-40 × 1/4", 18-8 SS**
+  — head ≈ **Ø6.35 × 3.18 mm**, 1/4" (6.35 mm) shaft — with a **4-40 brass heat-set** (Ø3.8 mm bore).
+  Set `thumbscrew_head_diameter/height/shaft_length` to those, boss → Ø8.0 (brackets the head + ~1.65 mm
+  heat-set wall). With the short 1/4" shaft the head sits **~8 mm proud** (half the old long-shaft float);
+  the renders now show a small compact knob. To shave more, drop `_boss_proud` ~3.5 + a 3/16" screw
+  (≈6.7 mm proud). **Head counterbore dropped:** it co-tunes fragilely with the screw length (1/16"
+  steps) and forces a chunkier boss for ~1 mm — the close boss + short screw already do the job. Boss
+  parametric so a near-equivalent line adapts. Saddle depth/contact still to be print-validated.
 - **Off-the-shelf check (McMaster), maker asked.** Confirmed the bought "thumbscrew + non-marring
   pad" — McMaster **Swivel-Pad Thumb Screws** — starts at **1/4-20** (too big/proud for our 4-40
   scale, and chunkier = the opposite of the protrusion goal). Press-on **Swivel Pads** (~Ø4.7 mm
