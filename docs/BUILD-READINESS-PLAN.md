@@ -79,11 +79,14 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
   (`cup_interior_volume_cc` 143.4, `front_cavity_volume_cc` 67.9). `earpad_depth 24` (pad mockup
   Z-scaled). New gate checks `front-seal-squeeze` + `closed-back-ports-clear`; vent_plug in manifold.
   Build 17/17, gate 0/0. Parked: gasket/damping in the assembly VIZ; real vent open-area vs a REW sweep.
-- [ ] **5. Head models S/M/L + sprung bow + slider range.** Three toggleable reference heads
-  (parametrize `head_reference` by size: ear-to-ear ~140 / 147 / 155, height set); **bow flexes to
-  each head** (re-pose worn radius/arc per head, conserve developed length — clamp shows); **full
-  slider extension = largest head**; re-pose `bow_worn_radius` / trim `yoke_post_length` so the
-  crown reaches the band across travel. **Closes blocker 4.**
+- [~] **5. Head models S/M/L + sprung bow + slider range.** DONE: three toggleable reference heads
+  (S/M/L, uniform-scaled, ears aligned; `head_ref_s/m/l` — 3 viewer toggles, off by default); sprung-bow
+  helper `bow_radius_for_ear_half` (conserves developed length, `bow_worn_radius_s/l`); viewer/render
+  renames handled. Build 17/17, gate 0/0. **REMAINING (the actual blocker fix, scoped follow-up):** the
+  bow apex floats ~34 mm above the crown and that exceeds the 32 mm slider travel — the yoke+post stack is
+  ~2 cm too TALL. Trim `yoke_fork_height`/post ~20 mm + map slider travel S↔L (full extension = largest)
+  so the band lands. The 3 heads now make the gap visible to calibrate against. (Its own careful pass —
+  ripples through yoke geometry + gate + renders.)
 - [ ] **6. Assembly sequence + explode refinement.** Write the Daily-Driver assembly order
   (heat-sets → driver seat + gasket + clamp ring → pivot **washer-stack** `[head|wave|nylon|eye|
   nylon|boss]` → shoe-drops-in-before-the-post → post/slider → band sandwich); **draw the washer

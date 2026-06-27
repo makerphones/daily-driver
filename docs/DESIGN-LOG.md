@@ -6,6 +6,35 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-27 — S/M/L reference heads + sprung-bow helper (worn-fit made visible)
+
+Fifth readiness-batch item, and the start of the worn-fit blocker. The maker asked for three head
+sizes to compare how the band lands + how the cups clamp.
+
+- **Three reference heads — S / M / L** (`head_s_ear_half 70` / `head_ref_ear_half 73.5` / `head_l_ear_half
+  77.5` → ~140 / 147 / 155 mm bitragion). `make_head_reference(ear_half)` scales the medium ovoid
+  UNIFORMLY, so a bigger head is wider AND taller-crowned. All centred at x=0 with the ear at `head_ref_z`,
+  so ears stay aligned and only the size differs: a wider head reads as a tighter cup clamp, a
+  taller-crowned head as the band landing closer. The viewer shows them as **three separate toggles**
+  (`head_ref_s/m/l`, off by default, translucent, held out of the explode).
+- **Sprung-bow helper.** `bow_radius_for_ear_half(eh)` solves R·sin(L/2R)=eh — the radius the steel band
+  flexes to on a head of that breadth, CONSERVING the measured developed length (236.2 mm). So the bow
+  "flex per head" is now explicit/parametric (`bow_worn_radius_s/l`). For this ~180° worn arc R≈eh (the
+  ends sit near the diameter), so the flex is real but subtle in radius.
+- **Viewer + render fixes for the rename:** `parts-viewer.js` `typeKey` maps `head_ref_{s,m,l}` →
+  `head_s/m/l` (clean three-way toggle); `render_asm.py` skip widened to the `head_ref` prefix so the
+  static posters draw their own glass head, not the three GLB ovoids.
+
+**WORN-FIT BLOCKER — diagnosed + made visible, fix scoped.** Measured the worn pose: the bow apex sits
+**~34 mm above the medium-head crown** (the band floats), and that float slightly EXCEEDS the full slider
+travel (32 mm) — i.e. the yoke+post stack is ~2 cm too TALL to ever land the band on the head within
+travel. The honest fix (next pass): **trim the stack** (`yoke_fork_height` and/or a shorter post) ~20 mm
+so the band comes down to the crown, then **map the slider travel S↔L** (full extension = largest head)
+so the band lands across the range. NOT done here — it ripples through the yoke geometry + gate + renders
+and wanted its own careful pass; the three heads now make the gap visible to calibrate against.
+
+Build **17/17**, gate **0 HARD / 0 SOFT**.
+
 ## 2026-06-27 — Acoustic geometry as params + the closed-back conversion designed in
 
 Fourth readiness-batch item — the weakest-scoring area (acoustics was intention, not geometry). Turned

@@ -326,10 +326,17 @@ class Params:
     assembly_worn_slider_frac: float = 0.5  # SET  mid-travel (worn average head); tune for the render
     # Reference HEAD (assembly viz only — a translucent average-head ovoid for worn-fit context in
     # the 3D viewer: toggleable, OFF by default, excluded from the explode; NOT a printed part).
-    head_ref_ear_half: float = 73.5     # SET  ear-to-ear half (~147 mm bitragion breadth)
-    head_ref_depth_half: float = 97.0   # SET  front-back half (~194 mm head length)
-    head_ref_height_half: float = 114.0 # SET  crown-to-jaw half (ear→crown ~120 mm)
-    head_ref_z: float = 5.0             # SET  head-centre Z above the ear/pivot level
+    # THREE sizes (S/M/L) so the maker can compare how the band lands + how the cups clamp
+    # across head breadths. The MEDIUM ovoid is sized below; S/L are the same ovoid scaled
+    # UNIFORMLY by their ear-to-ear breadth, so a bigger head is taller-crowned too (the
+    # band-landing reads) and wider at the ears (the clamp-vs-cup-spacing reads). All centred
+    # at x=0 with the ear at head_ref_z, so the ears stay aligned and only the size differs.
+    head_ref_ear_half: float = 73.5     # SET  MEDIUM ear-to-ear half (~147 mm bitragion, 50th pct)
+    head_s_ear_half: float = 70.0       # SET  SMALL  (~140 mm — ~5th pct adult)
+    head_l_ear_half: float = 77.5       # SET  LARGE  (~155 mm — ~95th pct adult)
+    head_ref_depth_half: float = 97.0   # SET  front-back half (~194 mm head length, at MEDIUM)
+    head_ref_height_half: float = 114.0 # SET  crown-to-jaw half (ear→crown ~120 mm, at MEDIUM)
+    head_ref_z: float = 5.0             # SET  head-centre (≈ ear) Z above the pivot level
     # Lock = a CAPTIVE PRESSURE SHOE the thumbscrew presses against the post (NOT the screw tip
     # on the bare post — a metal point gouges the printed PETG bearing). The screw → conformal
     # shoe → post: keeps the HP1000 positive lock, distributes the load (no marring), and the
@@ -645,6 +652,31 @@ class Params:
         # worn cup-centre half-spacing = where the flexed band's ends land
         # (R_worn · sin(half-arc)). ~78 mm → cups ~156 mm apart.
         return self.bow_worn_radius * math.sin(math.radians(self.bow_worn_arc_degrees / 2))
+
+    def bow_radius_for_ear_half(self, ear_half: float) -> float:
+        """The SPRING bow's flexed radius that lands its ends at ±ear_half — i.e. the
+        radius the steel band opens to on a head of that breadth, CONSERVING the measured
+        developed length (so it's the same physical strap, just flexed). Solves
+        R·sin(L/2R) = ear_half (the ends sit at R·sin(half-arc), arc = L/R) by bisection.
+        Lets the maker see the band 'flex' per head: a wider head → larger R, flatter arc."""
+        L = self.bow_developed_length
+        lo, hi = ear_half + 1e-3, 10 * ear_half   # R must exceed ear_half; ample upper bound
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            ends = mid * math.sin(min(math.pi, L / (2 * mid)))  # clamp: arc never exceeds full circle
+            if ends < ear_half:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2
+
+    @property
+    def bow_worn_radius_s(self) -> float:
+        return self.bow_radius_for_ear_half(self.head_s_ear_half)
+
+    @property
+    def bow_worn_radius_l(self) -> float:
+        return self.bow_radius_for_ear_half(self.head_l_ear_half)
 
 
 # Importable singleton used by every part module.

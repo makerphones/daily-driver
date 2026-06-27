@@ -63,10 +63,24 @@
       ]
     },
     {
-      "id": "head",
-      "label": "Reference head",
+      "id": "head_m",
+      "label": "Head \u00b7 M (147 mm)",
       "nodes": [
-        "head_ref"
+        "head_ref_m"
+      ]
+    },
+    {
+      "id": "head_s",
+      "label": "Head \u00b7 S (140 mm)",
+      "nodes": [
+        "head_ref_s"
+      ]
+    },
+    {
+      "id": "head_l",
+      "label": "Head \u00b7 L (155 mm)",
+      "nodes": [
+        "head_ref_l"
       ]
     }
   ],
@@ -76,6 +90,8 @@
     "earpad_L"
   ],
   "reference_context": [
-    "head_ref"
+    "head_ref_s",
+    "head_ref_m",
+    "head_ref_l"
   ]
 }

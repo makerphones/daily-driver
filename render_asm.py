@@ -12,8 +12,8 @@ LIGHT = np.array([0.3, 0.4, 0.85]); LIGHT = LIGHT / np.linalg.norm(LIGHT)
 
 parts = []  # (name, tris Mx3x3, rgb)
 for child in asm.children:
-    if child.name == "head_ref":
-        continue  # the assembly's reference head is for the 3D viewer; render_asm draws its own
+    if child.name.startswith("head_ref"):
+        continue  # the assembly's S/M/L reference heads are for the 3D viewer; render_asm draws its own
     obj = child.obj
     if obj is None:
         continue
