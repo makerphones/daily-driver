@@ -149,6 +149,20 @@ def make_slider() -> cq.Workplane:
     clrc = cq.Solid.makeCylinder(P.slider_thumbscrew_diameter / 2 + 0.2, R + boss_h,
                                  cq.Vector(0, R + boss_h, bz), cq.Vector(0, -1, 0))
     collar = collar.cut(cq.Workplane(obj=clrc))
+
+    # FINGER SCALLOPS — a shallow concave channel down each ±X END of the lozenge gives the
+    # hand a defined pinch to slide the block on the post (the height-adjust motion). A tall
+    # vertical cylinder set just outboard of the end face, dipping `depth` in; centred in the
+    # lozenge's Y depth, outboard of the inserts (x=±13) and recess (x=±17) so the gate is
+    # untouched. Cut LAST, on the finished solid.
+    sc_r = P.slider_grip_scallop_r
+    sc_d = P.slider_grip_scallop_depth
+    y_mid = (y_in + y_out) / 2
+    for sx in (+1, -1):
+        dish = cq.Solid.makeCylinder(
+            sc_r, LZ + 8, cq.Vector(sx * (LX / 2 + sc_r - sc_d), y_mid, -(LZ + 8) / 2),
+            cq.Vector(0, 0, 1))
+        collar = collar.cut(cq.Workplane(obj=dish))
     return collar
 
 

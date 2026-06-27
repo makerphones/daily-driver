@@ -141,6 +141,10 @@ def make_yoke() -> cq.Workplane:
     # thumbscrew (Grado HP1000-style). Round → the cup also swivels when unlocked.
     # The post MUST stay a clean Ø8 cylinder its full length — it slides + swivels
     # in the slider collar bore (Ø8.4); do NOT taper or flute it.
+    # The Ø12 hub is wider than the slider's Ø8.4 bore, so it doubles as the post's BOTTOM
+    # END-STOP: a loosened slider can slide down the post but bottoms out on the hub (~16 mm
+    # below full adjust travel) — the block can't leave the post off the bottom. (Top removal
+    # is over the open post tip, deliberate.) See DESIGN-LOG slider-ergonomics adjust note.
     hub_d = P.yoke_post_diameter + 4.0          # short junction hub, wider than the post
     hub = (
         cq.Workplane("XY").workplane(offset=hub_z - 4)

@@ -34,6 +34,15 @@ plane, the *worst* reach while worn. The fixes below follow from the verified wo
   assembly.py "(M4)" + "+Y faces outward" — the geometry was actually +X). Updated the assembly
   mockup (shaft → +Y, lifted). Gate **0 HARD / 0 SOFT** (bore + walls untouched; boss adds
   material outboard).
+- **Adjust motion (done).** Travel/engagement was already sound (Ø8×52 post, Ø14×18 barrel,
+  18 mm range, post stays 100 % engaged across it — *don't* shorten it), and the lock is
+  intentionally pure friction (HP1000-style, no detents). Two changes: (1) the block grab was
+  ambiguous, so added **finger SCALLOPS** — a shallow concave channel down each ±X end
+  (`slider_grip_scallop_r 6`, `_depth 1.2`), outboard of the inserts/recess so the gate is
+  untouched — giving a defined thumb/finger pinch for the vertical slide. (2) Documented that
+  the **Ø12 yoke hub is already the bottom END-STOP** (the loosened block bottoms on it ~16 mm
+  below full travel, can't fall off the post) — added the note in `yoke.py`, no geometry needed.
+  Gate **0 HARD / 0 SOFT**.
 
 ## 2026-06-26 — Slider: tube gusset (grown-in), pill kept; ergonomics is next
 

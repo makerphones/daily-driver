@@ -353,6 +353,11 @@ class Params:
     slider_clamp_rib_height: float = 3.0   # SET  rib Z extent (short — registers, doesn't block the exit)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
     slider_clamp_cover_thickness: float = 3.0  # SET  the inner cover plate thickness
+    # Finger SCALLOPS — a shallow concave dish down each of the lozenge's ±X (front/back) ENDS
+    # so the hand has a DEFINED pinch to slide the block up/down on the post (the adjust motion).
+    # Vertical channels, outboard of the inserts (x=±13) and recess (x=±17), so gate-neutral.
+    slider_grip_scallop_r: float = 6.0     # SET  scallop cutter radius (sets dish width)
+    slider_grip_scallop_depth: float = 1.2 # SET  how deep the dish bites the end face (subtle, not a hole)
     slider_clamp_cover_ease: float = 1.2   # SET  the cover (first thing to touch the head) drafts inward this much
                                            #   on its head-side face → a soft central crown, rim off the skin. Ergo pass.
 
