@@ -304,15 +304,14 @@ class Params:
     # shoe takes up the gap so a SHORT screw works (less protrusion). Mirrors the aftermarket
     # Grado aluminium rod-block's silicone 'slider pill'. Screw = 4-40 (the maker's knurled
     # thumbscrews) — exact head/length pending his caliper (flagged ESTIMATE/MEASURE below).
-    # STANDARDIZED on a stock McMaster knurled-head thumb screw — 4-40 × 1/4", 18-8 stainless
-    # (head ≈ Ø6.35 × 3.18 mm thick), with a 4-40 brass heat-set. Designing to a defined part
-    # (not the maker's mixed pile); the boss is parametric so a near-equivalent line still fits.
-    slider_thumbscrew_diameter: float = 2.84     # SET  4-40 UNC shaft major Ø
-    slider_thumbscrew_insert_hole: float = 3.8   # SET  4-40 brass heat-set install bore (standard McMaster 4-40 heat-set)
-    slider_thumbscrew_boss: float = 8.0   # SET  boss OD: brackets the Ø6.35 head + ~1.65 mm wall around the heat-set
-    slider_thumbscrew_boss_proud: float = 5.0  # SET  boss stand-off — with the short 1/4" screw the head sits ~8 mm proud
-                                          #   of the barrel (half the old long-shaft protrusion). Drop to ~3.5 + a 3/16"
-                                          #   screw if even less is wanted (≈6.7 mm); 1/4" kept for a robust heat-set seat.
+    # STANDARDIZED on a stock McMaster knurled KNOB / large-head thumb screw — 8-32 thread with a
+    # big ⌀5/8" (≈15.9 mm) GRIPPABLE knurled head (maker's call: easy to twist). The lock is
+    # low-load (presses the shoe), so the bigger thread is for the head + a sturdier stud, not
+    # strength. 8-32 brass heat-set. Boss parametric so a near-equivalent line still fits.
+    slider_thumbscrew_diameter: float = 4.17     # SET  8-32 UNC shaft major Ø (0.164")
+    slider_thumbscrew_insert_hole: float = 5.0   # ESTIMATE  8-32 brass heat-set install bore (verify vs the chosen insert)
+    slider_thumbscrew_boss: float = 9.0   # SET  boss OD: ~2 mm wall around the 8-32 heat-set bore
+    slider_thumbscrew_boss_proud: float = 5.0  # SET  boss stand-off — short 1/4"–3/8" 8-32 screw keeps the big head close in
     slider_thumbscrew_boss_z: float = 0.0      # SET  boss CENTRED on the barrel mid (z=0), dead-centre on the +Y
                                           #   OUTBOARD face. In the worn pose local +Y → global +X (straight out the side
                                           #   of the head) = the natural two-finger reach with the phones ON. On the x=0
@@ -326,11 +325,11 @@ class Params:
     slider_shoe_saddle_r: float = 4.4     # SET  concave saddle radius (post r 4 + clearance) → conformal area cradle
     slider_shoe_saddle_depth: float = 0.8 # SET  how deep the saddle dishes the shoe face
     slider_shoe_clearance: float = 0.3    # SET  shoe↔pocket sliding fit (drop-in via the bore, post traps it)
-    # Thumbscrew MOCKUP (parts/hardware.py) — viz of the standard McMaster 4-40 × 1/4" knurled
-    # thumb screw (head ≈ Ø6.35 × 3.18 mm; 1/4" = 6.35 mm shaft). Tip presses the shoe, not the post.
-    thumbscrew_head_diameter: float = 6.35   # SET  knurled head OD (McMaster 4-40 knurled-head thumb screw, 1/4" head)
-    thumbscrew_head_height: float = 3.18     # SET  head height (1/8")
-    thumbscrew_shaft_length: float = 6.35    # SET  1/4" length under head
+    # Thumbscrew MOCKUP (parts/hardware.py) — viz of the big ⌀5/8" knurled KNOB on the 8-32 stud.
+    # Grip it by the knurled rim; the short shaft keeps it close to the barrel. Tip presses the shoe.
+    thumbscrew_head_diameter: float = 15.9   # SET  ⌀5/8" knurled head (grippable; maker's pick)
+    thumbscrew_head_height: float = 5.0      # SET  head height (grip by the rim)
+    thumbscrew_shaft_length: float = 6.35    # SET  ~1/4" length under head (tip reaches the shoe)
 
     # ---- Slider = CLAMP COLLAR (replaced the box block) ----------------------
     # A slim rounded BARREL around the post + a slim 2-bolt mount tab for the bow's
