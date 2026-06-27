@@ -298,11 +298,12 @@ class Params:
                                           #   engaged across the whole head-size range (34 was too short).
     slider_post_clearance: float = 0.4    # SET  slide fit, post↔slider bore (FDM)
     slider_adjust_travel: float = 18.0    # ESTIMATE  vertical size-adjust range (reference)
-    slider_thumbscrew_diameter: float = 4.0      # SET  M4 thumbscrew (bigger for hand grip)
-    slider_thumbscrew_insert_hole: float = 5.6   # SET  M4 brass heat-set bore (the lock)
-    slider_thumbscrew_boss: float = 9.0   # SET  boss OD on the +Y face hosting the insert
-    # M4 thumbscrew MOCKUP (parts/hardware.py) — the height lock, shown in the assembly
-    # so the Grado-style post+thumbscrew mechanism reads. Hand-grip head wider than the boss.
+    slider_thumbscrew_diameter: float = 3.0      # SET  M3 LOCK shaft — friction-locks the post (no load → small)
+    slider_thumbscrew_insert_hole: float = 4.0   # SET  M3 brass heat-set bore (the lock)
+    slider_thumbscrew_boss: float = 7.0   # SET  boss OD hosting the M3 insert (1.5 wall; small on the Ø14 barrel)
+    # Thumbscrew MOCKUP (parts/hardware.py) — the height lock, shown in the assembly so the
+    # Grado-style post+thumbscrew mechanism reads. BIG knurled head (grip) on the small M3
+    # shaft — keeps the hand grip while the boss stays slim.
     thumbscrew_head_diameter: float = 12.0   # REF  knurled hand-grip head OD (mockup)
     thumbscrew_head_height: float = 5.0      # REF  head height
     thumbscrew_shaft_length: float = 14.0    # REF  shaft from the post surface out through the boss
@@ -314,7 +315,7 @@ class Params:
     # the thumbscrew clamps both. Far less bulk than the old 42×26×18 block. The bow
     # end tab (33 mm, 2 holes at bow_endtab_hole_spacing) bolts to the mount tab.
     slider_collar_diameter: float = 14.0      # SET  barrel OD around the post bore (Ø8.4 bore + 2.8 wall)
-    slider_collar_height: float = 22.0        # SET  barrel height (post grip + travel feel)
+    slider_collar_height: float = 18.0        # SET  barrel height (post grip + travel feel)
     slider_collar_rim_round: float = 2.0      # soft-form roundover on the barrel rims
     # Headband CLAMP (Beyer-style two-piece, OFFSET-OUTER layout). The post-bore TUBE
     # (the barrel) is the OUTER body — the band attaches on the barrel's INNER (−Y,
@@ -325,12 +326,18 @@ class Params:
     # two M3 screws through the prong-tip holes. The clamp is centred on the barrel mid
     # (z=0); the post slides the full barrel height and may poke past it (nothing stacks on
     # the post). slider_clamp_hole_z / rib_z are now relative to the barrel mid.
-    slider_clamp_width: float = 36.0       # SET  clamp width (X) — seats the 33 mm band + the bolts
-    slider_clamp_height: float = 22.0      # SET  clamp height (Z) — spans the prong holes + channel rib
+    # The clamp WING is LOFTED: full width at the bolts (z_lo), tapering NARROWER and the
+    # inner face RECEDING (+Y) toward the top so the band sweeps out cleanly and corner mass
+    # is shed. All Z values are relative to the barrel mid (z=0).
+    slider_clamp_width: float = 36.0       # SET  wing width (X) at the bolts — seats the 33 mm band
+    slider_clamp_top_width: float = 26.0   # SET  wing width (X) at the top (tapers up: sleeker, lighter)
+    slider_clamp_z_lo: float = -6.0        # SET  wing bottom Z (holds the prong tip)
+    slider_clamp_z_hi: float = 8.0         # SET  wing top Z (band sweeps out above this)
+    slider_clamp_top_recede: float = 5.0   # SET  inner face pulls back (+Y) by this at the top → clean exit
     slider_clamp_standoff: float = 6.0     # SET  clamp-plate depth (Y) proud of the barrel; hosts the inserts
-    slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes), rel. barrel mid
-    slider_clamp_rib_z: float = 4.0        # SET  Z of the anti-rotation rib (in the channel), rel. barrel mid
-    slider_clamp_rib_height: float = 8.0   # SET  rib Z extent (runs along the open channel)
+    slider_clamp_hole_z: float = 0.0       # SET  Z of the 2 bolt inserts (= prong-tip holes)
+    slider_clamp_rib_z: float = 1.5        # SET  Z of the anti-rotation rib (in the channel)
+    slider_clamp_rib_height: float = 3.0   # SET  rib Z extent (short — registers, doesn't block the exit)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
     slider_clamp_cover_thickness: float = 3.0  # SET  the inner cover plate thickness
 

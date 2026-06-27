@@ -64,8 +64,8 @@ draw("renders/asm_full.png",
 # Junction zoom on the RIGHT ear (band inner / tube outer). Find the slider bbox.
 sl = [p for p in parts if p[0] == "slider_R"][0][1].reshape(-1, 3)
 cx, cz = sl[:, 0].mean(), sl[:, 2].mean()
-r = 38
-lim = ((cx - r, cx + r), (-r, r), (cz - r, cz + r))
+r = 26
+lim = ((cx - r, cx + r), (-r, r), (cz - r + 6, cz + r + 6))
 # Hide the pad + earpads so the metal band, recess, cover and tube/post read clearly,
 # and recolor the junction parts so the inner→outer stack is unmistakable.
 HIDE = {"headband_pad", "earpad_R", "earpad_L"}
@@ -78,5 +78,5 @@ RECOLOR = {
 }
 bare = [(nm, tri, np.array(RECOLOR.get(nm, tuple(rgb)))) for nm, tri, rgb in parts if nm not in HIDE]
 draw("renders/asm_junction.png",
-     [("front (head|<-  ->|out)", 0, -90), ("iso", 18, -62)],
+     [("front (head|<-  ->|out)", 0, -90), ("side", 2, 0), ("iso", 16, -64)],
      lim=lim, title="junction ·", use=bare)

@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-26 — Slider v0.8: sleek lofted wing, clean band exit, smaller boss
+
+Maker: the band should exit the recess/block cleanly (the tall flat clamp + cover were
+fighting the band as it curves inward to leave), and the whole block should be sleeker —
+less mass, less wasted material, easier to print. Also shrink the thumbscrew boss.
+
+- **Clamp wing is now LOFTED, not a slab.** Two sections (`cq.Solid.makeLoft`): full width
+  (36) + full depth at the bolts (`z_lo −6`), tapering to a narrower top (`top_width 26`)
+  with the inner face **RECEDING** (`top_recede 5`) toward `z_hi +8`. So the metal band
+  SWEEPS OUT above the grip into open air instead of hitting a flat wall — and the wasted
+  upper corners are gone. The **cover** now only spans the grip region (ends just above the
+  bolts), so nothing on the head side blocks the exit either.
+- **Compact clamp:** rib shortened (`z 0..3`) so it registers without blocking the exit;
+  recess limited to the lower grip. Barrel `22 → 18`. Block is now a small tube + a
+  short tapered wing.
+- **Thumbscrew boss 9 → 7 mm:** the lock only friction-holds the post (no structural
+  load), so the **shaft** drops M4 → **M3** (insert bore 5.6 → 4.0, boss wall back to a
+  safe 1.5 mm) while the **knurled head stays Ø12** — grip preserved, boss slim. Recorded
+  here per working-rule #2 (M4 was a maker SET decision; this trades it down deliberately,
+  keeping the grip intent). If they want M4 back, the boss floor is ~8.5 mm.
+
+Build **14/14**, gate **0 HARD / 0 SOFT** (slider one solid; wall 2.8 ≥ 2.0). Verified the
+clean exit + seating in colored junction renders (`render_asm.py`, side + front + iso).
+Still ahead of the cosmetic fillet/chamfer pass: any further sculpt, then prong-tip
+rounding, then the rounding pass itself.
+
+---
+
 ## 2026-06-26 — Slim + shorten the slider block
 
 Maker: the slider block is too thick and too tall. The offset-outer layout (band inside,
