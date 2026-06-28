@@ -418,7 +418,13 @@ class Params:
     slider_clamp_rib_z: float = 1.5        # SET  Z of the anti-rotation rib (in the channel)
     slider_clamp_rib_height: float = 3.0   # SET  rib Z extent (short — registers, doesn't block the exit)
     slider_clamp_rib_depth: float = 3.0    # SET  rib protrusion into the channel (−Y past the recess floor)
-    slider_clamp_cover_thickness: float = 3.0  # SET  the inner cover plate thickness
+    slider_clamp_cover_thickness: float = 5.0  # SET  inner cover (RETAINING BLOCK) plate thickness — 3→5
+                                               #   so the 2 band screws get RECESSED (counterbored) heads.
+    slider_clamp_cover_margin: float = 2.0     # SET  how much SMALLER than the lozenge the cover is per side
+                                               #   (was a flat −6 width / grip-only height). ~0 → matches the
+                                               #   lozenge perimeter so it grips the band over the full block.
+    slider_clamp_cbore_diameter: float = 6.2   # SET  counterbore for the M3 socket head (~5.5) + clearance
+    slider_clamp_cbore_depth: float = 2.6      # SET  head sinks this far below the cover's outer (head) face
     # Finger SCALLOPS — a shallow concave dish down each of the lozenge's ±X (front/back) ENDS
     # so the hand has a DEFINED pinch to slide the block up/down on the post (the adjust motion).
     # Vertical channels, outboard of the inserts (x=±13) and recess (x=±17), so gate-neutral.

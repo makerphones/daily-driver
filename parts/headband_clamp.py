@@ -40,21 +40,19 @@ def make_headband_clamp() -> cq.Workplane:
     pd = P.slider_clamp_standoff
     ct = P.slider_clamp_cover_thickness
     s = P.bow_endtab_hole_spacing / 2
-    z_lo = P.slider_clamp_z_lo
-    z_top = P.slider_clamp_hole_z + 4.0                  # ends just above the bolts; band exits above
-    z_mid = (z_lo + z_top) / 2
+    m = P.slider_clamp_cover_margin
     clamp_face = -R - pd                                 # recess opening (band's inner face)
 
-    # Small ROUNDED plate over the grip, sitting on the band's inner (−Y) face. Loft two
-    # equal stadium wires for a clean rounded outline.
-    cw = P.slider_clamp_width - 6.0                      # a touch narrower than the lozenge
-    ch = (z_top - z_lo) + 4.0
-    rr = min(P.slider_clamp_corner_r - 1.0, ch / 2 - 0.5)
+    # RETAINING BLOCK — a rounded plate matching the slider LOZENGE perimeter (was grip-only, −6 mm),
+    # centred on the barrel mid (z=0) like the lozenge, so it grips the band over the FULL block.
+    cw = P.slider_clamp_width - 2 * m
+    ch = P.slider_clamp_height - 2 * m
+    rr = max(P.slider_clamp_corner_r - m, 1.0)
 
     ce = P.slider_clamp_cover_ease
 
     def wire(y, inset=0.0):
-        plane = cq.Plane(origin=(0, y, z_mid), xDir=(1, 0, 0), normal=(0, 1, 0))
+        plane = cq.Plane(origin=(0, y, 0), xDir=(1, 0, 0), normal=(0, 1, 0))
         return _rounded_rect_wire(plane, cw - 2 * inset, ch - 2 * inset, max(rr - inset, 1.0))
 
     # The cover is the FIRST thing to touch the head (it stands proud of the lozenge by ct).
@@ -62,12 +60,17 @@ def make_headband_clamp() -> cq.Workplane:
     # central crown instead of a square plate edge. Band-side stays full (seats on the lozenge).
     cover = cq.Workplane(obj=cq.Solid.makeLoft([wire(clamp_face - ct, ce), wire(clamp_face)]))
 
-    # Two M3 clearance holes (axis Y) at the prong-tip hole pitch + bolt height.
+    # Two M3 clearance holes (axis −Y) at the prong-tip pitch + bolt height, with RECESSED
+    # (counterbored) socket heads on the outer (−Y, head-side) face so nothing stands proud.
     for x in (+s, -s):
         hole = cq.Solid.makeCylinder(
             P.m3_clearance_hole / 2, ct + 2.0,
             cq.Vector(x, clamp_face + 1.0, P.slider_clamp_hole_z), cq.Vector(0, -1, 0))
         cover = cover.cut(cq.Workplane(obj=hole))
+        cbore = cq.Solid.makeCylinder(
+            P.slider_clamp_cbore_diameter / 2, P.slider_clamp_cbore_depth + 0.5,
+            cq.Vector(x, clamp_face - ct - 0.5, P.slider_clamp_hole_z), cq.Vector(0, 1, 0))
+        cover = cover.cut(cq.Workplane(obj=cbore))
 
     # Rib SLOT on the outer (+Y) face — the slider's rib (through the bow channel) seats here.
     channel_w = P.bow_width - 2 * P.bow_rail_width

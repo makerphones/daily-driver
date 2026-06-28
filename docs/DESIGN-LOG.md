@@ -18,6 +18,31 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — Band↔slider junction: bigger retaining block + recessed screws (parallel-angle TBD)
+
+Maker flagged the band↔slider junction: the steel band comes in at an ANGLE (not parallel to the
+slider/block faces), the screws need recessed heads, the retaining block should be bigger to hold the
+band, and there should be sufficient cutout for the metal.
+
+**DONE:**
+- **Bigger retaining block** (`headband_clamp.py`): the cover now matches the slider LOZENGE perimeter
+  (X40×Z18 vs lozenge 44×22, a 2 mm margin — was grip-only −6 mm / partial height), centred on the
+  barrel mid like the lozenge, so it grips the band over the full block.
+- **Recessed screw heads:** cover thickened 3→5 mm + the two M3 holes **counterbored** (⌀6.2 × 2.6 deep)
+  from the head side so nothing stands proud. New params `slider_clamp_cover_margin/_cbore_diameter/_cbore_depth`.
+- Build 17/17, gate 0/0.
+
+**REMAINING (the parallel angle + cutout — the harder part, scoped for a focused pass):** the bow is a
+UNIFORM arc, so its prong ends meet the slider at the arc TANGENT (~21° from vertical at the M worn pose),
+while the slider's clamp lozenge + recess are vertical (aligned with the post) → the band crosses at ~21°.
+Two fixes: (a) TILT the slider's clamp lozenge + recess + rib + inserts + the cover by the worn-tangent
+angle so the clamp face is parallel to the band (post bore stays vertical; bake a representative angle —
+localized but the lozenge has bevel/recess/rib/inserts/gussets to carry); or (b) VERTICALISE the bow's
+prong ends — add a straight vertical extension at each bow end (real-headband shape: arc over the crown +
+vertical ends into the sliders) so the prong enters the vertical slider parallel (bow.py + worn-pose +
+developed-length rework). Then size the recess so the parallel prong seats fully. Wants render iteration —
+its own pass, not a tail-of-session change to a printed part.
+
 ## 2026-06-28 — REVERTED the S/M/L fit selector (kept the M fit)
 
 Maker's call: the S/L poses showed a distorted (coarse-tessellated) head and the per-head comparison
