@@ -73,24 +73,10 @@
       ]
     },
     {
-      "id": "head_m",
-      "label": "Head \u00b7 M (147 mm)",
+      "id": "head",
+      "label": "Reference head",
       "nodes": [
-        "head_ref_m"
-      ]
-    },
-    {
-      "id": "head_s",
-      "label": "Head \u00b7 S (140 mm)",
-      "nodes": [
-        "head_ref_s"
-      ]
-    },
-    {
-      "id": "head_l",
-      "label": "Head \u00b7 L (155 mm)",
-      "nodes": [
-        "head_ref_l"
+        "head_ref"
       ]
     }
   ],
@@ -100,27 +86,11 @@
     "earpad_L"
   ],
   "reference_context": [
-    "head_ref_s",
-    "head_ref_m",
-    "head_ref_l"
+    "head_ref"
   ],
-  "head_fit": {
-    "band_nodes": [
-      "slider_R",
-      "slider_L",
-      "bow_ref",
-      "headband_pad",
-      "slider_shoe_R",
-      "slider_shoe_L",
-      "thumbscrew_R",
-      "thumbscrew_L",
-      "headband_clamp_R",
-      "headband_clamp_L"
-    ],
-    "dz": {
-      "s": -3.2,
-      "m": 0.0,
-      "l": 6.59
-    }
-  }
+  "head_sizes": [
+    "s",
+    "m",
+    "l"
+  ]
 }
