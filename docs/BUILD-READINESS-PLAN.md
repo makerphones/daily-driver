@@ -98,6 +98,14 @@ Ordered; tick as done. Each = build→gate→log→commit→push, sync promote u
 
 ## Parking lot (revisit)
 
+- **Worn-fit RE-POSE (head-driven, per head) — the next focused build.** Head + ears DONE (live);
+  the fit is diagnosed (see DESIGN-LOG 2026-06-28): earpad buried ~24 mm (modeled uncompressed +
+  bow-driven cup spacing too narrow), band doesn't flex (vertical-only auto-fit). FIX: re-derive the
+  worn pose head-driven — head ear → compressed worn-earpad (~12 mm) flush → cup position → bow flexes
+  (`bow_radius_for_ear_half`) to span → band height to crown; per head; then the viewer re-poses on
+  selection (swap a pre-flexed bow + per-head transforms, or per-head GLBs). Also: optionally make the
+  KU100 face a touch more defined; the current nose/brow are subtle.
+
 - ~~Worn-fit STACK TRIM~~ **BAND-FLOAT RESOLVED 2026-06-27 — it was the head model + pose, not the
   stack.** The ovoid had the ear at its centre (ear→crown 114, ~15 mm short) and the slider was posed
   mid-travel. Fixed: `head_ref_height_half 121` + `head_ref_z 8` (ear→crown 129, S/M/L 123/129/135) and

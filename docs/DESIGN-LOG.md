@@ -18,6 +18,30 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — KU100-style head + ears (done); worn-fit re-pose DIAGNOSED (next)
+
+Maker feedback: the worn viz fakes the fit — the band doesn't flex per head, the earpads are consumed
+by the head, and there are no ears to read the cup fit. Asked for a KU100-style head with ears + a
+proper per-head re-pose (flex + spread + flush pads).
+
+**DONE — reference head rebuilt** (`head_reference.py`): an egg ovoid + nose/brow + neck stub + a
+simplified PINNA (concha dish + canal) per side at the ear position, scaled-sphere ovoids unioned,
+uniform S/M/L scale. `render_asm` now tessellates the REAL head (matches the viewer). Shipped + live.
+
+**DIAGNOSED — the fit is a head-driven re-pose (next task).** Measured the M pose: the earpad's head-side
+face sits at x=**49 mm** but the head surface is at **73.5 mm** — the head pokes ~24 mm past the earpad
+(buried). Two causes: (1) the earpad is modeled UNCOMPRESSED (24 mm = the acoustic front-cavity depth;
+worn it'd be ~12 mm); (2) the cup spacing is BOW-driven (worn R 78 → cups 156 mm), so the cup front (72)
+lands just inside the head surface (73.5) — the cups are too far in for the head. The band doesn't flex
+because the auto-fit only shifts VERTICALLY (dz) at a fixed radius.
+
+**THE FIX (scoped, next):** re-derive the worn pose HEAD-DRIVEN, per head — head ear surface → a
+*compressed* worn-earpad (~12 mm) flush on it → cup position from that → bow flexes (`bow_radius_for_ear_half`)
+to span the cups → band height to the crown. Then the viewer re-poses on head selection (swap a pre-flexed
+bow + apply the per-head rigid transforms, or per-head fitted GLBs). It's a kinematic re-architecture +
+render-tune cycles + viewer work — its own focused pass, not a tail-of-session cram. The head + this
+diagnosis are the foundation.
+
 ## 2026-06-27 — Draw the gasket + damping in the model; surface the acoustic volumes
 
 Closing the two no-hardware acoustic loose ends (the rest is measurement-gated tuning).
