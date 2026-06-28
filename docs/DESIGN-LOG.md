@@ -18,6 +18,23 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — Viewer "Fit on head" selector (S/M/L worn poses)
+
+The interactive delivery of the head-driven fit. The viewer gets a **Fit on head** control:
+- **Off** — the default explode/parts view (M pose, head off) — untouched.
+- **S / M / L** — the headphone fitted to that head (band flexed, cups spread, pads flush), on the
+  translucent head, framed.
+
+KEY size finding: the assembly GLB is ~14 MB at tol ≤0.3 but **1.7 MB at tol ≥0.5** (a cliff). So
+`build.py` emits **coarse** `daily-driver-{s,l}.glb` (~1.7 MB) for the fit previews; the default
+`daily-driver.glb` stays fine (14 MB) for exploding. The viewer loads S/L on demand + caches.
+
+**Additive, low-risk by design:** the M explode/parts/toggle path is untouched; `showFit()` just hides
+the M parts and adds the coarse pose group (or restores M). No reload of the core viewer, so no
+duplicate-listener risk. NB: the headless preview can't load WebGL (`window.innerHeight 0`), so this was
+shipped verified by JS syntax + the live GLB/manifest reachability — the interactive behaviour is
+confirmed in a real browser on the beta page.
+
 ## 2026-06-28 — Worn pose RE-ARCHITECTED head-driven (flush pads + band flex + cup spread)
 
 Fixed the fit from yesterday's diagnosis. The worn pose is now **head-driven**, not bow-driven, and is
