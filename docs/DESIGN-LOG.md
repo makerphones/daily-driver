@@ -18,6 +18,24 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-27 — Draw the gasket + damping in the model; surface the acoustic volumes
+
+Closing the two no-hardware acoustic loose ends (the rest is measurement-gated tuning).
+
+- **Gasket + damping disc now DRAWN** in the assembly (were params-only). Built inline (soft-good viz,
+  posed with T_cup): the **rear damping felt disc** (⌀38 × 3 mm, in the cup's damping ring over the
+  grille) and the **front-seal foam gasket** (ring on the driver rim against the baffle seat). New
+  manifest group **"Felt + gasket"** + viewer TYPE_LABELs (`damping` / `gasket`) so they toggle/isolate.
+  A muted teal-grey foam colour. They're internal, so the static posters are unchanged (occluded); the
+  3D viewer shows them on toggle/isolate.
+- **Acoustic VOLUMES surfaced.** New generated **`docs/ACOUSTICS.md`** (build.py, drift-proof from
+  params): rear **143 cc** + front cavity **68 cc** = **211 cc**, plus the parametric tuning controls
+  (open/closed back, pluggable vents, damping, gasket squeeze, pad-depth lever). The website design-spec
+  page now lists all three figures.
+
+Build 17/17, gate 0/0. NB the acoustic *tuning* (real damping amount, vent open-area, exact target) is
+still measurement-gated — these are the parametric starting points; the maker is finalizing the driver.
+
 ## 2026-06-27 — Band-float RESOLVED (it was the head model + pose, not the bow)
 
 The maker pushed back on the "shorten the headband" framing: real DT880s fit fine with this exact 9.3″

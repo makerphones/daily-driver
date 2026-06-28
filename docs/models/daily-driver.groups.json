@@ -23,6 +23,16 @@
       ]
     },
     {
+      "id": "acoustic",
+      "label": "Felt + gasket",
+      "nodes": [
+        "damping_R",
+        "damping_L",
+        "gasket_R",
+        "gasket_L"
+      ]
+    },
+    {
       "id": "gimbal",
       "label": "Gimbal",
       "nodes": [

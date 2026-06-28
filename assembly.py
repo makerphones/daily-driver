@@ -63,6 +63,8 @@ SUBASSEMBLIES = {
                    "driver_R", "driver_L", "driver_clamp_R", "driver_clamp_L"]},
         {"id": "earpad", "label": "Earpads",
          "nodes": ["earpad_R", "earpad_L"]},
+        {"id": "acoustic", "label": "Felt + gasket",
+         "nodes": ["damping_R", "damping_L", "gasket_R", "gasket_L"]},
         {"id": "gimbal", "label": "Gimbal",
          "nodes": ["yoke_R", "yoke_L", "yoke_rod_R", "yoke_rod_L",
                    "insert_p_R", "insert_p_L", "insert_m_R",
@@ -228,6 +230,22 @@ def make_assembly() -> cq.Assembly:
     asm.add(mirror_L(cover), name="headband_clamp_L", color=SLIDER_C)
     asm.add(shoe, name="slider_shoe_R", color=ORANGE)         # pressure pad (screw → shoe → post)
     asm.add(mirror_L(shoe), name="slider_shoe_L", color=ORANGE)
+
+    # ACOUSTIC soft goods (VIZ) — shown so the damping + seal interfaces READ (internal; isolate or
+    # explode to see them). Built in the cup/baffle local frame, posed with the cup (T_cup):
+    #  • DAMPING felt disc — sits in the cup's damping ring, over the grille (⌀damping_felt × thickness).
+    #  • Front-seal GASKET — a foam ring on the driver frame rim against the baffle seat (compressed).
+    FOAM = cq.Color(0.38, 0.52, 0.50)   # muted teal-grey: reads as acoustic foam/felt, distinct from pads
+    damping = T_cup(cq.Workplane("XY").workplane(offset=P.cup_interior_floor_z)
+                    .circle(P.damping_felt_diameter / 2).extrude(P.damping_felt_thickness))
+    gasket = T_cup(cq.Workplane("XY").workplane(offset=ledge_z - P.front_gasket_compressed)
+                   .circle(P.driver_recess_diameter / 2)
+                   .circle(P.driver_recess_diameter / 2 - P.front_gasket_width)
+                   .extrude(P.front_gasket_compressed))
+    asm.add(damping, name="damping_R", color=FOAM)
+    asm.add(mirror_L(damping), name="damping_L", color=FOAM)
+    asm.add(gasket, name="gasket_R", color=FOAM)
+    asm.add(mirror_L(gasket), name="gasket_L", color=FOAM)
 
     # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:
