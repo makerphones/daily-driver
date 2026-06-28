@@ -20,17 +20,19 @@ import cadquery as cq
 from params import P
 
 
-def make_earpad() -> cq.Workplane:
+def make_earpad(depth: float = None) -> cq.Workplane:
     od = P.earpad_outer_diameter
     idd = P.earpad_inner_diameter
     rm = (od + idd) / 4.0          # torus mean radius (ring centre)
     tr = (od - idd) / 4.0          # tube radius → spans ID..OD (radial); height set below
     bf = P.earpad_base_flat
+    d = P.earpad_depth if depth is None else depth   # relaxed (acoustic) depth, or a WORN/compressed one
 
-    # Torus, axis +Z. The bare torus would be 2·tr tall; the real pad DEPTH is earpad_depth
-    # (the front-cavity dimension), so Z-scale the solid to that height (transformGeometry —
-    # revolve/loft of a true profile is unusable on this OCC build). z ∈ [-tr·sz, tr·sz].
-    sz = P.earpad_depth / (2.0 * tr)
+    # Torus, axis +Z. The bare torus would be 2·tr tall; the pad DEPTH is `d` (earpad_depth for the
+    # relaxed/acoustic height, or earpad_worn_depth for the compressed worn-fit view), so Z-scale the
+    # solid to that height (transformGeometry — revolve/loft of a true profile is dead on this OCC
+    # build). z ∈ [-tr·sz, tr·sz].
+    sz = d / (2.0 * tr)
     torus = cq.Solid.makeTorus(rm, tr).transformGeometry(
         cq.Matrix([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, sz, 0]]))
     pad = cq.Workplane(obj=torus).translate((0, 0, tr * sz))   # base tangents z=0

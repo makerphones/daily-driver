@@ -37,25 +37,6 @@ from parts.headband_clamp import make_headband_clamp
 # (they match the asm.add(name=...) calls in make_assembly). Renaming a part there
 # means updating this too (and the manual). build.py emits this to
 # docs/models/daily-driver.groups.json next to the GLB; the viewer fetches it.
-def _head_fit_offsets():
-    """Vertical shift (model +z, mm) of the HEADBAND group to land the band on each S/M/L head,
-    relative to the default (M) pose — clamped to the actual slider travel. The viewer applies
-    these when a head is toggled, so the headphone 'auto-adjusts' to the selected head (the cups
-    stay put → the width/clamp difference still reads). Pure params math, so it tracks the design."""
-    post_base = P.yoke_fork_height + 4
-    sz_hi = post_base + P.yoke_post_length - P.slider_collar_height / 2   # band block, extended
-    sz_lo = post_base + P.slider_collar_height / 2                        # band block, retracted
-    sz_default = sz_hi - P.assembly_worn_slider_frac * (sz_hi - sz_lo)
-    crown_m = P.head_ref_z + P.head_ref_height_half
-    out = {}
-    for key, eh in (("s", P.head_s_ear_half), ("m", P.head_ref_ear_half), ("l", P.head_l_ear_half)):
-        crown = P.head_ref_z + P.head_ref_height_half * (eh / P.head_ref_ear_half)
-        ideal = sz_default + (crown - crown_m)                # move the band by the crown delta
-        clamped = max(sz_lo, min(sz_hi, ideal))               # within the real travel (small heads clamp)
-        out[key] = round(clamped - sz_default, 2)
-    return out
-
-
 SUBASSEMBLIES = {
     "groups": [
         {"id": "earcup", "label": "Earcup",
@@ -74,26 +55,18 @@ SUBASSEMBLIES = {
                    "slider_shoe_R", "slider_shoe_L", "headband_clamp_R", "headband_clamp_L"]},
         {"id": "headband_pad", "label": "Headband pad",
          "nodes": ["headband_pad"]},
-        {"id": "head_m", "label": "Head · M (147 mm)", "nodes": ["head_ref_m"]},
-        {"id": "head_s", "label": "Head · S (140 mm)", "nodes": ["head_ref_s"]},
-        {"id": "head_l", "label": "Head · L (155 mm)", "nodes": ["head_ref_l"]},
+        {"id": "head", "label": "Reference head", "nodes": ["head_ref"]},
     ],
     "bought": ["bow_ref", "earpad_R", "earpad_L"],
-    # The S/M/L reference heads are translucent worn-fit CONTEXT: the viewer shows them OFF by
-    # default and holds them OUT of the explode motion (context, not parts). Public contract.
-    "reference_context": ["head_ref_s", "head_ref_m", "head_ref_l"],
-    # AUTO-FIT: when a single head is toggled on, the viewer shifts the headband group along the
-    # model's vertical by dz[size] mm so the band lands on THAT head (cups stay → clamp still reads).
-    "head_fit": {
-        "band_nodes": ["slider_R", "slider_L", "bow_ref", "headband_pad",
-                       "slider_shoe_R", "slider_shoe_L", "thumbscrew_R", "thumbscrew_L",
-                       "headband_clamp_R", "headband_clamp_L"],
-        "dz": _head_fit_offsets(),   # {"s","m","l"} → model +z mm from the default (M) pose
-    },
+    # The reference head is translucent worn-fit CONTEXT: the viewer shows it OFF by default and holds
+    # it OUT of the explode motion (context, not a part). The whole POSE is fitted to it per size — the
+    # viewer swaps GLBs (daily-driver-{s,m,l}.glb) to re-fit, rather than nudging one group. Public contract.
+    "reference_context": ["head_ref"],
+    "head_sizes": ["s", "m", "l"],   # the viewer offers these; each loads daily-driver-<size>.glb
 }
 
 
-def make_assembly() -> cq.Assembly:
+def make_assembly(worn_head: str = "m") -> cq.Assembly:
     """Both ears + the shared headband, posed like a WORN headphone.
 
     Head frame (global): X = inter-ear (right ear at +Xe, pad facing −X inward),
@@ -127,22 +100,31 @@ def make_assembly() -> cq.Assembly:
     DRIVER_C = cq.Color(0.10, 0.10, 0.12)  # driver mockup (black)
 
     pbz = P.pivot_boss_z
-    # Worn pose: the spring band flexes OPEN from its 63.5 mm at-rest circle to
-    # bow_worn_radius on a head (developed length conserved → ~173° arc — note the
-    # worn arc dips just under 180° while the measured at-rest arc is >180°). Ear
-    # spacing = where the flexed band's ends land (~78 mm → cups ~156 mm apart).
-    end_a = 90 - P.bow_worn_arc_degrees / 2
-    Xe = P.bow_worn_radius * math.cos(math.radians(end_a))  # bow END x (where the band clamps)
-    ez = P.bow_worn_radius * math.sin(math.radians(end_a))
-    # Prong-tip HOLE position, set in from the tip up the arc (where the band bolts down).
-    inset_deg = math.degrees(P.bow_endtab_hole_inset / P.bow_worn_radius)
-    zh = P.bow_worn_radius * math.sin(math.radians(end_a + inset_deg))  # hole height (pre-pose)
-    # OFFSET-OUTER junction: the metal band rides INSIDE (head-side) and the post-bore TUBE
-    # rides OUTSIDE it. The barrel/post sit OUTBOARD of the band by (barrel R + clamp-plate
-    # depth), so the cups step out that far and the clamp plate's inner face lands back at
-    # the band end Xe.
+    # HEAD-DRIVEN worn pose (per `worn_head` ∈ {s,m,l}): the headphone is FITTED to the chosen head,
+    # not posed to a fixed radius. The COMPRESSED earpad (earpad_worn_depth) sits FLUSH on the head ear
+    # → that sets the cup spacing; the spring bow then FLEXES to span the cups (developed length
+    # conserved); and the band height drops so the apex lands on that head's crown. So a bigger head
+    # spreads the cups, flexes the band flatter, and lifts the crown — like a real headphone adjusting.
+    eh_map = {"s": P.head_s_ear_half, "m": P.head_ref_ear_half, "l": P.head_l_ear_half}
+    eh = eh_map.get(worn_head, P.head_ref_ear_half)
+    crown = P.head_ref_z + P.head_ref_height_half * (eh / P.head_ref_ear_half)
+
+    # OFFSET-OUTER junction: the metal band rides INSIDE (head-side); the post-bore TUBE rides OUTSIDE
+    # it, so the cup steps outboard of the band end by clamp_off.
     clamp_off = P.slider_collar_diameter / 2 + P.slider_clamp_standoff
-    Xe_cup = Xe + clamp_off
+    # Cup pivot x = head ear surface (eh) + the COMPRESSED earpad (flush) + the cup's front→pivot offset.
+    # That offset = pbz: the rotated cup's x-span is cup_total_height and the pivot sits at its mid, so
+    # cup_front = Xe_cup − pbz. (Measured against the cup geometry; tracks it.)
+    Xe_cup = eh + P.earpad_worn_depth + pbz
+    Xe = Xe_cup - clamp_off                                  # band END (slider clamp) x
+
+    # Bow FLEXES so its ends land at ±Xe (same strap, conserved length → flatter for a wider head).
+    R_worn = P.bow_radius_for_ear_half(Xe)
+    arc_worn = math.degrees(P.bow_developed_length / R_worn)
+    end_a = 90 - arc_worn / 2
+    ez = R_worn * math.sin(math.radians(end_a))
+    inset_deg = math.degrees(P.bow_endtab_hole_inset / R_worn)
+    zh = R_worn * math.sin(math.radians(end_a + inset_deg))  # prong-hole height in the bow frame
 
     def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe_cup,0,0)
         return (w.rotate((0, 0, 0), (0, 1, 0), -90)
@@ -165,8 +147,9 @@ def make_assembly() -> cq.Assembly:
     rear_rim_z = ledge_z - P.driver_body_depth
     driver = T_cup(make_driver().translate((0, 0, ledge_z)))
     driver_clamp = T_cup(make_driver_clamp().translate((0, 0, rear_rim_z)))
-    # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X).
-    earpad = T_cup(make_earpad().translate((0, 0, P.cup_total_height)))
+    # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X). Shown at the
+    # COMPRESSED worn depth so it sits FLUSH on the head ear (it compresses on a real head).
+    earpad = T_cup(make_earpad(P.earpad_worn_depth).translate((0, 0, P.cup_total_height)))
     yoke = T_yoke(make_yoke())
     # Bought Ø6 adjustment ROD — epoxy-bonded into the fork socket, rising as the post. Built from
     # its socket floor (z=0); shift up so it seats in the socket, then ride with the yoke.
@@ -179,12 +162,14 @@ def make_assembly() -> cq.Assembly:
     # (the slider frame's z=0, where the clamp sits) at post_top − h/2.
     post_top = P.yoke_fork_height + 4 + P.yoke_post_length
     post_base = P.yoke_fork_height + 4                      # hub top = the barrel's bottom stop
-    # WORN pose: slide the barrel down the post to a realistic mid-travel position (average head),
-    # not the fully-extended extreme. frac 0 → barrel at the post top (biggest head); frac 1 →
-    # barrel at the hub stop (smallest head, rod pokes up most). The band/cover/knob ride with it.
     sz_hi = post_top - P.slider_collar_height / 2           # barrel at the post top (extended)
     sz_lo = post_base + P.slider_collar_height / 2          # barrel at the hub (retracted)
-    slider_z = sz_hi - P.assembly_worn_slider_frac * (sz_hi - sz_lo)   # barrel / clamp centre
+    # Band height: drop the slider so the flexed bow's APEX lands on the crown, clamped to the post
+    # travel (a small head bottoms near full retraction; the pad takes up any residual). Measure the
+    # bow's apex-above-the-prong-hole at R_worn so it's exact for the flexed shape.
+    _bow0 = make_bow(radius=R_worn, arc_degrees=arc_worn)
+    apex_above_hole = _bow0.val().BoundingBox().zmax - zh
+    slider_z = max(sz_lo, min(sz_hi, crown - apex_above_hole))   # clamp / barrel centre
     slider = T_yoke(make_slider().translate((0, 0, slider_z)))
     # Pressure SHOE — rides in the slider's +Y pocket, saddle cradling the post (the thumbscrew
     # presses it, not the post). Built at the origin, shifted +Y so its saddle is post-coaxial.
@@ -194,10 +179,8 @@ def make_assembly() -> cq.Assembly:
     # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
     # Pose so the band's prong-tip HOLE lands at the clamp centre (slider z=0 + hole_z=0).
     bow_xf = (0, 0, slider_z - zh)
-    bow = make_bow(radius=P.bow_worn_radius,
-                   arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
-    pad = make_headband_pad(radius=P.bow_worn_radius,
-                            arc_degrees=P.bow_worn_arc_degrees).translate(bow_xf)
+    bow = _bow0.translate(bow_xf)                            # the flexed bow, posed (built above)
+    pad = make_headband_pad(radius=R_worn, arc_degrees=arc_worn).translate(bow_xf)
     # Headband CLAMP cover (INNER head-side piece) — built in the slider frame, posed with
     # the slider so its bolts/slot align with the slider's clamp.
     cover = T_yoke(make_headband_clamp().translate((0, 0, slider_z)))
@@ -211,17 +194,12 @@ def make_assembly() -> cq.Assembly:
 
     asm.add(rod, name="yoke_rod_R", color=STEEL)           # bought shoulder screw (post + head top-stop)
     asm.add(mirror_L(rod), name="yoke_rod_L", color=STEEL)
-    # Translucent worn-fit REFERENCE heads — S / M / L, all centred between the ears (ear at
-    # head_ref_z) so the ears stay aligned and only the SIZE differs: a wider head reads as
-    # tighter cup clamp, a taller-crowned head reads as the band landing closer. Viewer shows
-    # them OFF by default + out of the explode (context, not parts); toggle one at a time to
-    # compare. NB the band currently rides proud of even the L crown — the stack-trim that lands
-    # it on the head is the documented worn-fit follow-up; these heads make that gap VISIBLE.
+    # Translucent worn-fit REFERENCE head — the head this pose is FITTED to (worn_head). The headphone
+    # is already posed to land on it (band flexed, cups spread, earpads flush); the viewer swaps the
+    # whole pose when a different size is picked. Shown OFF by default + held out of the explode.
     from parts.head_reference import make_head_reference
-    HEAD_C = cq.Color(0.55, 0.70, 0.90, 0.28)
-    for key, eh in (("s", P.head_s_ear_half), ("m", P.head_ref_ear_half), ("l", P.head_l_ear_half)):
-        h = make_head_reference(eh).translate((0, 0, P.head_ref_z))
-        asm.add(h, name=f"head_ref_{key}", color=HEAD_C)
+    head = make_head_reference(eh).translate((0, 0, P.head_ref_z))
+    asm.add(head, name="head_ref", color=cq.Color(0.55, 0.70, 0.90, 0.28))
     asm.add(bow, name="bow_ref", color=STEEL)              # shared headband (REF)
     asm.add(pad, name="headband_pad", color=PAD_C)         # shared crown cushion
     asm.add(earpad, name="earpad_R", color=PAD_C)          # round pad mockup (bring your own)

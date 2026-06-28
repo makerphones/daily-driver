@@ -18,6 +18,31 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — Worn pose RE-ARCHITECTED head-driven (flush pads + band flex + cup spread)
+
+Fixed the fit from yesterday's diagnosis. The worn pose is now **head-driven**, not bow-driven, and is
+parametric on `worn_head` ∈ {s,m,l}:
+
+- **Compressed worn-earpad** (`earpad_worn_depth 12`, half the relaxed 24) shown FLUSH on the head ear —
+  `make_earpad(depth)` now takes a depth. Verified: earpad inner face sits **+1.5 mm** on the head
+  surface for all three sizes (was buried −24 mm).
+- **Cup spacing is head-driven:** `Xe_cup = eh + earpad_worn_depth + pbz` (head ear + flush pad + the
+  cup's front→pivot offset). Cups spread per head (cup front x = 82 / 85.5 / 89.5 for S/M/L).
+- **Bow FLEXES to span:** `R_worn = bow_radius_for_ear_half(Xe)` — same strap, conserved length, flatter
+  for a wider head (R≈98 at M vs the old fixed 78).
+- **Band lands on the crown:** slider drops so the flexed bow's apex (measured at R_worn) hits the crown,
+  clamped to the post travel. Apex vs crown: M −0, L −0, S +7 (small head bottoms at the retract limit;
+  the pad bridges).
+
+So picking a bigger head spreads the cups, flexes the band flatter, and lifts the crown — like a real
+headphone adjusting. The worn render now shows the cups ON the head with pads flush, not consumed.
+
+The assembly now emits ONE fitted head (`head_ref`, the worn_head size) instead of three toggles; the
+manifest carries `head_sizes:[s,m,l]` for the viewer. The DEFAULT GLB is the **M fit** (live now). The
+per-head SELECTOR (swap to the S/L pose on pick) is the next step — 3 full GLBs are 14 MB each (too big
+to commit ×3), so the viewer will re-pose via per-head transforms + swapped flex parts, not 3 GLBs.
+Build 17/17, gate 0/0. Removed the old vertical-only `head_fit` auto-fit (superseded).
+
 ## 2026-06-28 — KU100-style head + ears (done); worn-fit re-pose DIAGNOSED (next)
 
 Maker feedback: the worn viz fakes the fit — the band doesn't flex per head, the earpads are consumed
