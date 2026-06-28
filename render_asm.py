@@ -6,6 +6,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import cadquery as cq
 from assembly import make_assembly
 from params import P
+from parts.head_reference import make_head_reference
 
 asm = make_assembly()
 LIGHT = np.array([0.3, 0.4, 0.85]); LIGHT = LIGHT / np.linalg.norm(LIGHT)
@@ -71,11 +72,16 @@ def _ellipsoid(center, axes, nu=30, nv=18):
 # the cup geometry (ear level = cup-centre z); deliberately NON-anatomical.
 _cup = np.vstack([p[1].reshape(-1, 3) for p in parts if p[0] in ("cup_R", "cup_L")])
 _ear_y, _ear_z = _cup[:, 1].mean(), _cup[:, 2].mean()
-# Average adult head: bitragion (ear-to-ear) ~147 mm, head length ~195 mm, ear→crown ~129 mm.
-# Read from params (drift-proof) so this poster's head matches the assembly's M reference head:
-# the ear (cup centre) sits ~head_ref_z below the ovoid centre → realistic ear→crown.
-HEAD = _ellipsoid((0.0, _ear_y, _ear_z + P.head_ref_z),
-                  (P.head_ref_ear_half, P.head_ref_depth_half, P.head_ref_height_half))
+# Use the REAL reference-head geometry (parts/head_reference — KU100-style ovoid + pinna ears +
+# nose/brow + neck), tessellated to triangles, so the poster shows the SAME head as the 3D viewer.
+# Posed like the assembly: centred at x=0, lifted by head_ref_z so the ears land at the cups.
+def _tessellate(wp, tol=0.4):
+    shp = wp.val()
+    vs, ts = shp.tessellate(tol)
+    v = np.array([[p.x, p.y, p.z] for p in vs])
+    return np.array([[v[a], v[b], v[c]] for (a, b, c) in ts])
+
+HEAD = _tessellate(make_head_reference().translate((0, 0, P.head_ref_z)))
 HEAD_RGB = np.array([0.55, 0.68, 0.85])   # cool glass tint
 
 
