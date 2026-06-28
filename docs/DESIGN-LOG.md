@@ -18,6 +18,15 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — REVERTED the S/M/L fit selector (kept the M fit)
+
+Maker's call: the S/L poses showed a distorted (coarse-tessellated) head and the per-head comparison
+wasn't worth the effort. Reverted the SELECTOR only: removed the viewer "Fit on head" control + the
+`showFit` logic (parts-viewer.js), dropped the per-head GLB generation (build.py), deleted
+`daily-driver-{s,l}.glb` (beta + stable). KEPT (maker said "M looks ok"): the head-driven M worn pose
+(flush earpads + band flex + cup spread) and the KU100 reference head (off by default). `make_assembly`
+keeps its `worn_head` param (M default) for the single fitted pose. Next: fix the band↔slider junction.
+
 ## 2026-06-28 — Viewer "Fit on head" selector (S/M/L worn poses)
 
 The interactive delivery of the head-driven fit. The viewer gets a **Fit on head** control:

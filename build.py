@@ -248,16 +248,7 @@ def build(names):
                 os.makedirs(MODELS, exist_ok=True)
                 asm.export(GLB_PATH, exportType="GLTF",
                            tolerance=0.05, angularTolerance=0.1)
-                print(f"  [ok]   {GLB_PATH} (web 3D viewer — M fit, fine)")
-                # WORN-FIT per-head poses for the viewer's size SELECTOR — each is the
-                # headphone re-fitted to that head (band flex + cup spread + flush pads).
-                # COARSE tessellation (tol 0.5 → ~1.7 MB vs ~14 MB) since they're fit
-                # previews, not for exploding; the default GLB above stays fine for that.
-                for size in ("s", "l"):
-                    p = GLB_PATH.replace(".glb", f"-{size}.glb")
-                    make_assembly(size).export(p, exportType="GLTF",
-                                               tolerance=0.5, angularTolerance=1.0)
-                    print(f"  [ok]   {p} (worn fit — {size}, coarse)")
+                print(f"  [ok]   {GLB_PATH} (web 3D viewer)")
                 # Sub-assembly manifest the manual's parts viewer fetches (groups +
                 # node names). Single source: assembly.SUBASSEMBLIES. Committed next
                 # to the GLB and served from the same Pages origin.
