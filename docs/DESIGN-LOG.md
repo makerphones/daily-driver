@@ -6,6 +6,48 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Junction FIXED by TILTING the post chain to the band (option b dropped)
+
+The maker pushed back on the queued option-b (verticalise the prongs) with the real Beyer band in hand
++ a flat-lay photo, and REVERSED the approach. Two observations, one root cause:
+
+1. **The worn arc was too EXTENDED.** At rest the band is a tight 5 in circle (R 63.5, ~213°, ends
+   curling to near-vertical). The old worn pose flexed it flat to **R 98 (7.7 in dia)** to spread the
+   cups — looked nothing like the real part.
+2. **The slider face shouldn't be vertical.** "The ends of the band are parallel to the slider face,
+   there are no bends in the headband other than the arc." So verticalising the prongs (a bend) was
+   wrong — the band is a PURE ARC and the *slider* must meet it at the band's natural end angle.
+
+Maker's mechanism, locked: **WIDTH is taken by the bow SPRING (its flex); HEIGHT by the slider POST
+(travel).**
+
+**ROOT CAUSE:** the old pose put the band end at the cup-stack x (±91.5) with a VERTICAL post, so the
+uniform arc crossed the vertical clamp recess at its tangent (~21° at M) — the visible angle.
+
+**FIX (pose-only — no printed geometry changed):** TILT the whole yoke+post+slider chain by the band's
+end-tangent angle `psi` about the cup pivot (the cup swivels to stay flat on the ear). A pure arc's end
+tangent equals its end param angle, so tying the post tilt to the tangent makes the post (and thus the
+clamp face, recess, inserts, cover, all built in the slider frame) **parallel to the band end** by
+construction — `arc_worn = 180 − 2·psi`, `R = L/(2·rad(90−psi))`. `psi` is solved (bisection in
+`assembly.py`) so the bow's prong-tip hole lands on the rotated clamp hole with the apex on the crown.
+
+Tilting also pulls the band ends INBOARD, which **tightens the arc back toward rest** — fixing both
+complaints at once:
+
+| head | tilt psi | worn R | (was) | lands |
+|---|---|---|---|---|
+| S | 8.1° | 6.5 in dia | 7.2 | +8.6 mm float, pad bridges (small head bottoms out) |
+| **M** | **9.5°** | **6.6 in** | **7.7** | **+1.6 mm float, 8 mm pad bridges** |
+| L | 10.9° | 6.7 in | 8.4 | lands flush |
+
+Verified: posed post-axis ∥ band end tangent to **0.0°**; bow prong hole lands on the slider insert
+within **0.26 mm**. **`slider.py` and `bow.py` geometry are UNCHANGED** — only the assembly POSE moved,
+so the printed parts (and the gate) are untouched. Build **17/17**, gate **0 HARD / 0 SOFT**. GLB +
+`daily-driver.groups.json` regenerated (manifest contract unchanged); junction/worn renders show the
+band meeting the clamp parallel. NB `params.bow_worn_radius` (78, ESTIMATE) is now superseded by the
+tilt-derived `R_worn` (~84 at M) for the pose — left as-is (only feeds the descriptive gate check +
+`ear_half_spacing` helper now). Maker confirms the 3D viewer on the live beta page.
+
 ## 2026-06-27 — Assembly sequence written (`docs/ASSEMBLY.md`)
 
 Sixth readiness-batch item. Wrote the canonical **build order**, grounded in the real interfaces +

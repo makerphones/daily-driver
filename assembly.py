@@ -100,31 +100,66 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     DRIVER_C = cq.Color(0.10, 0.10, 0.12)  # driver mockup (black)
 
     pbz = P.pivot_boss_z
-    # HEAD-DRIVEN worn pose (per `worn_head` ∈ {s,m,l}): the headphone is FITTED to the chosen head,
-    # not posed to a fixed radius. The COMPRESSED earpad (earpad_worn_depth) sits FLUSH on the head ear
-    # → that sets the cup spacing; the spring bow then FLEXES to span the cups (developed length
-    # conserved); and the band height drops so the apex lands on that head's crown. So a bigger head
-    # spreads the cups, flexes the band flatter, and lifts the crown — like a real headphone adjusting.
+    # HEAD-DRIVEN worn pose (per `worn_head` ∈ {s,m,l}): the headphone is FITTED to the chosen head.
+    # The COMPRESSED earpad (earpad_worn_depth) sits FLUSH on the head ear → that sets the cup spacing;
+    # WIDTH is then taken up by the bow SPRING (its flex), HEIGHT by the slider POST (travel) — the
+    # maker's mechanism. The bow is a PURE ARC (no bends). For its end to lie FLAT on the slider clamp
+    # face (maker: "the ends of the band are parallel to the slider face, no bends other than the arc"),
+    # the whole yoke+post+slider CHAIN TILTS by the band's end-tangent angle `psi` about the cup pivot —
+    # the cup swivels to stay flat on the ear. Tilting also pulls the band ends INBOARD, so the band
+    # stays TIGHT (near its 5 in rest) instead of flexing flat/extended (the maker's other note).
     eh_map = {"s": P.head_s_ear_half, "m": P.head_ref_ear_half, "l": P.head_l_ear_half}
     eh = eh_map.get(worn_head, P.head_ref_ear_half)
     crown = P.head_ref_z + P.head_ref_height_half * (eh / P.head_ref_ear_half)
 
-    # OFFSET-OUTER junction: the metal band rides INSIDE (head-side); the post-bore TUBE rides OUTSIDE
-    # it, so the cup steps outboard of the band end by clamp_off.
-    clamp_off = P.slider_collar_diameter / 2 + P.slider_clamp_standoff
-    # Cup pivot x = head ear surface (eh) + the COMPRESSED earpad (flush) + the cup's front→pivot offset.
-    # That offset = pbz: the rotated cup's x-span is cup_total_height and the pivot sits at its mid, so
-    # cup_front = Xe_cup − pbz. (Measured against the cup geometry; tracks it.)
+    # Cup pivot x = head ear surface (eh) + the COMPRESSED earpad (flush) + the cup's front→pivot offset
+    # (= pbz: the rotated cup's x-span is cup_total_height, pivot at its mid). Cup stays ON the ear.
     Xe_cup = eh + P.earpad_worn_depth + pbz
-    Xe = Xe_cup - clamp_off                                  # band END (slider clamp) x
 
-    # Bow FLEXES so its ends land at ±Xe (same strap, conserved length → flatter for a wider head).
-    R_worn = P.bow_radius_for_ear_half(Xe)
-    arc_worn = math.degrees(P.bow_developed_length / R_worn)
-    end_a = 90 - arc_worn / 2
-    ez = R_worn * math.sin(math.radians(end_a))
-    inset_deg = math.degrees(P.bow_endtab_hole_inset / R_worn)
-    zh = R_worn * math.sin(math.radians(end_a + inset_deg))  # prong-hole height in the bow frame
+    # ---- Solve the TILT (psi) self-consistently --------------------------------------------------
+    # A pure arc of the measured developed length L has end-tangent angle == its end PARAM angle, so
+    # tying the post tilt to the band tangent gives  arc_worn = 180 − 2·psi  and  R = L/(2·rad(90−psi)).
+    # The chain tilt rotates the slider clamp hole by psi about the cup pivot; `psi` is the value where
+    # the bow's prong-tip hole (inset from the tip) lands on that rotated clamp hole with the band APEX
+    # on the crown. seat_y = the recess-floor depth (clamp-hole x-offset from the post centre).
+    L = P.bow_developed_length
+    seat_y = (-P.slider_collar_diameter / 2 - P.slider_clamp_standoff) + (P.bow_thickness + 0.4)
+    post_top = P.yoke_fork_height + 4 + P.yoke_post_length
+    post_base = P.yoke_fork_height + 4                      # hub top = the barrel's bottom stop
+    sz_hi = post_top - P.slider_collar_height / 2           # barrel at the post top (extended)
+    sz_lo = post_base + P.slider_collar_height / 2          # barrel at the hub (retracted)
+
+    def _R_of_psi(psi_deg):
+        return L * 90.0 / (math.pi * (90.0 - psi_deg))
+
+    def _slider_z_ideal(psi_deg, R, zh_):
+        p_ = math.radians(psi_deg)
+        return (zh_ + crown - R - seat_y * math.sin(p_)) / math.cos(p_)
+
+    def _resid(psi_deg):                                    # band prong-hole x  −  rotated clamp-hole x
+        p_ = math.radians(psi_deg)
+        R = _R_of_psi(psi_deg)
+        ah_ = math.radians(psi_deg + math.degrees(P.bow_endtab_hole_inset / R))
+        zh_ = R * math.sin(ah_)
+        sl_ = _slider_z_ideal(psi_deg, R, zh_)
+        return R * math.cos(ah_) - (Xe_cup + seat_y * math.cos(p_) - sl_ * math.sin(p_))
+
+    lo, hi = 1.0, 80.0
+    flo = _resid(lo)
+    for _ in range(120):                                    # bisection on the sign change
+        mid = (lo + hi) / 2
+        fm = _resid(mid)
+        if (flo < 0) == (fm < 0):
+            lo, flo = mid, fm
+        else:
+            hi = mid
+    psi = (lo + hi) / 2
+    R_worn = _R_of_psi(psi)
+    arc_worn = 180.0 - 2.0 * psi
+    p = math.radians(psi)
+    a_hole = math.radians(psi + math.degrees(P.bow_endtab_hole_inset / R_worn))
+    zh = R_worn * math.sin(a_hole)                          # prong-hole height in the bow frame
+    slider_z = max(sz_lo, min(sz_hi, _slider_z_ideal(psi, R_worn, zh)))   # post extension (height)
 
     def T_cup(w):    # pad → −X, pivot → ±Y, up → +Z; pivot centre → (Xe_cup,0,0)
         return (w.rotate((0, 0, 0), (0, 1, 0), -90)
@@ -133,6 +168,9 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
 
     def T_yoke(w):   # eyes → ±Y, arch stays +Z (up); pivot centre → (Xe_cup,0,0)
         return w.rotate((0, 0, 0), (0, 0, 1), -90).translate((Xe_cup, 0, 0))
+
+    def tilt(w):     # tilt the post chain inboard by psi about the cup pivot, so the slider clamp
+        return w.rotate((Xe_cup, 0, 0), (Xe_cup, 1, 0), -psi)   # face is parallel to the band end
 
     def mirror_L(w):  # right ear → left ear (true mirror across the head centre)
         return w.mirror("YZ", (0, 0, 0))
@@ -150,40 +188,34 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X). Shown at the
     # COMPRESSED worn depth so it sits FLUSH on the head ear (it compresses on a real head).
     earpad = T_cup(make_earpad(P.earpad_worn_depth).translate((0, 0, P.cup_total_height)))
-    yoke = T_yoke(make_yoke())
+    # Yoke + post + slider all TILT (post chain) so the slider clamp face is parallel to the band.
+    yoke = tilt(T_yoke(make_yoke()))
     # Bought Ø6 adjustment ROD — epoxy-bonded into the fork socket, rising as the post. Built from
-    # its socket floor (z=0); shift up so it seats in the socket, then ride with the yoke.
+    # its socket floor (z=0); shift up so it seats in the socket, then ride (tilted) with the yoke.
     # The post is a bought ISO 7379 shoulder screw: M5 thread into the fork boss, Ø6 shoulder is the
     # post, head is the top stop. Built from z=0 = the shoulder seat (boss top); ride with the yoke.
     from parts.yoke_rod import make_yoke_rod
-    rod = T_yoke(make_yoke_rod().translate((0, 0, P.yoke_fork_height + 4)))
-    # Slider rides the yoke post; the post slides + swivels the full barrel height and may
-    # poke past it (nothing stacks on the post now). Barrel TOP at post_top → barrel CENTRE
-    # (the slider frame's z=0, where the clamp sits) at post_top − h/2.
-    post_top = P.yoke_fork_height + 4 + P.yoke_post_length
-    post_base = P.yoke_fork_height + 4                      # hub top = the barrel's bottom stop
-    sz_hi = post_top - P.slider_collar_height / 2           # barrel at the post top (extended)
-    sz_lo = post_base + P.slider_collar_height / 2          # barrel at the hub (retracted)
-    # Band height: drop the slider so the flexed bow's APEX lands on the crown, clamped to the post
-    # travel (a small head bottoms near full retraction; the pad takes up any residual). Measure the
-    # bow's apex-above-the-prong-hole at R_worn so it's exact for the flexed shape.
-    _bow0 = make_bow(radius=R_worn, arc_degrees=arc_worn)
-    apex_above_hole = _bow0.val().BoundingBox().zmax - zh
-    slider_z = max(sz_lo, min(sz_hi, crown - apex_above_hole))   # clamp / barrel centre
-    slider = T_yoke(make_slider().translate((0, 0, slider_z)))
+    rod = tilt(T_yoke(make_yoke_rod().translate((0, 0, P.yoke_fork_height + 4))))
+    # Slider rides the (tilted) post at slider_z (the height, solved above); the post slides + swivels
+    # the full barrel height. slider_z = the clamp/barrel centre along the tilted post.
+    slider = tilt(T_yoke(make_slider().translate((0, 0, slider_z))))
     # Pressure SHOE — rides in the slider's +Y pocket, saddle cradling the post (the thumbscrew
     # presses it, not the post). Built at the origin, shifted +Y so its saddle is post-coaxial.
     from parts.slider_shoe import make_slider_shoe, shoe_offset_y
-    shoe = T_yoke(make_slider_shoe().translate((0, shoe_offset_y(), slider_z)))
+    shoe = tilt(T_yoke(make_slider_shoe().translate((0, shoe_offset_y(), slider_z))))
 
-    # ---- Shared headband: bow + crown pad, arcing between the two sliders ----
-    # Pose so the band's prong-tip HOLE lands at the clamp centre (slider z=0 + hole_z=0).
-    bow_xf = (0, 0, slider_z - zh)
-    bow = _bow0.translate(bow_xf)                            # the flexed bow, posed (built above)
+    # ---- Shared headband: bow + crown pad, a PURE ARC arcing between the two sliders ----
+    # The bow is symmetric about x=0 (apex on the crown). Its end tangent already matches the post
+    # tilt, so a pure Z-shift lands the prong-tip HOLE on the (tilted) slider clamp hole: the hole
+    # rides at global z = Hz = seat_y·sin(psi) + slider_z·cos(psi); the bow's hole sits at zh.
+    _bow0 = make_bow(radius=R_worn, arc_degrees=arc_worn)
+    Hz = seat_y * math.sin(p) + slider_z * math.cos(p)
+    bow_xf = (0, 0, Hz - zh)
+    bow = _bow0.translate(bow_xf)                            # the flexed bow, posed
     pad = make_headband_pad(radius=R_worn, arc_degrees=arc_worn).translate(bow_xf)
-    # Headband CLAMP cover (INNER head-side piece) — built in the slider frame, posed with
+    # Headband CLAMP cover (INNER head-side piece) — built in the slider frame, posed (tilted) with
     # the slider so its bolts/slot align with the slider's clamp.
-    cover = T_yoke(make_headband_clamp().translate((0, 0, slider_z)))
+    cover = tilt(T_yoke(make_headband_clamp().translate((0, 0, slider_z))))
 
     asm = cq.Assembly(name="daily_driver")
     for nm, solid, col in (("cup", cup, CHARCOAL), ("baffle", baffle, ORANGE),
@@ -256,7 +288,7 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
               .rotate((0, 0, 0), (1, 0, 0), -90)                       # shaft → +Y (outboard), tip at origin
               .translate((0, shoe_face_y, 0))                          # tip on the shoe's +Y face
               .translate((0, 0, slider_z + P.slider_thumbscrew_boss_z)))  # ride with the boss
-        ts_R = T_yoke(ts)
+        ts_R = tilt(T_yoke(ts))
         asm.add(ts_R, name="thumbscrew_R", color=SCREW_C)
         asm.add(mirror_L(ts_R), name="thumbscrew_L", color=SCREW_C)
     except Exception as e:  # noqa: BLE001 — viz only
