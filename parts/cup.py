@@ -25,8 +25,22 @@ def make_cup() -> cq.Workplane:
     od = P.cup_outer_diameter
     total_h = P.cup_total_height
 
-    # 1. Solid blank, front (+Z) up, closed back at the bottom.
-    cup = cq.Workplane("XY").circle(od / 2).extrude(total_h)
+    # 1. Solid blank — the front (+Z) stays a CYLINDER (pad seat + void + pivot bosses); the rear
+    #    cup_dome_height flows into a CONVEX DOMED back (DT880/Denon family) that bulges from the OD at
+    #    the dome top inward to a FLAT grille face of cup_back_face_radius at z=0 (the grille / closed-back
+    #    ports sit on that flat). Lofted stacked circles — a sin profile so the dome meets the cylinder
+    #    tangent-vertical (smooth) and bulges convex below. Replaces the old cylinder + single roundover.
+    dome_h = P.cup_dome_height
+    r_back = P.cup_back_face_radius
+    nseg = 16                                          # dense sampling → smooth dome under a RULED loft
+    wires = []
+    for i in range(nseg + 1):
+        t = i / nseg
+        r = r_back + (od / 2 - r_back) * math.sin(t * math.pi / 2)   # convex; vertical tangent at the top
+        wires.append(cq.Wire.makeCircle(r, cq.Vector(0, 0, dome_h * t), cq.Vector(0, 0, 1)))
+    wires.append(cq.Wire.makeCircle(od / 2, cq.Vector(0, 0, total_h), cq.Vector(0, 0, 1)))   # cylinder to the front
+    # RULED (straight between sections) — a smooth/spline loft overshoots and bulges the dome way out.
+    cup = cq.Workplane(obj=cq.Solid.makeLoft(wires, ruled=True))
 
     # 2. Hollow the acoustic void from the front (+Z), leaving side walls of
     #    wall_thickness and a thicker closed back (cup_back_thickness) — the grille
@@ -39,11 +53,9 @@ def make_cup() -> cq.Workplane:
     )
     cup = cup.cut(void)
 
-    # 2b. Rounded back (soft-form pass): a ROUNDOVER on the back-outer edge (was a
-    #     ~45° chamfer — a fillet is a softer, hand-friendlier transition). Confined
-    #     to the back band so the side wall is untouched and the grille zone stays
-    #     on a flat face. Done HERE while the bottom is still a clean disc — OCC on
-    #     this build declines fillets once the grille/bosses/flange complicate it.
+    # 2b. Soften the back-FACE edge: a small round where the convex dome meets the flat grille face
+    #     (the dome itself does the main rounding now). Done HERE while the bottom is still a clean disc —
+    #     OCC on this build declines fillets once the grille/bosses/flange complicate it.
     cup = cup.edges("<Z").fillet(P.cup_back_round)
 
     # 3. Rear STRUCTURAL GRILLE (Stage 1b) — a rigid TRIANGULAR ×3 lattice (three

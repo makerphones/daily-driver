@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Cup back: CONVEX DOMED form (was cylinder + plain roundover)
+
+Maker: the cup wall→back transition is abrupt/clunky (a straight cylinder meeting the flat grille face via
+a single 5.5 mm roundover). Wants it rounder/more stylish — the DT880 / Denon D-series family. Picked a
+"blend leaning convex": sleek + convex as much as possible, a flat face where needed (grille), built so the
+closed Studio clone shares it (the open DD and closed Studio share yoke/slider/headband; the cup may differ
+but stays in the family).
+
+**Done (`parts/cup.py` step 1 + params):** replaced the cylinder + roundover with a CONVEX DOMED back. The
+front stays a CYLINDER (pad seat + void + pivot bosses); the rear `cup_dome_height` (12 mm) flows into a
+convex dome — a sin-profile LOFT bulging from the OD at the dome top inward to a FLAT grille face of
+`cup_back_face_radius` (35 mm) at the back, where the open grille / closed-back ports sit. `cup_back_round`
+2.5 softens the dome→flat edge.
+
+**Geometric CAP (surfaced, not silently resolved):** the dome height is limited to ~13 mm by the ⌀78 void —
+above that the wall over the void thins below ~3 mm. So this is a clear, refined convex dome (rounds the
+rear ~half) but NOT a full Denon bulge. For a fuller dome (the closed Studio) the lever is a thicker back
+band or a smaller cup ID — flagged for that pass. **Build note:** the loft must be `ruled=True`; a smooth/
+spline loft OVERSHOOTS and balloons the dome (x ballooned to ±84 before the fix).
+
+**Closed Studio clone setup:** the SAME domed cup serves both — `cup_open_back=False` drops the grille and
+puts the tuning ports on the same flat back face. So the Studio is a near-trivial clone (close the back +
+its baffle tweaks), as the maker wanted; yoke/slider/headband are shared untouched.
+
+Gate **0/0** (cup a single valid solid; pivot-tilt-clearance holds), build 17/17. On BETA — maker reviews
+before promote. NB the earlier cup_depth 30→20 (shallow) change is ALSO beta-only (pushed after the last
+promote) — both ride together.
+
 ## 2026-06-28 — Earcup SHALLOWER (cup_depth 30→20, DT880/770 reference) — sleeker + lighter
 
 Maker (planning the eventual closed-back Studio clone): the earcup is too deep. Measured a **DT880**

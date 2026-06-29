@@ -53,8 +53,18 @@ class Params:
     # this back band). The acoustic air space behind the baffle is unchanged — only
     # the grille substrate gets deeper and the cup ~3 mm taller. See DESIGN-LOG.
     cup_back_thickness: float = 6.0       # ESTIMATE  closed-back depth (grille substrate)
-    cup_back_round: float = 5.5           # soft-form ROUNDOVER radius on the back-outer edge
-                                          #   (was a 45° chamfer; a fillet is a softer transition)
+    cup_back_round: float = 2.5           # soft-form round on the back-FACE edge where the dome meets the
+                                          #   flat grille face (the dome below does most of the rounding now)
+    # ---- Cup back FORM: CONVEX DOME (maker form pass, 2026-06-28) -------------------------------------
+    # The outer wall flows into a CONVEX DOMED back (DT880/Denon family) instead of a cylinder + plain
+    # roundover. The dome lives in the rear `cup_dome_height` mm — the front stays cylindrical for the pad
+    # seat + the void + the pivot bosses — and bulges from the OD at the dome top inward to a FLAT grille
+    # face of radius `cup_back_face_radius` at the very back (the open grille / closed-back ports sit on
+    # that flat). Dome height is CAPPED by the void wall (~13 mm here: above that the wall over the ⌀78
+    # void thins below ~3 mm). For a FULLER dome (the closed Studio clone) thicken the back band or reduce
+    # the cup ID. Built as a LOFT (this OCC build's fillets fail once the grille/bosses complicate it).
+    cup_dome_height: float = 12.0         # SET  rear length that domes (cylinder above); ≤ ~13 before the void wall thins
+    cup_back_face_radius: float = 35.0    # SET  flat back-face radius the grille/ports sit on (≥ grille zone ~31)
 
     # ---- Cable exit (bottom of each earcup) ----------------------------------
     # A hole through the cup's −Y wall — the BOTTOM when worn (T_cup maps cup −Y to
