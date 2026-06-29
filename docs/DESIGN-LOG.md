@@ -18,6 +18,30 @@ already-seated insert. The doc also names itself as the **explode tool's intende
 Remaining item-6 polish (parked, both "as we go" per the maker): draw the washer stack in the assembly
 render, and refine the explode to step through the ASSEMBLY.md stages + keep parts in frame.
 
+## 2026-06-28 — Junction parallel-angle: ANALYSIS + plan for verticalised bow prongs (option b)
+
+Pinned down the angle precisely. The slider's band RECESS (slider.py) is a VERTICAL slot — a box cut
+in the lozenge's −Y face, `bow_width+1` along X, `rec_d` (≈band thickness) along Y, spanning Z; the two
+M3 inserts enter along +Y (the clamp normal). After T_yoke the recess is vertical in global Z, width
+along Y, shallow along X. The BOW is a UNIFORM ARC (bow.py), so at the worn radius its prong leaves at
+the arc TANGENT (~21° off vertical at M) — tangent-vs-vertical = the visible angle.
+
+**FIX (option b, maker-approved) — verticalise the bow prong ends.** Plan for the next pass:
+1. **bow.py:** split the developed length — `L_arc = bow_developed_length − 2·Lp` (Lp ≈ `bow_endtab_length`).
+   Build the ARC over the crown with L_arc, then at each arc end add a STRAIGHT VERTICAL prong (a band
+   segment: thickness `bow_thickness` along X, width along Y, length Lp along −Z). Move the prong-tip
+   HOLE onto the vertical prong, drilled along X (matching the +Y/clamp-normal inserts). A ~21° kink at
+   the arc→prong junction = the band bending to vertical at the slider (real headbands do this).
+2. **assembly.py worn-pose:** the ARC flexes so its ends land at ±Xe (bow_radius_for_ear_half on L_arc);
+   the vertical prongs hang DOWN from the arc ends to the slider clamp; recompute `zh` (hole now on the
+   prong, lower) and the slider_z / cup attachment so the cup hangs at the prong base. The slider's
+   vertical recess then receives the vertical prong PARALLEL.
+3. Size the recess (`rec_d`, width) so the parallel prong seats fully (the "sufficient cutout").
+4. Build + RENDER-iterate (the OCC arc+prong union + the kink will need a couple of passes).
+
+NOT done in-session (it's a real bow + worn-pose rework needing render iteration, deferred from the tail
+of a very long session). The bigger retaining block + recessed screws (below) ARE done + live.
+
 ## 2026-06-28 — Band↔slider junction: bigger retaining block + recessed screws (parallel-angle TBD)
 
 Maker flagged the band↔slider junction: the steel band comes in at an ANGLE (not parallel to the
