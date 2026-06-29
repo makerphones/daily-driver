@@ -85,7 +85,7 @@ joints called out.
 | Head bow | **Bought** (Beyer Metal Head Bow) or DIY 1095 | width ~10 mm; arc + length **TBD from measured part** | Sourcing target; geometry from real part |
 | Slider ×2 | Printed | rides bow; height + swivel | Concept (CAD stub) — see [drawings/slider.svg](drawings/slider.svg) |
 | Fork-yoke ×2 | Printed | straddles cup; ±20° tilt; M3 screw-pin | Concept (CAD stub) — see [drawings/yoke.svg](drawings/yoke.svg) |
-| Cup ×2 | Printed | ID 78 · depth 30 · OD 90 (pad-driven) · wall 6; earpad lip on the rim | First-pass geometry; grille authored — see [drawings/cup.svg](drawings/cup.svg) |
+| Cup ×2 | Printed | ID 78 · **depth 20** (DT880/770 ref; rear ~96 cc) · OD 90 (pad-driven) · wall 6; earpad lip on the rim | First-pass geometry; grille authored — see [drawings/cup.svg](drawings/cup.svg) |
 | Baffle ×2 | Printed | OD ~77 · **stepped 6 (driver/guard hub) / 4 (outer ring)** · aperture ⌀35 · **open arc-slot vents + glued acoustic paper** | First-pass geometry — see [drawings/baffle.svg](drawings/baffle.svg) |
 | Driver ×2 | Bought | ~40 mm dynamic, 32 Ω | Candidate: Peerless HPD-40N16 |
 | Pad ×2 | Bought | Dekoni Universal 100 mm (Beyer-type); outer foam ⌀100, ear opening ⌀60 | Pad target locked |

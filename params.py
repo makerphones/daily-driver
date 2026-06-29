@@ -30,7 +30,9 @@ from dataclasses import dataclass
 class Params:
     # ---- Cup shell -----------------------------------------------------------
     cup_interior_diameter: float = 78.0   # ESTIMATE  cup_id — acoustic void dia (ear cavity)
-    cup_depth: float = 30.0               # ESTIMATE  interior depth (driver→back)
+    cup_depth: float = 20.0               # SET  interior depth (front→back) = MEASURED DT880/DT770 ~0.8 in
+                                          #   (was 30). Sleeker/lighter; keeps a healthy ~96 cc rear chamber for
+                                          #   the closed-back (DT-class reference). Rear vol = π·(id/2)²·this.
     wall_thickness: float = 3.0           # ESTIMATE  min shell wall (floor). NB the cup's
                                           #   own wall is thicker now — see cup_outer_diameter.
     wall_thickness_structural: float = 4.0  # ESTIMATE  at bosses / structural pts

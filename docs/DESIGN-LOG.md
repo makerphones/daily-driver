@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Earcup SHALLOWER (cup_depth 30→20, DT880/770 reference) — sleeker + lighter
+
+Maker (planning the eventual closed-back Studio clone): the earcup is too deep. Measured a **DT880**
+(same cup as the closed **DT770**): interior depth ~**0.8 in ≈ 20 mm**. A Denon D2000 is even shallower
+(but wider / semi-closed). His planar-closed experience: thinner sounded better. Wants sleek + light but
+"enough chamber for tuning" on the closed version.
+
+**Investigation (what's limiting the sound):** the FRONT cavity (pad depth, 68 cc) is the dominant bass
+*pressure chamber* and is UNCHANGED by shaving the back. The REAR cavity (cup interior) is the closed-back
+*air spring* — at 143 cc it was generous (well past the knee for a 40 mm driver), so shaving it is
+low-risk for bass; it modestly stiffens the rear spring (∝ 1/V). For the OPEN-back default the rear is
+vented, so shaving is essentially free acoustically; the rear volume only really matters for the closed
+Studio clone.
+
+**Decision:** `cup_depth` **30 → 20 mm** (≈ the measured DT880/770 interior — a proven closed chamber).
+Rear cavity **143 → 96 cc** (still healthy for tuning), `cup_total_height` **36 → 26 mm** — sleeker, less
+material/weight. Benefits both the open Daily Driver and the closed Studio clone (one shared param).
+
+**Ripple (all auto-tracked, gate 0/0):** `baffle_seat_z` 30.5→20.5 (baffle bosses shorter; gate
+boss-height 24.5→14.5, still ≥ insert 6). `pivot_boss_z` 22→17 (pivot sits at the cup's mid-depth, so a
+shallower cup pulls it inboard) → the worn pose goes a touch more COMPACT: band 6.49→**6.30 in**, junction
+tilt 6.9→5.4°, rod extension 4.1→2.9 mm — still lands within post travel, junction still parallel.
+
+**MEASUREMENT-GATED / could go thinner:** 18 mm (rear 86 cc) is available if the maker wants it sleeker,
+but I anchored to the DT880/770 number (a dynamic-driver closed reference; planars are far less rear-
+volume-sensitive). The real floor needs the driver **Fs/Qts/Vas** measured. ID/OD of the cup are NOT
+changed (maker: not needed). On BETA — maker reviews before promote.
+
 ## 2026-06-28 — Baffle venting → HOLES + 4 hot-dog paper strips; common-40 mm driver assumptions
 
 Maker on the arc-slot venting: the big open slots will be hard to glue paper onto consistently. Prefer a

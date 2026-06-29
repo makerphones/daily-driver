@@ -8,9 +8,9 @@ open-area, exact volume target) is measurement-gated — these are the parametri
 
 | Cavity | Volume | Set by |
 |---|---|---|
-| Rear (cup interior) | **143 cc** | ⌀78 mm × 30 mm deep |
+| Rear (cup interior) | **96 cc** | ⌀78 mm × 20 mm deep |
 | Front (ear ↔ baffle) | **68 cc** | pad opening ⌀60 mm × 24 mm pad depth |
-| **Total** | **211 cc** | |
+| **Total** | **163 cc** | |
 
 ## Tuning controls (all parametric)
 
