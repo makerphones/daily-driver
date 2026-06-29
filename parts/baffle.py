@@ -150,42 +150,52 @@ def make_baffle() -> cq.Workplane:
         )
         baffle = baffle.cut(through).cut(cbore)
 
-    # 6. OPEN front venting + ACOUSTIC-PAPER recess (maker pass). The front cavity vents to
-    #    the back through big ARC-SLOTS — one centred between each pair of clamp standoffs, so
-    #    the 3 standoff SECTORS (at 0/120/240) stay solid to host the boss bases (the slots and
-    #    the bosses never collide; cf. the gate's clamp↔vent check). The slots are backed by a
-    #    glued acoustic paper/mesh sitting in a shallow FRONT DEPRESSION that the slots open up
-    #    into — that layer (not the hole size) sets the back→front resistance. Open area is large
-    #    and parametric; the paper GRADE is measurement-gated. All cut UPWARD-friendly for the
-    #    back-down print: the depression + slots open toward the front (up).
-    n = P.driver_clamp_count                                   # 3 → one slot per gap, 3 sectors
-    sector_half = P.baffle_vent_sector_half
-    slot_half = 360.0 / (2 * n) - sector_half - P.baffle_vent_slot_gap
+    # 6. Front venting = a SERIES OF HOLES in N "hot-dog" zones, each covered by a glued ARC STRIP of
+    #    acoustic paper sitting in a shallow front DEPRESSION (maker: holes are easier to glue over
+    #    consistently than open slots, and a few arc strips waste far less paper than one big annulus).
+    #    The strip zones sit BETWEEN the 4 mounting screws (centred 0/90/180/270 for strip_count=4) so
+    #    the screw bosses keep their strength; the holes auto-SKIP the 3 clamp standoffs (0/120/240) on
+    #    the back. The paper (not the hole size) sets the back→front resistance — grade measurement-gated.
+    #    All cut UPWARD-friendly for the back-down print (depression + holes open toward the front).
+    n = P.baffle_vent_strip_count
+    strip_half = P.baffle_vent_strip_half
     vin, vout = P.baffle_vent_inner_r, P.baffle_vent_outer_r
+    r_mid = (vin + vout) / 2
     rec_d = P.baffle_paper_recess_depth
-    slot_floor = ring_t - rec_d                                # slots open up to the depression floor
+    hd = P.baffle_vent_hole_diameter
+    # clamp-standoff footprints to dodge (back-side bosses at the clamp bolt circle)
+    so_r = P.driver_clamp_bolt_circle / 2
+    so_keepout = P.insert_boss_diameter / 2 + hd / 2 + 1.0
+    standoffs = [(so_r * math.cos(math.radians(k * 360.0 / P.driver_clamp_count)),
+                  so_r * math.sin(math.radians(k * 360.0 / P.driver_clamp_count)))
+                 for k in range(P.driver_clamp_count)]
+    n_skipped = 0
+    for s in range(n):
+        zc = s * 360.0 / n                                     # strip centre (0/90/180/270 for n=4)
+        # 6a. paper-strip DEPRESSION — a "hot-dog" arc pocket (a touch wider/longer than the holes so
+        #     the strip has a glue seat all round).
+        dep = _arc_sector(vin - 0.8, vout + 0.8, zc, strip_half + 3.0, ring_t - rec_d, rec_d + 0.5)
+        baffle = baffle.cut(dep)
+        # 6b. the SERIES OF HOLES along the strip arc (count from arc length / pitch; centred). Skip
+        #     any hole sitting over a clamp standoff.
+        arc_len = 2 * math.radians(strip_half) * r_mid
+        nh = max(1, int(arc_len // P.baffle_vent_hole_pitch) + 1)
+        for j in range(nh):
+            frac = 0.0 if nh == 1 else (j / (nh - 1) - 0.5)    # −0.5 .. 0.5 across the strip
+            a = math.radians(zc + frac * 2 * strip_half)
+            hx, hy = r_mid * math.cos(a), r_mid * math.sin(a)
+            if any(math.hypot(hx - sx, hy - sy) < so_keepout for sx, sy in standoffs):
+                n_skipped += 1
+                continue                                       # dodge a clamp standoff
+            hole = (cq.Workplane("XY").workplane(offset=-0.5)
+                    .center(hx, hy).circle(hd / 2).extrude(ring_t + 1.0))
+            baffle = baffle.cut(hole)
+    if n_skipped:
+        print(f"  [info] baffle: {n_skipped} vent hole(s) skipped where a strip crosses a clamp standoff.")
 
-    # 6a. Front paper DEPRESSION — annular pocket in the ring front over the whole vent zone
-    #     (a touch wider than the slots so the paper has a seat all round).
-    depression = (
-        cq.Workplane("XY").workplane(offset=ring_t - rec_d)
-        .circle(vout + 1.0).circle(max(vin - 1.0, hub_r + 0.2))
-        .extrude(rec_d + 0.5)
-    )
-    baffle = baffle.cut(depression)
-
-    # 6b. ARC-SLOTS — through the ring from the back up to the depression floor.
-    if slot_half <= 1.0:
-        print(f"  [warn] baffle: vent slot half-angle {slot_half:.1f}° ≤ 1 — sectors/gap eat the slot; "
-              "reduce baffle_vent_sector_half / _slot_gap or add clamp count.")
-    for i in range(n):
-        a_c = (i + 0.5) * 360.0 / n                            # 60 / 180 / 300 (between standoffs)
-        slot = _arc_sector(vin, vout, a_c, slot_half, -0.5, slot_floor + 0.5)
-        baffle = baffle.cut(slot)
-
-    # 7. Driver-clamp STANDOFFS — 3 bosses on the BACK face (z=0) at the clamp bolt circle,
-    #    each with an M3 heat-set bore, at 0/120/240 — inside the SOLID vent sectors (the slots
-    #    are centred between them). Standoff ≈ driver_body_depth − driver_recess_depth.
+    # 7. Driver-clamp STANDOFFS — 3 bosses on the BACK face (z=0) at the clamp bolt circle, each with
+    #    an M3 heat-set bore, at 0/120/240. The vent holes dodge them (above). Standoff ≈
+    #    driver_body_depth − driver_recess_depth.
     cbr = P.driver_clamp_bolt_circle / 2
     boss_h = P.driver_clamp_standoff
     for i in range(P.driver_clamp_count):

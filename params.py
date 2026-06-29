@@ -172,11 +172,11 @@ class Params:
 
     # ---- Baffle plate (front-mount) -----------------------------------------
     baffle_outer_diameter: float = 77.0   # ESTIMATE  baffle_od (drops into id 78)
-    baffle_thickness: float = 6.0         # ESTIMATE  baffle_th — 6 (was 4) leaves a
-                                          #   solid front lamina (th − recess_depth)
-                                          #   for the driver guard to anchor in, so
-                                          #   guard_setback fits. recess_depth and
-                                          #   guard_setback stay driver-measured.
+    baffle_thickness: float = 5.5         # SET  HUB thickness (driver/guard zone only — the outer ring is
+                                          #   baffle_ring_thickness). DOME-GATED: recess 1 + dome_proud 1.5 +
+                                          #   excursion 0.5 + guard_clr 0.5 + guard 1.5 + setback 0.5 = 5.5 on the
+                                          #   common-40 mm driver assumption. Re-measure the real dome/excursion to
+                                          #   reclaim more. (Was 6.0 at the conservative excursion 1.0.)
     # driver_aperture and driver_recess_diameter now DERIVE from driver_od (see the
     # derived helpers), so the baffle aperture/guard/vents stay coherent when the
     # driver size changes — "different baffle plates" is a regenerate, not a redesign.
@@ -210,14 +210,19 @@ class Params:
     # standoff SECTORS (the "solid support"), backed by a glued acoustic paper/mesh in a shallow
     # FRONT depression — the paper sets the back→front resistance. All recesses open UPWARD for the
     # back-face-down print. The paper GRADE / exact open area is MEASUREMENT-GATED (tune to the driver).
-    baffle_ring_thickness: float = 4.0    # SET  thinned outer-ring thickness (6 mm hub → 4 mm ring; front recessed)
+    baffle_ring_thickness: float = 4.0    # SET  thinned outer-ring thickness (hub → 4 mm ring; front recessed)
     baffle_hub_margin: float = 2.0        # SET  radial margin past the driver collar to where the full-thick hub ends
-    baffle_vent_sector_half: float = 13.0 # SET  SOLID sector half-angle at each standoff (0/120/240) — hosts the boss
-                                          #   (must exceed the standoff's ~7° half-width at r30). Slot half-angle
-                                          #   DERIVES: 360/(2·clamp_count) − sector_half − slot_gap.
-    baffle_vent_slot_gap: float = 4.0     # SET  angular gap between an arc-slot edge and the next solid sector
-    baffle_vent_zone_gap: float = 1.5     # SET  slot radial clearance from the hub edge / outer rim
-    baffle_paper_recess_depth: float = 0.8  # SET  front depression the acoustic paper glues into (cut to match, flush)
+    baffle_vent_zone_gap: float = 1.5     # SET  vent radial clearance from the hub edge / outer rim
+    # Front venting = a SERIES OF HOLES in N "hot-dog" zones, each covered by a glued ARC STRIP of
+    # acoustic paper (strips cut from a sheet — far less waste than one annulus, and a flat hole-field
+    # is easier to glue over than open slots). The strips sit BETWEEN the 4 mounting screws so the
+    # screw bosses keep their strength; the holes auto-skip the 3 clamp standoffs (0/120/240). Total
+    # open area is parametric; the paper GRADE (resistance) is measurement-gated to the driver.
+    baffle_vent_strip_count: int = 4      # SET  hot-dog strips / hole zones (4 → centred at 0/90/180/270, between screws)
+    baffle_vent_strip_half: float = 30.0  # SET  arc half-angle of each strip zone (clears the 45/135/… screws — see gate)
+    baffle_vent_hole_diameter: float = 3.5  # SET  round vent-hole dia (a series under each strip)
+    baffle_vent_hole_pitch: float = 6.0   # SET  hole centre-to-centre along the strip arc
+    baffle_paper_recess_depth: float = 0.8  # SET  front depression each paper STRIP glues into (cut to match, flush)
     baffle_paper_thickness: float = 0.3   # ESTIMATE  acoustic paper / mesh thickness (bought soft-good; GRADE TBD-measured)
     # baffle bolt circle reuses baffle_bolt_circle_diameter (aligned to the cup).
     # NOTE: cable entry is cup-side per v0.3 (dual entry) — NOT on the baffle.
@@ -263,15 +268,18 @@ class Params:
     guard_thickness: float = 1.5          # ESTIMATE  guard rib thickness (Z); thinned to fit the lamina
     guard_hub_diameter: float = 6.0       # ESTIMATE  small center hub to tie the spokes
 
-    # ---- Driver (MEASURED 2026-06-26) ---------------------------------------
+    # ---- Driver (MEASURED 2026-06-26 + COMMON-40 mm ASSUMPTIONS) -------------
+    # driver_od/body_depth/magnet are measured off a real 40 mm driver; the dome/diaphragm figures
+    # are set to the COMMON 40 mm dynamic-driver range (typical consumer: diaphragm ~34–38, dome
+    # ~1–2 mm proud, ONE-WAY excursion ~0.3–0.6, ~32 Ω / ~100 dB·mW) as deliberate placeholders
+    # until the real TEST DRIVERS are measured. They drive the baffle hub thickness + guard clearance.
     driver_od: float = 39.5               # MEASURED  outermost frame dia (the "40 mm" driver)
-    driver_diaphragm_diameter: float = 34.0  # ESTIMATE  diaphragm/dome (< the 39.5 frame; guard clears it)
+    driver_diaphragm_diameter: float = 34.0  # ASSUMPTION  diaphragm/dome (common 40 mm; < the 39.5 frame, guard clears it)
     driver_body_depth: float = 5.0        # MEASURED  driver height on the outside (the basket)
-    driver_dome_proud: float = 1.5        # REF  dome stands proud of the frame (at REST)
-    driver_dome_excursion: float = 1.0    # ESTIMATE  forward DYNAMIC travel of the dome in play — MEASURE.
-                                          #   The grille must clear the dome's forward-most (excursed) position,
-                                          #   not just its rest height, or it rubs at high SPL. 1.0 is a
-                                          #   conservative 40 mm-driver placeholder until measured.
+    driver_dome_proud: float = 1.5        # ASSUMPTION  dome proud of the frame at REST (common 40 mm ~1–2 mm)
+    driver_dome_excursion: float = 0.5    # ASSUMPTION  forward DYNAMIC dome travel — common 40 mm headphone one-way
+                                          #   Xmax ~0.3–0.6 mm (was a conservative 1.0 placeholder). The guard must
+                                          #   clear the dome's forward-most position; MEASURE on the real test driver.
     # Driver MOCKUP dims (parts/driver.py) — a representative driver shown in the
     # assembly so the driver↔baffle↔clamp fit reads. The magnet sits behind the basket.
     driver_magnet_diameter: float = 27.0  # MEASURED  rear magnet OD

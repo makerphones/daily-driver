@@ -358,16 +358,20 @@ def main():
     vent_r = (P.driver_aperture / 2 + P.baffle_screw_radius) / 2   # == baffle.py's derivation
     r.hard(P.driver_aperture / 2 < clamp_bcr < P.baffle_screw_radius, "driver-clamp-bcd-band",
            f"clamp bcd r{clamp_bcr:.1f} between vents r{vent_r:.1f} and frame bcd r{P.baffle_screw_radius:.0f}")
-    # The OPEN arc-slots (centred between the standoffs at 60/180/300) must clear the 3 clamp
-    # STANDOFFS, which sit in the SOLID sectors at 0/120/240. Slot half-angle derives from the
-    # sector + gap; clearance = sector_half + slot_gap − standoff_half.
-    n_clamp = P.driver_clamp_count
-    slot_half = 360.0 / (2 * n_clamp) - P.baffle_vent_sector_half - P.baffle_vent_slot_gap
-    standoff_half = math.degrees(math.asin(min(1.0, (P.insert_boss_diameter / 2) / clamp_bcr)))
-    gap = P.baffle_vent_sector_half + P.baffle_vent_slot_gap - standoff_half
-    r.hard(slot_half > 1.0 and gap > 0, "driver-clamp-clears-vents",
-           f"arc-slot half {slot_half:.0f}° clears standoff half {standoff_half:.1f}° by {gap:.1f}° "
-           f"(slots 60/180/300, standoffs 0/120/240)")
+    # The vent "hot-dog" STRIPS sit BETWEEN the mounting screws so the screw bosses keep their
+    # strength; verify each strip arc clears the nearest screw head. (Holes inside each strip auto-
+    # skip the clamp standoffs in baffle.py — a build-time dodge, not a gate constraint.)
+    def _angdist(a, b):
+        d = abs(a - b) % 360.0
+        return min(d, 360.0 - d)
+    strips = [s * 360.0 / P.baffle_vent_strip_count for s in range(P.baffle_vent_strip_count)]
+    screws = [45.0 + i * 360.0 / P.baffle_screw_count for i in range(P.baffle_screw_count)]
+    nearest_screw = min(_angdist(s, c) for s in strips for c in screws)
+    screw_half = math.degrees(math.asin(min(1.0, (P.baffle_counterbore_diameter / 2) / P.baffle_screw_radius)))
+    screw_gap = nearest_screw - P.baffle_vent_strip_half - screw_half
+    r.hard(screw_gap > 0, "vent-strips-clear-screws",
+           f"vent strip half {P.baffle_vent_strip_half:.0f}° + screw head half {screw_half:.1f}° clears the "
+           f"{nearest_screw:.0f}° strip→screw spacing by {screw_gap:.1f}°")
     r.hard(P.driver_clamp_inner_diameter < P.driver_od, "driver-clamp-catches-flange",
            f"clamp inner Ø{P.driver_clamp_inner_diameter} < driver Ø{P.driver_od} (lip catches the flange)")
 

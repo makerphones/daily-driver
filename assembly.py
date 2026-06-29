@@ -253,8 +253,8 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     # explode to see them). Built in the cup/baffle local frame, posed with the cup (T_cup):
     #  • DAMPING felt disc — sits in the cup's damping ring, over the grille (⌀damping_felt × thickness).
     #  • Front-seal GASKET — a foam ring on the driver frame rim against the baffle seat (compressed).
-    #  • Front acoustic PAPER/MESH — a thin annular layer glued into the baffle's front DEPRESSION over
-    #    the open arc-slot vents; it (not the hole size) sets the back→front resistance (bought soft-good,
+    #  • Front acoustic PAPER/MESH — N "hot-dog" ARC STRIPS glued into the baffle's front depressions over
+    #    the vent holes; the paper (not the hole size) sets the back→front resistance (bought soft-good,
     #    GRADE measurement-gated). Built in the baffle local frame (+baffle_seat_z), posed with the cup.
     FOAM = cq.Color(0.38, 0.52, 0.50)   # muted teal-grey: reads as acoustic foam/felt, distinct from pads
     PAPER = cq.Color(0.82, 0.76, 0.62)  # warm paper/mesh tan, distinct from the foam goods
@@ -264,11 +264,27 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
                    .circle(P.driver_recess_diameter / 2)
                    .circle(P.driver_recess_diameter / 2 - P.front_gasket_width)
                    .extrude(P.front_gasket_compressed))
-    paper = T_cup(cq.Workplane("XY")
-                  .workplane(offset=P.baffle_seat_z + P.baffle_ring_thickness - P.baffle_paper_recess_depth)
-                  .circle(P.baffle_vent_outer_r + 1.0)
-                  .circle(max(P.baffle_vent_inner_r - 1.0, P.baffle_hub_radius + 0.2))
-                  .extrude(P.baffle_paper_thickness))
+
+    def _paper_strip(zc):                # one acoustic-paper hot-dog (arc sector) in a baffle depression
+        vin, vout = P.baffle_vent_inner_r - 0.5, P.baffle_vent_outer_r + 0.5
+        ah = P.baffle_vent_strip_half + 2.0
+        a0, a1, am = zc - ah, zc + ah, zc
+        z0 = P.baffle_seat_z + P.baffle_ring_thickness - P.baffle_paper_recess_depth
+
+        def pt(rad, deg):
+            a = math.radians(deg)
+            return (rad * math.cos(a), rad * math.sin(a))
+        return (cq.Workplane("XY").workplane(offset=z0)
+                .moveTo(*pt(vin, a0)).lineTo(*pt(vout, a0))
+                .threePointArc(pt(vout, am), pt(vout, a1))
+                .lineTo(*pt(vin, a1))
+                .threePointArc(pt(vin, am), pt(vin, a0))
+                .close().extrude(P.baffle_paper_thickness))
+    paper = None
+    for s in range(P.baffle_vent_strip_count):
+        strip = _paper_strip(s * 360.0 / P.baffle_vent_strip_count)
+        paper = strip if paper is None else paper.union(strip)
+    paper = T_cup(paper)
     asm.add(damping, name="damping_R", color=FOAM)
     asm.add(mirror_L(damping), name="damping_L", color=FOAM)
     asm.add(gasket, name="gasket_R", color=FOAM)

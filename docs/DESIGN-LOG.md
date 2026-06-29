@@ -6,6 +6,33 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Baffle venting → HOLES + 4 hot-dog paper strips; common-40 mm driver assumptions
+
+Maker on the arc-slot venting: the big open slots will be hard to glue paper onto consistently. Prefer a
+**series of HOLES** covered by **separate ARC STRIPS** of acoustic paper ("hot dogs") instead of one
+annular piece — cut more strips from a sheet with less waste. **Four** strips (not three) so they sit
+between the 4 mounting screws and don't weaken them. Also: pick **common 40 mm-driver assumptions** for
+now (real test drivers measured later).
+
+**Venting redesign (`parts/baffle.py`):**
+- The 3 arc-slots → **4 "hot-dog" zones** centred at 0/90/180/270 (BETWEEN the 4 screws at 45/135/…, so
+  the screw bosses keep strength), each a shallow front DEPRESSION holding one glued **acoustic-paper
+  arc strip** over a **series of round holes** (⌀3.5, pitch 6) through the ring. Holes auto-**skip** any
+  that cross a clamp standoff (0/120/240) — 3 dropped, logged. New params `baffle_vent_strip_count/
+  _strip_half/_hole_diameter/_hole_pitch`; the arc-slot params are gone.
+- `gate.py`: the clamp↔vent check → **`vent-strips-clear-screws`** (strips clear the 45° screw spacing by
+  10.1°). Assembly paper viz + BOM updated to **4 strips/ear** (low-waste cut).
+
+**Common-40 mm driver ASSUMPTIONS (`params.py`):** the dome/diaphragm figures are now set to the typical
+consumer 40 mm range as deliberate placeholders until the real test drivers are measured — notably
+`driver_dome_excursion` **1.0 → 0.5** (common one-way Xmax ~0.3–0.6; 1.0 was conservative). That drops
+the dome stack, so the **driver/guard HUB thins 6 → 5.5 mm** (still dome-gated; re-measure to reclaim
+more). `driver_od`/body_depth stay MEASURED. Knock-on: the cup's baffle bosses grow 0.5 mm (baffle seats
+higher) — gate boss-height 24.0→24.5, still PASS.
+
+Build **17/17**, gate **0 HARD / 0 SOFT** (manifold:baffle = 1 valid solid). design-spec + BOM updated.
+On BETA — maker reviews before promote.
+
 ## 2026-06-28 — Baffle: stepped (thinner) plate + OPEN arc-slot venting + acoustic-paper recess
 
 Maker: the baffle plate looks too thick; keep material for the driver mount + grille but slim the

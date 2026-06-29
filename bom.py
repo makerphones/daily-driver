@@ -58,9 +58,10 @@ def bom_rows():
 
     return [
         # --- Acoustic + soft goods (maker-supplied / builder's choice) -----------
-        ("Kingstate 40 mm dynamic driver, ~32 Ω", f"{EARS}",
-         "40 mm frame, ≤6 mm deep (params MEASURED)",
-         "Kingstate — maker-supplied (measure Fs/Qts/Z when bench-testing)", "~$8–18", "MAKER"),
+        ("Kingstate 40 mm dynamic driver, ~32 Ω (common-40 mm assumption)", f"{EARS}",
+         "Ø39.5 frame / ≤6 mm deep MEASURED; dome proud/excursion = common-40 mm ASSUMPTION until test "
+         "drivers measured (drives baffle hub depth)",
+         "Kingstate — maker-supplied (measure Fs/Qts/Z + dome/excursion when bench-testing)", "~$8–18", "MAKER"),
         ("Ear pads — Beyerdynamic DT 770/880/990 family (DEFAULT)", "1 pair",
          "OD ~100 / opening ~58 / depth ~22–25 mm, elastic stretch-ring mount",
          "Beyerdynamic EDT-series — maker-supplied; Dekoni / Brainwavz interchangeable (premium/tuning)",
@@ -147,11 +148,12 @@ def bom_rows():
          f"{EARS}",
          "acoustic felt / open-cell — drops into the cup's damping ring over the grille",
          "Parts Express / craft felt", "$3–5", "ESTIMATE"),
-        (f"Front acoustic paper / mesh disc (⌀{int(2*P.baffle_vent_outer_r)} × {P.baffle_paper_thickness} mm, annular)",
-         f"{EARS}",
-         "glues into the baffle FRONT depression over the open vents; sets back→front resistance — "
-         "GRADE (paper weight / mesh count) measurement-gated to the driver",
-         "acoustic paper (e.g. speaker-cone paper) / metal mesh", "~$1", "ESTIMATE"),
+        (f"Front acoustic paper / mesh — {P.baffle_vent_strip_count} arc STRIPS per ear (~{P.baffle_paper_thickness} mm)",
+         f"{P.baffle_vent_strip_count * 2} strips ({P.baffle_vent_strip_count}/ear)",
+         "cut as straight-ish strips (low waste); each glues into a baffle FRONT 'hot-dog' depression "
+         "over its vent holes — the paper sets back→front resistance. GRADE (weight / mesh count) "
+         "measurement-gated to the driver",
+         "acoustic paper (speaker-cone paper) / metal mesh", "~$1", "ESTIMATE"),
         ("Vent plug — printed, CLOSED-BACK variant only (reversible openness tuning)",
          "as needed", f"press-fit ⌀{int(P.cup_port_diameter)} mm port; plug N of {P.cup_port_count}",
          "own printer (parts/vent_plug.py)", "~$0", "SPEC"),
