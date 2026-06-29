@@ -358,13 +358,16 @@ def main():
     vent_r = (P.driver_aperture / 2 + P.baffle_screw_radius) / 2   # == baffle.py's derivation
     r.hard(P.driver_aperture / 2 < clamp_bcr < P.baffle_screw_radius, "driver-clamp-bcd-band",
            f"clamp bcd r{clamp_bcr:.1f} between vents r{vent_r:.1f} and frame bcd r{P.baffle_screw_radius:.0f}")
-    # The 3 clamp bosses (0/120/240) must clear the 6 vents (offset 30°) angularly,
-    # since they share the baffle back at overlapping radii.
-    clamp_half = math.degrees(math.asin(min(1.0, (P.insert_boss_diameter / 2) / clamp_bcr)))
-    vent_half = math.degrees(math.asin(min(1.0, (P.baffle_vent_diameter / 2) / vent_r)))
-    gap = 30.0 - (clamp_half + vent_half)
-    r.hard(gap > 0, "driver-clamp-clears-vents",
-           f"clamp boss↔vent gap {gap:.1f}° > 0 (bosses 0/120/240 vs vents offset 30°)")
+    # The OPEN arc-slots (centred between the standoffs at 60/180/300) must clear the 3 clamp
+    # STANDOFFS, which sit in the SOLID sectors at 0/120/240. Slot half-angle derives from the
+    # sector + gap; clearance = sector_half + slot_gap − standoff_half.
+    n_clamp = P.driver_clamp_count
+    slot_half = 360.0 / (2 * n_clamp) - P.baffle_vent_sector_half - P.baffle_vent_slot_gap
+    standoff_half = math.degrees(math.asin(min(1.0, (P.insert_boss_diameter / 2) / clamp_bcr)))
+    gap = P.baffle_vent_sector_half + P.baffle_vent_slot_gap - standoff_half
+    r.hard(slot_half > 1.0 and gap > 0, "driver-clamp-clears-vents",
+           f"arc-slot half {slot_half:.0f}° clears standoff half {standoff_half:.1f}° by {gap:.1f}° "
+           f"(slots 60/180/300, standoffs 0/120/240)")
     r.hard(P.driver_clamp_inner_diameter < P.driver_od, "driver-clamp-catches-flange",
            f"clamp inner Ø{P.driver_clamp_inner_diameter} < driver Ø{P.driver_od} (lip catches the flange)")
 

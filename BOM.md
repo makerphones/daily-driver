@@ -28,6 +28,7 @@ bought-part reference · **SPEC** spec pinned, SKU is builder's choice ·
 | Cable + 3.5 mm TRS plug (builder's choice) | 1 | any cable terminated in a 3.5 mm (1⁄8″) TRS plug, ~1.2–1.8 m | [240-1032](https://www.parts-express.com/3.5mm-Stereo-Male-to-Male-Audio-Cable-Dual-Shielded-with-Gold-Plated-Connectors-6-ft.-240-1032) — Parts Express | ~$2 | SPEC |
 | Front-seal foam gasket — driver↔baffle (33% squeeze) | 2 | ~1.5 mm foam ring, ~2.5 mm wide (clamp compresses to 1.0 mm) | foam tape — builder-cut | ~$1 | ESTIMATE |
 | Rear damping felt disc (⌀38 × 3 mm) | 2 | acoustic felt / open-cell — drops into the cup's damping ring over the grille | Parts Express / craft felt | $3–5 | ESTIMATE |
+| Front acoustic paper / mesh disc (⌀61 × 0.3 mm, annular) | 2 | glues into the baffle FRONT depression over the open vents; sets back→front resistance — GRADE (paper weight / mesh count) measurement-gated to the driver | acoustic paper (e.g. speaker-cone paper) / metal mesh | ~$1 | ESTIMATE |
 | Vent plug — printed, CLOSED-BACK variant only (reversible openness tuning) | as needed | press-fit ⌀6 mm port; plug N of 6 | own printer (parts/vent_plug.py) | ~$0 | SPEC |
 | Printed parts (2× cup, baffle, yoke, slider, driver clamp, shoe per side) | 1 set | PETG recommended | own printer or print service | $3–25 | ESTIMATE |
 

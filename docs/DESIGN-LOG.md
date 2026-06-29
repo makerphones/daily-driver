@@ -6,6 +6,40 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Baffle: stepped (thinner) plate + OPEN arc-slot venting + acoustic-paper recess
+
+Maker: the baffle plate looks too thick; keep material for the driver mount + grille but slim the
+plate. Also reconsider the front venting — modern open-backs run this area MORE OPEN with an acoustic
+paper/mesh setting the resistance, not a few small holes. Plan for gluing acoustic paper to the OUTSIDE
+of the baffle (where it meets the pad), cut to a small depression in the faceplate. (Approved: do it all
+together, arc-slots + ribs, mind FDM printability.)
+
+**Diagnosis:** the 6 mm was only justified in the CENTRAL driver/guard zone — it's dome-gated there
+(recess 1 + dome 1.5 + excursion 1 + clearance 0.5 + guard 1.5 + setback 0.5 = 6). The outer ring
+(r17→r38.5, ~21 mm wide) was solid 6 mm for no reason — that was the bulk. Old front venting was tiny:
+6 × ⌀2 = **19 mm²**.
+
+**Done (one coherent baffle v0.4 — `parts/baffle.py`):**
+- **STEPPED thickness:** full-thickness driver/guard **HUB** (`baffle_hub_radius` ≈ 24, kept at 6 mm —
+  still dome-gated; flag: measuring a shallower real dome could reduce it) + a **thinned outer RING**
+  (`baffle_ring_thickness` 4 mm, FRONT recessed). Back face stays flat (driver-mount + print bed). Sheds
+  bulk, keeps stiffness (bolted rim + ribs + hub). Screw counterbores now reference the ring front.
+- **OPEN arc-slot venting:** the 6 holes → **3 big ARC-SLOTS** (one centred between each pair of clamp
+  standoffs, at 60/180/300), with the **3 standoff SECTORS** (0/120/240) left solid to host the bosses
+  and tie hub↔rim. Open area **≈ 642 mm² (34× the old 19)**, parametric (`baffle_vent_sector_half` /
+  `_slot_gap` / zone radii). Exact open area / paper grade = MEASUREMENT-GATED.
+- **Acoustic-paper recess:** a shallow **front DEPRESSION** (`baffle_paper_recess_depth` 0.8) over the
+  vent zone; the slots open up into it; a glued acoustic **paper/mesh** disc (annular, around the guard)
+  sits in it flush and sets the back→front resistance. Added as a viz layer (`paper_R/L`, FOAM-tan) in
+  the assembly + manifest "acoustic" group + a BOM line; grade TBD-measured.
+- **Printable (back-face-down, unchanged):** every new recess (ring front, depression, slots) opens
+  UPWARD; guard spokes still bridge fine; ribs/sectors ≥ FDM minimums.
+
+`gate.py`: the old round-hole clamp↔vent check is replaced with an arc-slot one (slots at 60/180/300
+clear the standoffs at 0/120/240 by 10.3°). Gate **0 HARD / 0 SOFT**, baffle is a single valid solid,
+build **17/17**. (The viewer's "Acoustic paper" toggle label is a WEBSITE change — separate commit.)
+On BETA — maker reviews before promote.
+
 ## 2026-06-28 — Pivot moved FORWARD (toward the head) — tighter, more compact fit
 
 Maker: would moving the yoke↔earcup attachment closer to the head improve the fit? It does — so moved it

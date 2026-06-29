@@ -203,8 +203,22 @@ class Params:
     pad_lip_round: float = 0.8            # soft-form roundover on the brim edges (eases the pad + feel)
     baffle_counterbore_diameter: float = 6.0  # ESTIMATE  M3 socket head clearance
     baffle_counterbore_depth: float = 2.5     # ESTIMATE  head sinks below front
-    baffle_vent_count: int = 6            # ESTIMATE  small controlled-vent holes
-    baffle_vent_diameter: float = 2.0     # ESTIMATE  not a hard seal
+    # ---- Baffle: STEPPED thickness + OPEN front venting + acoustic-paper recess ----
+    # The plate is full thickness only in the central driver/guard HUB (that depth is dome-gated —
+    # see baffle_thickness). The outer RING is thinner (front recessed) to shed bulk while staying
+    # stiff (bolted rim + ribs + hub). Front venting opens to big ARC-SLOTS between the 3 clamp-
+    # standoff SECTORS (the "solid support"), backed by a glued acoustic paper/mesh in a shallow
+    # FRONT depression — the paper sets the back→front resistance. All recesses open UPWARD for the
+    # back-face-down print. The paper GRADE / exact open area is MEASUREMENT-GATED (tune to the driver).
+    baffle_ring_thickness: float = 4.0    # SET  thinned outer-ring thickness (6 mm hub → 4 mm ring; front recessed)
+    baffle_hub_margin: float = 2.0        # SET  radial margin past the driver collar to where the full-thick hub ends
+    baffle_vent_sector_half: float = 13.0 # SET  SOLID sector half-angle at each standoff (0/120/240) — hosts the boss
+                                          #   (must exceed the standoff's ~7° half-width at r30). Slot half-angle
+                                          #   DERIVES: 360/(2·clamp_count) − sector_half − slot_gap.
+    baffle_vent_slot_gap: float = 4.0     # SET  angular gap between an arc-slot edge and the next solid sector
+    baffle_vent_zone_gap: float = 1.5     # SET  slot radial clearance from the hub edge / outer rim
+    baffle_paper_recess_depth: float = 0.8  # SET  front depression the acoustic paper glues into (cut to match, flush)
+    baffle_paper_thickness: float = 0.3   # ESTIMATE  acoustic paper / mesh thickness (bought soft-good; GRADE TBD-measured)
     # baffle bolt circle reuses baffle_bolt_circle_diameter (aligned to the cup).
     # NOTE: cable entry is cup-side per v0.3 (dual entry) — NOT on the baffle.
 
@@ -624,6 +638,21 @@ class Params:
     def baffle_screw_radius(self) -> float:
         # bolt circle the cup bosses AND the baffle holes share (aligned)
         return self.baffle_bolt_circle_diameter / 2
+
+    @property
+    def baffle_hub_radius(self) -> float:
+        # radius out to which the baffle stays FULL thickness (covers the driver recess +
+        # collar + guard); the outer ring beyond this is thinned (front recessed).
+        return self.driver_recess_diameter / 2 + self.driver_collar_wall + self.baffle_hub_margin
+
+    @property
+    def baffle_vent_inner_r(self) -> float:
+        return self.baffle_hub_radius + self.baffle_vent_zone_gap
+
+    @property
+    def baffle_vent_outer_r(self) -> float:
+        # stay clear of the screw bolt circle (heads + the solid rim that carries them)
+        return self.baffle_screw_radius - self.baffle_counterbore_diameter / 2 - self.baffle_vent_zone_gap
 
     @property
     def cup_interior_floor_z(self) -> float:

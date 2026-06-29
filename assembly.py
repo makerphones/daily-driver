@@ -44,8 +44,9 @@ SUBASSEMBLIES = {
                    "driver_R", "driver_L", "driver_clamp_R", "driver_clamp_L"]},
         {"id": "earpad", "label": "Earpads",
          "nodes": ["earpad_R", "earpad_L"]},
-        {"id": "acoustic", "label": "Felt + gasket",
-         "nodes": ["damping_R", "damping_L", "gasket_R", "gasket_L"]},
+        {"id": "acoustic", "label": "Felt + gasket + paper",
+         "nodes": ["damping_R", "damping_L", "gasket_R", "gasket_L",
+                   "paper_R", "paper_L"]},
         {"id": "gimbal", "label": "Gimbal",
          "nodes": ["yoke_R", "yoke_L", "yoke_rod_R", "yoke_rod_L",
                    "insert_p_R", "insert_p_L", "insert_m_R",
@@ -57,7 +58,7 @@ SUBASSEMBLIES = {
          "nodes": ["headband_pad"]},
         {"id": "head", "label": "Reference head", "nodes": ["head_ref"]},
     ],
-    "bought": ["bow_ref", "earpad_R", "earpad_L"],
+    "bought": ["bow_ref", "earpad_R", "earpad_L", "paper_R", "paper_L"],
     # The reference head is translucent worn-fit CONTEXT: the viewer shows it OFF by default and holds
     # it OUT of the explode motion (context, not a part). The whole POSE is fitted to it per size — the
     # viewer swaps GLBs (daily-driver-{s,m,l}.glb) to re-fit, rather than nudging one group. Public contract.
@@ -252,17 +253,28 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     # explode to see them). Built in the cup/baffle local frame, posed with the cup (T_cup):
     #  • DAMPING felt disc — sits in the cup's damping ring, over the grille (⌀damping_felt × thickness).
     #  • Front-seal GASKET — a foam ring on the driver frame rim against the baffle seat (compressed).
+    #  • Front acoustic PAPER/MESH — a thin annular layer glued into the baffle's front DEPRESSION over
+    #    the open arc-slot vents; it (not the hole size) sets the back→front resistance (bought soft-good,
+    #    GRADE measurement-gated). Built in the baffle local frame (+baffle_seat_z), posed with the cup.
     FOAM = cq.Color(0.38, 0.52, 0.50)   # muted teal-grey: reads as acoustic foam/felt, distinct from pads
+    PAPER = cq.Color(0.82, 0.76, 0.62)  # warm paper/mesh tan, distinct from the foam goods
     damping = T_cup(cq.Workplane("XY").workplane(offset=P.cup_interior_floor_z)
                     .circle(P.damping_felt_diameter / 2).extrude(P.damping_felt_thickness))
     gasket = T_cup(cq.Workplane("XY").workplane(offset=ledge_z - P.front_gasket_compressed)
                    .circle(P.driver_recess_diameter / 2)
                    .circle(P.driver_recess_diameter / 2 - P.front_gasket_width)
                    .extrude(P.front_gasket_compressed))
+    paper = T_cup(cq.Workplane("XY")
+                  .workplane(offset=P.baffle_seat_z + P.baffle_ring_thickness - P.baffle_paper_recess_depth)
+                  .circle(P.baffle_vent_outer_r + 1.0)
+                  .circle(max(P.baffle_vent_inner_r - 1.0, P.baffle_hub_radius + 0.2))
+                  .extrude(P.baffle_paper_thickness))
     asm.add(damping, name="damping_R", color=FOAM)
     asm.add(mirror_L(damping), name="damping_L", color=FOAM)
     asm.add(gasket, name="gasket_R", color=FOAM)
     asm.add(mirror_L(gasket), name="gasket_L", color=FOAM)
+    asm.add(paper, name="paper_R", color=PAPER)
+    asm.add(mirror_L(paper), name="paper_L", color=PAPER)
 
     # Pivot hardware on both ears (viz), riding with the cup group. Guarded.
     try:

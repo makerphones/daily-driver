@@ -24,12 +24,14 @@
     },
     {
       "id": "acoustic",
-      "label": "Felt + gasket",
+      "label": "Felt + gasket + paper",
       "nodes": [
         "damping_R",
         "damping_L",
         "gasket_R",
-        "gasket_L"
+        "gasket_L",
+        "paper_R",
+        "paper_L"
       ]
     },
     {
@@ -83,7 +85,9 @@
   "bought": [
     "bow_ref",
     "earpad_R",
-    "earpad_L"
+    "earpad_L",
+    "paper_R",
+    "paper_L"
   ],
   "reference_context": [
     "head_ref"

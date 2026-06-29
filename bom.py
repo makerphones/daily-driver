@@ -147,6 +147,11 @@ def bom_rows():
          f"{EARS}",
          "acoustic felt / open-cell — drops into the cup's damping ring over the grille",
          "Parts Express / craft felt", "$3–5", "ESTIMATE"),
+        (f"Front acoustic paper / mesh disc (⌀{int(2*P.baffle_vent_outer_r)} × {P.baffle_paper_thickness} mm, annular)",
+         f"{EARS}",
+         "glues into the baffle FRONT depression over the open vents; sets back→front resistance — "
+         "GRADE (paper weight / mesh count) measurement-gated to the driver",
+         "acoustic paper (e.g. speaker-cone paper) / metal mesh", "~$1", "ESTIMATE"),
         ("Vent plug — printed, CLOSED-BACK variant only (reversible openness tuning)",
          "as needed", f"press-fit ⌀{int(P.cup_port_diameter)} mm port; plug N of {P.cup_port_count}",
          "own printer (parts/vent_plug.py)", "~$0", "SPEC"),

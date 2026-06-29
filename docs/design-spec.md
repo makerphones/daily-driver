@@ -86,7 +86,7 @@ joints called out.
 | Slider ×2 | Printed | rides bow; height + swivel | Concept (CAD stub) — see [drawings/slider.svg](drawings/slider.svg) |
 | Fork-yoke ×2 | Printed | straddles cup; ±20° tilt; M3 screw-pin | Concept (CAD stub) — see [drawings/yoke.svg](drawings/yoke.svg) |
 | Cup ×2 | Printed | ID 78 · depth 30 · OD 90 (pad-driven) · wall 6; earpad lip on the rim | First-pass geometry; grille authored — see [drawings/cup.svg](drawings/cup.svg) |
-| Baffle ×2 | Printed | OD ~77 · ~4 thick · aperture ⌀35 · pocket ⌀42 (clean driver-mount, no pad lip) | First-pass geometry — see [drawings/baffle.svg](drawings/baffle.svg) |
+| Baffle ×2 | Printed | OD ~77 · **stepped 6 (driver/guard hub) / 4 (outer ring)** · aperture ⌀35 · **open arc-slot vents + glued acoustic paper** | First-pass geometry — see [drawings/baffle.svg](drawings/baffle.svg) |
 | Driver ×2 | Bought | ~40 mm dynamic, 32 Ω | Candidate: Peerless HPD-40N16 |
 | Pad ×2 | Bought | Dekoni Universal 100 mm (Beyer-type); outer foam ⌀100, ear opening ⌀60 | Pad target locked |
 | M3 heat-set inserts | Bought | M3 brass | Convention (`parts/features.py`) |
@@ -193,12 +193,14 @@ The **slider** clamps and **rides the bow** for height adjustment and provides t
   the aperture to protect the driver, in the same logo-evocative language as the rear grille.
 - **No pad lip on the baffle** — the earpad retaining lip now lives on the **cup's outer rim**
   (DT770-style; see the Cup shell section); the baffle is a clean **driver-mount plate**. The
-  controlled vents are re-homed to the ring between the aperture and the bolt circle.
+  front venting is now **open arc-slots** in the ring (between the 3 clamp-standoff sectors),
+  **backed by a glued acoustic paper/mesh** in a shallow front depression — the paper sets the
+  back→front resistance (open area large + parametric; paper grade measurement-gated).
 - **Driver pocket ⌀42 mm on the back** — the driver frame seats into a pocket on the rear face;
   the aperture is the acoustic opening it fires through.
 - **4 M3 rim screws**, counterbored from the front, into the cup's perimeter-wall bosses (see
   Interface 1). Heads hidden under the pad.
-- **Controlled venting + a damping spot**, not a hard seal.
+- **Open front venting + acoustic paper/mesh** (resistance-controlled), not a hard seal.
 - **Print orientation** — flat, no supports.
 
 ### Fork-yoke
@@ -318,7 +320,7 @@ wall_thickness        = 3 mm
 driver_od             = 42 mm     ← update when driver confirmed
 driver_aperture       = 35 mm     ← update when driver confirmed
 cup_outer_diameter    = 90 mm     ← pad-driven; earpad lip on the cup rim (Dekoni ~90, TBD)
-baffle_thickness      = 4 mm
+baffle_thickness      = 6 mm     ← driver/guard HUB (dome-gated); outer ring 4 mm (front recessed)
 grille_ring_count     = 2
 grille_spoke_count    = 8
 grille_target_open_fraction = 0.40
