@@ -6,6 +6,24 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Reference head: shorter neck (bust cut) so the viewer ground stops chopping it
+
+Maker: in the 3D viewer the "ground" (the soft contact-shadow blob) parked at the bottom of the EARCUPS,
+so toggling the reference head on put the ground through the middle of the head (the head hangs well
+below the cups). Wanted the ground moved so the head isn't chopped — neck shortened a bit, ground just
+below the chin.
+
+- **head_reference.py (this repo):** the NECK stub is now SHORT — a bust cut ending just below the chin
+  (neck bottom global ≈ −123 mm, ~10 mm under the chin/jaw at −113; was a long stub to −158). Crown +129,
+  ears at 0 unchanged. VIZ-only, gate untouched. Build 17/17, gate 0/0, GLB + worn poster regenerated.
+- **parts-viewer.js (WEBSITE repo, separate commit):** the contact shadow now parks at the bottom of the
+  VISIBLE model, not the fixed real-parts bottom — at the earcups with the head OFF (unchanged default),
+  and at the head's neck-bottom (just below the chin) when the head is toggled ON. So the ground never
+  cuts through the head, in either state. (`placeShadow()` recomputes on every visibility toggle.)
+
+NB the viewer/ground lives in the website (the daily-driver repo only produces the GLB + manifest); this
+needed a change in BOTH repos. Maker confirms on the live beta page.
+
 ## 2026-06-28 — Worn pose: FULL earpad + clamp contact + rods extended (pad-burial bug fixed)
 
 Maker on the worn render: (1) drop the compressed half-depth earpad, show the FULL pad; (2) the arc

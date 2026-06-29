@@ -39,9 +39,11 @@ def make_head_reference(ear_half: float = None) -> cq.Workplane:
     # 1. Head: an egg ovoid (round cranium, narrower jaw via a slight downward taper cut later).
     head = _ovoid((HX, HY, HZ))
 
-    # 2. NECK stub (KU100-style) — a cylinder dropping from under the jaw.
-    neck = (cq.Workplane("XY").workplane(offset=-HZ - 45 * s)
-            .circle(33 * s).extrude(55 * s).translate((0, -6 * s, 0)))
+    # 2. NECK stub (KU100-style) — a SHORT cylinder dropping from under the jaw, ending just below the
+    #    chin (a bust cut). Keeps the head off the viewer "ground": the contact shadow parks at the
+    #    visible bottom, so a short neck puts the ground just under the chin instead of mid-face.
+    neck = (cq.Workplane("XY").workplane(offset=-HZ - 10 * s)
+            .circle(33 * s).extrude(26 * s).translate((0, -6 * s, 0)))
     head = head.union(neck)
 
     # 3. FACE hints on the +Y front (subtle person-likeness, not photoreal):
