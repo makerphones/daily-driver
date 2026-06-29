@@ -502,10 +502,12 @@ class Params:
     earpad_depth: float = 24.0            # SET  pad height = the FRONT-CAVITY depth. Beyer DT 770/880/990
                                           #   family ≈ 22–25 mm (published, no caliper needed — see plan);
                                           #   the mockup torus is Z-scaled to this. Drives front_cavity_volume_cc.
-    earpad_worn_depth: float = 12.0       # SET  COMPRESSED pad depth for the WORN-fit viz (~half the relaxed
-                                          #   24 mm — foam compresses on the head). The assembly shows the pad
-                                          #   at this depth, sitting FLUSH on the head, so the cups don't spread
-                                          #   absurdly wide. Acoustic helpers still use the relaxed earpad_depth.
+    earpad_worn_depth: float = 14.0       # SET  WORN SEATED-CONTACT depth — the cup-front→head-surface gap in the
+                                          #   worn pose (sets cup spacing). The assembly now shows the FULL earpad
+                                          #   (earpad_depth) which then COMPRESSES (earpad_depth − this = ~10 mm) into
+                                          #   the head = the worn CLAMP contact (maker: show the full pad with real
+                                          #   clamping force, not the old stubby half-depth pad). Acoustic helpers
+                                          #   still use the relaxed earpad_depth.
 
     # ---- Acoustic geometry (v0.3 acoustic pass) ------------------------------
     # OPEN vs CLOSED back is ONE toggle, so the SAME architecture yields both variants

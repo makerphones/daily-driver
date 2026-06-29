@@ -6,6 +6,34 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Worn pose: FULL earpad + clamp contact + rods extended (pad-burial bug fixed)
+
+Maker on the worn render: (1) drop the compressed half-depth earpad, show the FULL pad; (2) the arc
+still looks too extended / "no clamping force" — make it look like a real headphone gripping the head;
+(3) the yoke extension rods should show some extension.
+
+Found these are mostly ONE bug: the height solve landed the bow's metal APEX *directly on the crown*,
+which crushed the 8 mm headband pad to nothing AND bottomed the slider (rods fully retracted). The pad
+belongs BETWEEN the band and the head, so the band must ride a pad-thickness ABOVE the crown.
+
+**Changes (pose + viz only — no printed geometry):**
+- **FULL-depth earpad** shown (`make_earpad(earpad_depth)`, 24 mm) instead of the stubby 12 mm. Repurposed
+  `earpad_worn_depth` 12→**14** = the worn SEATED-CONTACT gap (cup-front→head); the full pad then
+  COMPRESSES `earpad_depth − 14 ≈ 10 mm` (~42%) into the head = the **clamp contact** (the "clamping
+  force" look — a real pad squished on the head, not a loose stubby one).
+- **Band rides on the pad:** apex now targets `crown + headband_pad_thickness`. The pad rests on the
+  crown (was buried), and lifting the band raises the slider → the posts show **~7 mm of rod extension
+  on M** (more on L), so the cups visibly hang on extended rod (the maker's note). Junction stays
+  parallel (post ∥ band 0.00°), band 6.6 in dia.
+
+Per head (worn): S 6.5 in / rod 0 (small head bottoms, pad bridges) · **M 6.6 in / rod 6.8 mm** · L 6.7
+in / rod 14.8 mm. All within post travel. Build **17/17**, gate **0 HARD / 0 SOFT**. GLB regenerated.
+
+**Floor noted (honest):** the worn band can't go below ~6.5–6.6 in dia — it has to span the head + the
+cup/pad stack; the 5 in rest circle is the OFF-head state (cups touching). Tighter than this needs a
+SMALLER cup (the 91 mm/4 in cup pins a tall yoke). Flagged to the maker as the next lever if they want
+more clamp/tighter still. Maker confirms on the live beta page.
+
 ## 2026-06-28 — Junction FIXED by TILTING the post chain to the band (option b dropped)
 
 The maker pushed back on the queued option-b (verticalise the prongs) with the real Beyer band in hand

@@ -101,7 +101,9 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
 
     pbz = P.pivot_boss_z
     # HEAD-DRIVEN worn pose (per `worn_head` ∈ {s,m,l}): the headphone is FITTED to the chosen head.
-    # The COMPRESSED earpad (earpad_worn_depth) sits FLUSH on the head ear → that sets the cup spacing;
+    # The FULL earpad sits on the head, COMPRESSING into it by (earpad_depth − earpad_worn_depth) ≈ 10 mm
+    # = the worn CLAMP contact (maker: show the full pad with real clamping force). earpad_worn_depth is the
+    # seated cup-front→head gap, so it sets the cup spacing.
     # WIDTH is then taken up by the bow SPRING (its flex), HEIGHT by the slider POST (travel) — the
     # maker's mechanism. The bow is a PURE ARC (no bends). For its end to lie FLAT on the slider clamp
     # face (maker: "the ends of the band are parallel to the slider face, no bends other than the arc"),
@@ -111,9 +113,14 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     eh_map = {"s": P.head_s_ear_half, "m": P.head_ref_ear_half, "l": P.head_l_ear_half}
     eh = eh_map.get(worn_head, P.head_ref_ear_half)
     crown = P.head_ref_z + P.head_ref_height_half * (eh / P.head_ref_ear_half)
+    # The metal band rides a PAD-THICKNESS above the crown (the headband pad fills the gap, resting on the
+    # head) — so the band APEX targets crown + pad. This both seats the pad correctly (it was being buried)
+    # and lifts the slider → the yoke posts show real EXTENSION (cups hang on visible rod), per the maker.
+    apex_target = crown + P.headband_pad_thickness
 
-    # Cup pivot x = head ear surface (eh) + the COMPRESSED earpad (flush) + the cup's front→pivot offset
-    # (= pbz: the rotated cup's x-span is cup_total_height, pivot at its mid). Cup stays ON the ear.
+    # Cup pivot x = head ear surface (eh) + seated pad contact (earpad_worn_depth) + the cup's front→pivot
+    # offset (= pbz: the rotated cup's x-span is cup_total_height, pivot at its mid). Cup stays ON the ear;
+    # the full pad compresses the difference into the head.
     Xe_cup = eh + P.earpad_worn_depth + pbz
 
     # ---- Solve the TILT (psi) self-consistently --------------------------------------------------
@@ -134,7 +141,7 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
 
     def _slider_z_ideal(psi_deg, R, zh_):
         p_ = math.radians(psi_deg)
-        return (zh_ + crown - R - seat_y * math.sin(p_)) / math.cos(p_)
+        return (zh_ + apex_target - R - seat_y * math.sin(p_)) / math.cos(p_)
 
     def _resid(psi_deg):                                    # band prong-hole x  −  rotated clamp-hole x
         p_ = math.radians(psi_deg)
@@ -185,9 +192,9 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     rear_rim_z = ledge_z - P.driver_body_depth
     driver = T_cup(make_driver().translate((0, 0, ledge_z)))
     driver_clamp = T_cup(make_driver_clamp().translate((0, 0, rear_rim_z)))
-    # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X). Shown at the
-    # COMPRESSED worn depth so it sits FLUSH on the head ear (it compresses on a real head).
-    earpad = T_cup(make_earpad(P.earpad_worn_depth).translate((0, 0, P.cup_total_height)))
+    # Earpad (mockup) on the cup front rim, ear opening facing the head (cup +Z → −X). Shown at FULL
+    # depth; the cup is placed so it compresses ~10 mm into the head = the worn clamp contact.
+    earpad = T_cup(make_earpad(P.earpad_depth).translate((0, 0, P.cup_total_height)))
     # Yoke + post + slider all TILT (post chain) so the slider clamp face is parallel to the band.
     yoke = tilt(T_yoke(make_yoke()))
     # Bought Ø6 adjustment ROD — epoxy-bonded into the fork socket, rising as the post. Built from
