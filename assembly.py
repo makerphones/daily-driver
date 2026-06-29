@@ -118,10 +118,10 @@ def make_assembly(worn_head: str = "m") -> cq.Assembly:
     # and lifts the slider → the yoke posts show real EXTENSION (cups hang on visible rod), per the maker.
     apex_target = crown + P.headband_pad_thickness
 
-    # Cup pivot x = head ear surface (eh) + seated pad contact (earpad_worn_depth) + the cup's front→pivot
-    # offset (= pbz: the rotated cup's x-span is cup_total_height, pivot at its mid). Cup stays ON the ear;
-    # the full pad compresses the difference into the head.
-    Xe_cup = eh + P.earpad_worn_depth + pbz
+    # Cup pivot x = head ear surface (eh) + seated pad contact (earpad_worn_depth) + the cup's FRONT→PIVOT
+    # offset (= cup_total_height − pbz; the pivot now sits forward of mid by pivot_boss_forward, so this is
+    # < pbz and pulls the whole junction inboard). Cup stays ON the ear; the full pad compresses in.
+    Xe_cup = eh + P.earpad_worn_depth + (P.cup_total_height - pbz)
 
     # ---- Solve the TILT (psi) self-consistently --------------------------------------------------
     # A pure arc of the measured developed length L has end-tangent angle == its end PARAM angle, so

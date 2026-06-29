@@ -6,6 +6,23 @@ just the result. Newest entries at the top.
 
 ---
 
+## 2026-06-28 — Pivot moved FORWARD (toward the head) — tighter, more compact fit
+
+Maker: would moving the yoke↔earcup attachment closer to the head improve the fit? It does — so moved it
+in. The pivot bosses sat at the cup MID-depth (z=18, balanced); they now sit **+4 mm forward** (toward the
+pad/head side, z=22) via new param `pivot_boss_forward`. `pivot_boss_z = cup_total_height/2 + forward`.
+
+Effect: the cup FRONT→pivot offset drops (18→14), so the cup pivot — and with it the whole yoke→slider→band
+junction — pulls **inboard**: cup-pivot x 105.5→101.5 (M). The band tightens **6.64→6.49 in** dia and the
+junction tilt eases **9.8°→7.9°** (band enters the slider closer to straight), the assembly hugs the head
+more, and the clamp line runs more directly into the head. Still lands (float 0); rod extension 6.8→5.0 mm
+(still visible). Capped at +4: the Ø12 boss then spans z[16,28], clearing the baffle seat (z=30) + front
+flange (z=34).
+
+`assembly.py` Xe_cup now uses the real front→pivot offset (`cup_total_height − pivot_boss_z`), not pbz
+(only equal at mid). Build **17/17**, gate **0/0** (pivot-tilt-clearance still PASS: cup∩yoke +20% bound
+holds at the new pivot). GLB + cup/asm renders regenerated. On BETA — maker to review before promote.
+
 ## 2026-06-28 — Reference head: shorter neck (bust cut) so the viewer ground stops chopping it
 
 Maker: in the 3D viewer the "ground" (the soft contact-shadow blob) parked at the bottom of the EARCUPS,

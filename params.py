@@ -125,6 +125,10 @@ class Params:
     # 6 mm wall + 4 mm proud (9 mm total); with the thicker wall its inner end now
     # stops IN the wall (no lug into the cavity) while still housing the insert.
     pivot_boss_through_span: float = 9.0  # ESTIMATE  radial length across the wall
+    pivot_boss_forward: float = 4.0       # SET  shift the pivot this far toward the FRONT (pad/head side)
+                                          #   off the cup mid-depth. Pulls the yoke→band junction INBOARD
+                                          #   (tighter clamp, more compact, less junction tilt) — maker's fit
+                                          #   call. Capped so the boss (Ø12) clears the baffle seat (z=30).
 
     # ---- Heat-set inserts / screws (M3) -------------------------------------
     m3_insert_hole_diameter: float = 4.0  # ESTIMATE  M3 brass insert bore
@@ -644,8 +648,10 @@ class Params:
 
     @property
     def pivot_boss_z(self) -> float:
-        # yoke pivot bosses sit at cup mid-height (balanced clamp; one-piece cup).
-        return self.cup_total_height / 2
+        # Pivot bosses sit FORWARD of cup mid-depth by pivot_boss_forward (toward the pad/head
+        # side), so the yoke→band junction pulls inboard (tighter clamp, more compact). At
+        # pivot_boss_forward=0 it's back at the balanced mid.
+        return self.cup_total_height / 2 + self.pivot_boss_forward
 
     @property
     def pivot_boss_outer_radius(self) -> float:
