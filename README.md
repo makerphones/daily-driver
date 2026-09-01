@@ -7,9 +7,21 @@ model follows. A project of [MakerPhones](https://makerphones.com) / Warren Labs
 > **🧊 Spin it in 3D** — inspect the assembly in your browser before you build:
 > **[live 3D preview →](https://makerphones.github.io/daily-driver/)**
 
-> **Status: early / in active development.** The cup and baffle are first-pass
-> geometry; the headband parts (yoke, slider) are stubs. Nothing has been
-> print-verified yet. Follow along — and fork freely.
+> **Status: PAUSED, and no longer the flagship build.** First Chair — the
+> **on-ear** sibling — replaced Daily Driver as makerphones' flagship on
+> **2026-08-06**. Daily Driver is being *resequenced, not abandoned*: it is a
+> legitimate second product and the work in it is real.
+> **[→ First Chair](https://github.com/makerphones/first-chair)**
+>
+> The reason is the bill of materials, not the design. Daily Driver needs roughly
+> **$60–70 of hardware across eight suppliers** — three sizes of heat-set insert,
+> ISO 7379 shoulder screws from specialty fastener houses, and a shoulder screw the
+> suppliers themselves only brand *"similar to"* its ISO standard. That is a fine BOM
+> for the person the manual creates, and a wall for the person the manual is trying
+> to reach. A flagship should be the first rung of a learning path.
+>
+> **Early / in active development.** The cup and baffle are first-pass geometry, and
+> **nothing has been print-verified.** Follow along — and fork freely.
 
 Honest sonic target: a bright, open, detailed open-back — strong mids and
 treble, modest bass. That's the nature of a small driver in an open baffle, and

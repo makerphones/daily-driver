@@ -21,7 +21,13 @@ text files diff and version-control naturally, and anyone can fork and modify.
   interface independently iterable).
   - `cup.py` — real first-pass geometry
   - `baffle.py` — real first-pass geometry (flat; print this first)
-  - `yoke.py`, `slider.py` — **stubs**: parameters wired, real geometry TODO
+  - `yoke.py`, `slider.py` — **real geometry, NOT stubs** (corrected 2026-09-01).
+    `yoke.py` is a v0.4 lofted-arm fork — two arms sweeping a quarter-ellipse from
+    the swivel hub down around the cup to the pivot eyes. `slider.py` is a v0.9
+    Beyerdynamic-style lozenge clamp with the post bore and thumbscrew lock. The
+    "stub" line stood for months and was flagged in the on-ear brief §8 before the
+    First Chair fork; anyone reading it to decide what needed doing would have
+    re-solved finished work.
   - `features.py` — **reusable mechanical primitives** (screw boss, post,
     fillet, thread, snap): established convention, **authored once and reused —
     never regenerated per part**, never re-derived by hand each time. Currently
@@ -70,11 +76,19 @@ python build.py
 
 ## Current state
 
-`cup` and `baffle` produce valid first-pass solids. `yoke` and `slider` are
-stubs. Nothing has been print-verified yet. Immediate next step is to build,
-visually sanity-check proportions, then print the baffle against a real driver.
+**PAUSED, and no longer the flagship.** First Chair — the on-ear sibling, forked
+from this repo — replaced Daily Driver in that role on **2026-08-06**, on the
+bill of materials rather than the design: ~$60–70 of hardware across eight
+suppliers is the wrong first rung of a learning path. **Resequenced, not
+abandoned. Do not delete anything here.**
+
+`cup` and `baffle` produce valid first-pass solids; `yoke` and `slider` are real
+geometry too (see above). **Nothing has been print-verified.** If work resumes,
+the next step is unchanged: build, sanity-check proportions, then print the baffle
+against a real driver.
 
 ## Distribution
 
 `output/` is gitignored — STL/STEP ship to builders via tagged GitHub Releases,
-not committed to the tree. License is still an open decision (see README).
+not committed to the tree. **License is decided: MIT** — `LICENSE` and the README
+have said so for months. (This line read "still an open decision" until 2026-09-01.)

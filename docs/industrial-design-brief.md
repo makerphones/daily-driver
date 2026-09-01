@@ -24,10 +24,16 @@ built by hand from the chosen direction.
 
 ## What it is
 
-An open-back, over-ear (circumaural) DIY headphone — the flagship "build in the open" design
-for makerphones (a Warren Labs project). 3D-printed, fully parametric, open source (MIT), meant
-to be downloaded, forked, and modified. It's the canonical first build: a forgiving ~40 mm
-open-back. Sonic character is bright, open, detailed — and the form should feel like that too.
+An open-back, over-ear (circumaural) DIY headphone — a "build in the open" design for
+makerphones (a Warren Labs project). 3D-printed, fully parametric, open source (MIT), meant
+to be downloaded, forked, and modified. A forgiving ~40 mm open-back.
+
+> **CORRECTED 2026-09-01.** This paragraph called Daily Driver **the flagship** and **the
+> canonical first build**. Both moved to **First Chair** on 2026-08-06 — the on-ear sibling
+> forked from this repo — and the reason was this design's bill of materials, not its form:
+> ~$60–70 of hardware across eight suppliers is the wrong first rung of a learning path.
+> **Daily Driver is resequenced, not abandoned.** Everything below still describes the product
+> correctly; only its position in the line changed. Sonic character is bright, open, detailed — and the form should feel like that too.
 
 ## Who it's for / how it should read
 
